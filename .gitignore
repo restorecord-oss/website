@@ -1,0 +1,8 @@
+# dont push old folder
+[oO]ld/
+.git
+.vscode
+.vscodeignore
+.DS_Store
+/vendors/
+/assets/
