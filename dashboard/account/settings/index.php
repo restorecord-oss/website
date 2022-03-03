@@ -26,7 +26,9 @@ if (!is_null($banned))
 }
 $role = $row['role'];
 $_SESSION['role'] = $role;$darkmode = $row['darkmode'];
-$isadmin = $row['admin'];?>
+$isadmin = $row['admin'];
+$discord = $row['userId']
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -126,13 +128,13 @@ $isadmin = $row['admin'];?>
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                                href="https://restorecord.com/discord/" target="discord">
+                                href="/discord/" target="discord">
                                 <i class="mdi mdi-discord font-24"></i>
                             </a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                                href="https://restorecord.com/telegram/" target="telegram">
+                                href="/telegram/" target="telegram">
                                 <i class="mdi mdi-telegram font-24"></i>
                             </a>
                         </li>
@@ -262,6 +264,12 @@ $isadmin = $row['admin'];?>
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label for="example-text-input" class="col-2 col-form-label">Discord ID</label>
+                                        <div class="col-10">
+                                            <label class="form-control"><?php echo $discord; ?></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label for="example-tel-input" class="col-2 col-form-label">Darkmode</label>
                                         <div class="col-10">
                                             <select class="form-control" name="darkmode">
@@ -302,8 +310,8 @@ $isadmin = $row['admin'];?>
                                                 placeholder="Change username - warning: this will change your verify link">
                                         </div>
                                     </div>
-                                    <button name="updatesettings" class="btn btn-success"> <i class="fa fa-check"></i>
-                                        Save</button>
+                                    <button name="updatesettings" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
+                                    <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/api/discord&response_type=code&scope=identify&state=link');" name="discord" class="btn btn-secondary"> <i class="fa fa-link"></i> Link Discord</a>
                                     <?php if($twofactor == 0){echo '<button name="method_2factor" class="btn waves-effect waves-light btn-dark"> <i class="fa fa-lock"></i> Enable 2FA</button>';}else{echo'<button name="method_2factor_disable" class="btn waves-effect waves-light btn-dark"> <i class="fa fa-lock"></i> Disable 2FA</button>';}?>
                                 </form>
                                 <?php
@@ -387,16 +395,12 @@ $isadmin = $row['admin'];?>
                             
                             if (mysqli_affected_rows($link) != 0) {
                                 // webhook start
-                                $timestamp = date("c", strtotime("now"));
+                                $timestamp = date("c");
                                 
                                 $json_data = json_encode([
-                                // Message
-                                "content" => "" . $_SESSION['username'] . " with email " . $_SESSION['email'] . " has changed email to `{$email}`",
-                                
-                                // Username
-                                "username" => "RestoreCord Logs",
-                                
-                                ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                                    "content" => "" . $_SESSION['username'] . " with email " . $_SESSION['email'] . " has changed email to `$email`",
+                                    "username" => "RestoreCord Logs",
+                                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                                 
                                 $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
                                 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -434,17 +438,13 @@ $isadmin = $row['admin'];?>
                             
                             if (mysqli_affected_rows($link) != 0) {
                                 // webhook start
-                                $timestamp = date("c", strtotime("now"));
-                            
+                                $timestamp = date("c");
+
                                 $json_data = json_encode([
-                                // Message
-                                "content" => "" . $_SESSION['username'] . " has changed username to `{$username}`",
-                            
-                                // Username
-                                "username" => "RestoreCord Logs",
-                            
-                                ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                            
+                                    "content" => "" . $_SESSION['username'] . " has changed username to `$username`",
+                                    "username" => "RestoreCord Logs",
+                                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
                                 $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
                                 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                                     'Content-type: application/json'
@@ -685,6 +685,14 @@ $isadmin = $row['admin'];?>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.restorecord.com/dashboard/dist/js/pages/datatable/datatable-advanced.init.js"></script>
+    <script type="text/javascript">
+        // Popup window code
+        function newPopup(url) {
+            popupWindow = window.open(
+                url, 'popUpWindow',
+                'menubar=no,width=500,height=777,location=no,resizable=no,scrollbars=yes,status=no')
+        }
+    </script>
 </body>
 
 </html>

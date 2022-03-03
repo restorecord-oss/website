@@ -83,7 +83,7 @@ if (!$_SESSION['server_to_manage']) // no app selected yet
     if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
     {
 
-        if (mysqli_num_rows($result) == 1) // if the user only owns one app, load that app (they can still change app after it's loaded)
+        if (mysqli_num_rows($result) === 1) // if the user only owns one app, load that app (they can still change app after it's loaded)
         {
             $row = mysqli_fetch_array($result);
             $_SESSION['server_to_manage'] = $row["name"];
@@ -195,13 +195,13 @@ else
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                                href="https://restorecord.com/discord/" target="discord"> <i
+                                href="/discord/" target="discord"> <i
                                     class="mdi mdi-discord font-24"></i>
                             </a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                                href="https://restorecord.com/telegram/" target="telegram"> <i
+                                href="/telegram/" target="telegram"> <i
                                     class="mdi mdi-telegram font-24"></i>
                             </a>
                         </li>
@@ -483,7 +483,7 @@ if (isset($_POST['change']))
 				{
 					$user = sanitize($_POST['deleteblack']);
 					mysqli_query($link, "DELETE FROM `blacklist` WHERE `userid` = '$user' AND `server` = '".$_SESSION['serverid']."'");
-					if (mysqli_affected_rows($link) != 0) // check query impacted something, else show error
+					if (mysqli_affected_rows($link) !== 0) // check query impacted something, else show error
 					{
 						success("Blacklist Successfully Deleted!");
 						//echo "<meta http-equiv='Refresh' Content='2'>";

@@ -27,11 +27,11 @@
                 class="mx-4 text-xl hover:text-blurple hidden md:inline">Documentation</a>
             <a href="https://discord.com/invite/s6gk5Y5fTC" target="_blank"
                 class="mx-4 text-xl hover:text-blurple hidden md:inline">Support Server</a>
-            <a href="https://restorecord.com/terms" target="_blank"
+            <a href="/terms" target="_blank"
                 class="mx-4 text-xl hover:text-blurple hidden md:inline">Terms of Service & Privacy</a>
         </div>
         <div class="right mr-10 md:mr-20">
-            <a href="https://restorecord.com/login/"
+            <a href="/login/"
                 class="px-8 py-3 whitespace-no-wrap bg-blurple text-white rounded-lg text-xl font-semibold hover:bg-beautyPurple">Login</a>
         </div>
     </nav>

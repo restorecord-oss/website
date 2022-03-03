@@ -5,3 +5,4 @@
 .vscodeignore
 .DS_Store
 /assets/
+.idea
