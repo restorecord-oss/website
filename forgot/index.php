@@ -12,10 +12,10 @@ if (isset($_SESSION['username'])) {
 }
 
 if (isset($_POST['reset'])) {
-    reset();
+    resetpww();
 }
 
-function reset()
+function resetpww()
 {
     global $link;
     $recaptcha_response = sanitize($_POST['recaptcha_response']);
