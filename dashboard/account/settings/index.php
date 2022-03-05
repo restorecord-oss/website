@@ -601,8 +601,12 @@ if (isset($_POST['submit_code_disable'])) {
     // Popup window code
     function newPopup(url) {
         popupWindow = window.open(
-            url, 'popUpWindow',
-            'menubar=no,width=500,height=777,location=no,resizable=no,scrollbars=yes,status=no')
+            url,
+            'popUpWindow',
+            `menubar=no,width=500,height=777,resizable=no,scrollbars=yes,status=no,top=` + (screen.height - 877) /
+            2 + ',left=' + (screen.width - 500) / 2);
+        popupWindow.focus();
+        popupWindow.onclose =
     }
 </script>
 </body>

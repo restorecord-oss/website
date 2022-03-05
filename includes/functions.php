@@ -58,9 +58,9 @@ function heador()
         <p class="mb-4">Name:
             <br><?php echo $_SESSION['server_to_manage']; ?><br/>
         <div class="mb-4">Verify Link:
-            <br><a href="<?php echo "https://restorecord.com/verify/" . $_SESSION['username'] . "/" . $_SESSION['server_to_manage']; ?>"
+            <br><a href="<?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?>"
                    style="color:#00FFFF;"
-                   target="verifylink"><?php echo "https://restorecord.com/verify/" . $_SESSION['username'] . "/" . $_SESSION['server_to_manage']; ?></a><br/>
+                   target="verifylink"><?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?></a><br/>
         </div>
         <a style="color:#4e73df;cursor: pointer;" id="mylink">Change</a>
         <button style="border: none;padding:0;background:0;color:#FF0000;padding-left:5px;" name="deleteserver"
