@@ -116,7 +116,11 @@ if (session('access_token') && !isset($_GET['guild'])) {
         $status = "needpremium";
     } else {
 
-        $user = apiRequest("https://discord.com/api/users/@me");
+        try {
+            $user = apiRequest("https://discord.com/api/users/@me");
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
 
         // echo var_dump($user);
 
@@ -241,11 +245,11 @@ if (session('access_token') && !isset($_GET['guild'])) {
     }
 }
 
-if (isset($_GET['guild']) && session('access_token') && !is_null($_GET['guild'])) {
+if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) {
     global $vpncheck;
     $guildid = sanitize($_GET['guild']);
 
-    $svr_check = mysqli_query($link, "SELECT * FROM `servers` WHERE `id` = '$guildid'");
+    $svr_check = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid'");
     $svr_ck = mysqli_fetch_array($svr_check);
 
     $user_check = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '" . $svr_ck['owner'] . "'");
@@ -256,7 +260,11 @@ if (isset($_GET['guild']) && session('access_token') && !is_null($_GET['guild'])
         $status = "needpremium";
     } else {
 
-        $user = apiRequest("https://discord.com/api/users/@me");
+        try {
+            $user = apiRequest("https://discord.com/api/users/@me");
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
 
         // echo var_dump($user);
 
@@ -603,6 +611,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
                 width: 20%;
                 margin: auto;
             }
+
             .card h2 {
                 font-size: 20px;
             }
@@ -714,7 +723,8 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
                     <path
                             d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                 </svg>
-                Opt out</button>
+                Opt out
+            </button>
         </div>
     </form>
 </div>

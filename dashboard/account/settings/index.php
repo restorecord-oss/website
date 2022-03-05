@@ -597,6 +597,7 @@ if (isset($_POST['submit_code_disable'])) {
 <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.restorecord.com/dashboard/dist/js/pages/datatable/datatable-advanced.init.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     // Popup window code
     function newPopup(url) {
@@ -606,7 +607,14 @@ if (isset($_POST['submit_code_disable'])) {
             `menubar=no,width=500,height=777,resizable=no,scrollbars=yes,status=no,top=` + (screen.height - 877) /
             2 + ',left=' + (screen.width - 500) / 2);
         popupWindow.focus();
-        popupWindow.onclose =
+
+        timer = setInterval(function () {
+            if (popupWindow.closed) {
+                clearInterval(timer);
+                window.location.reload();
+            }
+        }, 1000);
+
     }
 </script>
 </body>
