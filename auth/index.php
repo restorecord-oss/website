@@ -27,7 +27,7 @@ if(get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION[
     $server = $_SESSION['owner'] . '/' . $_SESSION['name'];
     header('Location: https://restorecord.com/verify/' . $server);
 }
-else if(get('code') && strlen(get('code')) == 30 && get('state') && isset($_SESSION['owner']) && isset($_SESSION['name'])) {
+else if(get('code') && strlen(get('code')) == 30 && get('state')) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
         "grant_type" => "authorization_code",
         'client_id' => '791106018175614988',
