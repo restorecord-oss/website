@@ -179,16 +179,24 @@ function heador()
 
 function simple_color_thief($img, $default = 'eee')
 {
+    if (empty($img)) {
+        return '#1D1E23';
+    }
+
     if (@exif_imagetype($img)) {
-        $type = getimagesize($img) [2];
+        $type = getimagesize($img)[2];
         if ($type === 1) {
             $image = imagecreatefromgif($img);
-            if (imagecolorsforindex($image, imagecolorstotal($image) - 1) ['alpha'] == 127) return '#1D1E23';
+            if (imagecolorsforindex($image, imagecolorstotal($image) - 1) ['alpha'] == 127) {
+                return '#1D1E23';
+            }
         } else if ($type === 2) {
             $image = imagecreatefromjpeg($img);
         } else if ($type === 3) {
             $image = ImageCreateFromPNG($img);
-            if ((imagecolorat($image, 0, 0) >> 24) & 0x7F === 127) return '#1D1E23';
+            if ((imagecolorat($image, 0, 0) >> 24) & 0x7F === 127) {
+                return '#1D1E23';
+            }
         } else {
             return $default;
         }

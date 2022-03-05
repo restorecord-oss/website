@@ -62,7 +62,7 @@ function update()
         return;
     }
 
-    mysqli_query($link, "UPDATE `servers` SET `guildid` = '$guildid', `roleid` = '$roleid',`pic` = '$serverico',`redirecturl` = NULLIF('$redirect', ''),`webhook` = NULLIF('$wh', ''),`vpncheck` = NULLIF('$vpncheck', '0') WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'");
+    (mysqli_query($link, "UPDATE `servers` SET `guildid` = '$guildid', `roleid` = '$roleid',`pic` = '$serverico',`redirecturl` = NULLIF('$redirect', ''),`webhook` = NULLIF('$wh', ''),`vpncheck` = NULLIF('$vpncheck', '0') WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
     mysqli_query($link, "UPDATE `members` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
     mysqli_query($link, "UPDATE `blacklist` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
 
@@ -87,10 +87,21 @@ function update()
 }
 
 if (isset($_POST['updatesettings'])) {
-    update();
+    try {
+        update();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
 }
 
+
+
 if (isset($_POST['change'])) {
+    changeServer($username);
+}
+
+function changeServer($username) {
+    global $link;
     $selectOption = sanitize($_POST['taskOption']);
     ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
     if (mysqli_num_rows($result) === 0) {
@@ -123,10 +134,18 @@ if (isset($_POST['change'])) {
     <link rel="icon" type="image/png" sizes="300x250" href="https://i.imgur.com/Nfy4OoG.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
-    <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
+    <script src="https://cdn.restorecord.com/dashboard/unixtolocal.js"></script>
+    <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
 
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
     <style>
         /* Chrome, Safari, Edge, Opera */
         input::-webkit-outer-spin-button,
@@ -140,16 +159,6 @@ if (isset($_POST['change'])) {
             -moz-appearance: textfield;
         }
     </style>
-
-    <script src="https://cdn.restorecord.com/dashboard/unixtolocal.js"></script>
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
     <?php
 
     if (!isset($_SESSION['server_to_manage'])) {
@@ -350,12 +359,11 @@ if (isset($_POST['change'])) {
             <br>
             <br>
             <form method="POST" action="">
-                <input type="text" id="appname" name="appname" class="form-control"
-                       placeholder="Server Name..."></input>
+                    <input type="text" id="appname" name="appname" class="form-control"
+                           placeholder="Server Name..."></input>
                 <br>
                 <br>
-                <button type="submit" name
-                "ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
+                <button type="submit" name="ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
             </form>
         </div>
 
@@ -413,7 +421,7 @@ if (isset($_POST['change'])) {
             <!-- File export -->
             <div class="row">
                 <div class="col-12">
-                    <?php heador($role, $link); ?>
+                    <?php heador(); ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
                        class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
@@ -446,7 +454,6 @@ if (isset($_POST['change'])) {
                             }
                         }
                     }
-
                     ?>
 
                     <div class="card">
@@ -455,31 +462,33 @@ if (isset($_POST['change'])) {
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Server ID</label>
                                     <div class="col-10">
-                                        <input class="form-control" maxlength="18" name="serv" type="number"
-                                               value="<?php echo $serv; ?>" placeholder="Guild/Server ID" required>
+                                            <input class="form-control" maxlength="18" name="serv" type="number"
+                                                   value="<?php echo $serv; ?>" placeholder="Guild/Server ID" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Role ID</label>
                                     <div class="col-10">
-                                        <input class="form-control" maxlength="18" name="rol"
-                                               value="<?php echo $rol; ?>" type="number"
-                                               placeholder="Role of verified role" required>
+                                            <input class="form-control" maxlength="18" name="rol"
+                                                   value="<?php echo $rol; ?>" type="number"
+                                                   placeholder="Role of verified role" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Icon</label>
                                     <div class="col-10">
-                                        <input class="form-control" name="ico" value="<?php echo $ico; ?>"
-                                               type="text" placeholder="URL to image for icon">
+
+                                            <input class="form-control" name="ico" value="<?php echo $ico; ?>"
+                                                   type="text" placeholder="URL to image for icon">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Redirect
                                         Link</label>
                                     <div class="col-10">
-                                        <input class="form-control" name="redirect" value="<?php echo $redirect; ?>"
-                                               type="url" placeholder="Link to redirect to after your members verify">
+                                            <input class="form-control" name="redirect" value="<?php echo $redirect; ?>"
+                                                   type="url"
+                                                   placeholder="Link to redirect to after your members verify">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -488,13 +497,14 @@ if (isset($_POST['change'])) {
                                         <?php
                                         if ($role !== "premium") {
                                             ?>
-                                            <input class="form-control" placeholder="Premium only feature" disabled>
+                                                <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" name="wh">
                                             <?php
                                         } else {
                                             ?>
-                                            <input class="form-control" name="wh" value="<?php echo $wh; ?>" type="url"
-                                                   placeholder="Discord webhook link for verification logs">
+                                                <input class="form-control" name="wh" value="<?php echo $wh; ?>"
+                                                       type="url"
+                                                       placeholder="Discord webhook link for verification logs">
                                             <?php
                                         }
                                         ?>
@@ -506,19 +516,19 @@ if (isset($_POST['change'])) {
                                         <?php
                                         if ($role !== "premium") {
                                             ?>
-                                            <input class="form-control" placeholder="Premium only feature" disabled>
+                                                <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" value="0" name="vpncheck">
                                             <?php
                                         } else {
                                             ?>
-                                            <select name="vpncheck" class="form-control">
-                                                <option value="1" <?= $vpncheck === 1 ? ' selected="selected"' : '' ?>>
-                                                    true
-                                                </option>
-                                                <option value="0" <?= $vpncheck === 0 ? ' selected="selected"' : '' ?>>
-                                                    false
-                                                </option>
-                                            </select>
+                                                <select name="vpncheck" class="form-control">
+                                                    <option value="1" <?= $vpncheck === 1 ? ' selected="selected"' : '' ?>>
+                                                        true
+                                                    </option>
+                                                    <option value="0" <?= $vpncheck === 0 ? ' selected="selected"' : '' ?>>
+                                                        false
+                                                    </option>
+                                                </select>
                                             <?php
                                         }
                                         ?>
@@ -566,11 +576,7 @@ if (isset($_POST['change'])) {
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-            Copyright &copy;
-            <script>
-                document.write(new Date().getFullYear())
-            </script>
-            RestoreCord
+            <script>document.getElementsByClassName("footer text-center")[0].innerText = "Copyright © " + new Date().getFullYear() + " RestoreCord";</script>
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->

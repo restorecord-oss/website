@@ -593,6 +593,19 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
             .row a:last-child {
                 margin-top: 5px;
             }
+
+            .card {
+                width: 100%;
+                height: 100%;
+            }
+
+            .card-img {
+                width: 20%;
+                margin: auto;
+            }
+            .card h2 {
+                font-size: 20px;
+            }
         }
 
         /*.no-margin {*/

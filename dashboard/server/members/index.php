@@ -36,6 +36,34 @@ $_SESSION['role'] = $role;
 $darkmode = $row['darkmode'];
 $isadmin = $row['admin'];
 
+if (isset($_POST['change'])) {
+    changeServer($username);
+}
+
+function changeServer($username)
+{
+    global $link;
+    $selectOption = sanitize($_POST['taskOption']);
+    ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
+    if (mysqli_num_rows($result) === 0) {
+        mysqli_close($link);
+        box("You don't own this server!", 3);
+        return;
+    }
+    $row = mysqli_fetch_array($result);
+    $banned = $row["banned"];
+    if (!is_null($banned)) {
+        box("This server is banned! (" . sanitize($banned) . ")", 3);
+        return;
+    }
+
+    $_SESSION['server_to_manage'] = $row['name'];
+    $_SESSION['serverid'] = $row["guildid"];
+
+    box("You\'ve changed Server", 2);
+    echo "<meta http-equiv='Refresh' Content='2;'>";
+}
+
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -275,11 +303,10 @@ $isadmin = $row['admin'];
             <br>
             <form method="POST" action="">
                 <input type="text" id="appname" name="appname" class="form-control"
-                       placeholder="Server Name..."></input>
+                       placeholder="Server Name..."/>
                 <br>
                 <br>
-                <button type="submit" name
-                "ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
+                <button type="submit" name="ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
             </form>
         </div>
 
@@ -328,31 +355,6 @@ $isadmin = $row['admin'];
 
                 }
             </script>
-            <?php
-            if (isset($_POST['change'])) {
-                $selectOption = sanitize($_POST['taskOption']);
-                ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
-                if (mysqli_num_rows($result) === 0) {
-                    mysqli_close($link);
-                    error("You don\'t own server!");
-                    echo "<meta http-equiv='Refresh' Content='2'>";
-                    return;
-                }
-                $row = mysqli_fetch_array($result);
-                $banned = $row["banned"];
-                if (!is_null($banned)) {
-                    error("This server has been banned for: " . sanitize($banned));
-                    echo "<meta http-equiv='Refresh' Content='2;'>";
-                    return;
-                }
-
-                $_SESSION['server_to_manage'] = $row['name'];
-                $_SESSION['serverid'] = $row["guildid"];
-
-                success("You have changed Server!");
-                echo "<meta http-equiv='Refresh' Content='2;'>";
-            }
-            ?>
         </div>
 
         <!-- ============================================================== -->
@@ -363,10 +365,13 @@ $isadmin = $row['admin'];
             <!-- File export -->
             <div class="row">
                 <div class="col-12">
-                    <?php heador($role, $link); ?>
+                    <?php if (isset($_SESSION['server_to_manage'])) {
+                        heador();
+                    } ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https%3A%2F%2Frestorecord.com%2Fapi%2Fdiscord&response_type=code&scope=identify');"
-                       class="btn btn-info"> <i class="fab fa-discord"></i> Recover Members from OLD RestoreCord (NOT PULL)</a> <a
+                       class="btn btn-info"> <i class="fab fa-discord"></i> Recover Members from OLD RestoreCord (NOT
+                        PULL)</a> <a
                             href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
                             class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
                     <br><br>
@@ -396,7 +401,7 @@ $isadmin = $row['admin'];
                                     <tbody>
 
                                     <?php
-                                    if ($_SESSION['server_to_manage']) {
+                                    if (isset($_SESSION['server_to_manage'])) {
                                         ($result = mysqli_query($link, "SELECT * FROM `members` WHERE `server` = '" . $_SESSION['serverid'] . "'")) or die(mysqli_error($link));
 
                                         $rows = array();
@@ -542,11 +547,7 @@ $isadmin = $row['admin'];
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-            Copyright &copy;
-            <script>
-                document.write(new Date().getFullYear())
-            </script>
-            RestoreCord
+            <script>document.getElementsByClassName("footer text-center")[0].innerText = "Copyright © " + new Date().getFullYear() + " RestoreCord";</script>
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->
