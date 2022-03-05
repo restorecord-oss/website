@@ -669,7 +669,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
             break;
     }
 
-    if (!empty($redirecturl)) {
+    if (!empty($redirecturl) && $status !== 'added') {
         echo '<meta http-equiv="refresh" content="1;url=' . $redirecturl . '">';
     }
     ?>
