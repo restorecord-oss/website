@@ -26,6 +26,10 @@ if ($json->event === 'order:paid') {
 			$expires = time() + 31556926;
 			mysqli_query($link, "UPDATE `users` SET `role` = 'premium',`expiry` = '$expires' WHERE `username` = '$un'");
 			die("upgraded to premium");
+        case "RestoreCord Business":
+            $expires = time() + 31556926;
+            mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
+            die("upgraded to business");
 		default:
 			die("invalid product");	
 	}

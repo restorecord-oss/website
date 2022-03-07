@@ -346,9 +346,9 @@ if (!$admin) {
                         $json = json_decode($resp);
 
                         if ($json->message == "Requested resource not found") {
-                            error("Order not found");
+                            box("Order not found", 3);
                         } else {
-                            success("Order from " . $json->email . " for $" . $json->price . " was found");
+                            box("Order from " . $json->email . " for $" . $json->price . " was found", 2);
                         }
                     }
 
@@ -372,11 +372,11 @@ if (!$admin) {
                         if (mysqli_affected_rows($link) != 0) {
                             wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `{$username}` has banned server `{$server}` for reason `{$reason}`", "RestoreCord Admin Logs");
                             mysqli_query($link, "INSERT INTO `banned`(`server`) VALUES ('$server')");
-                            success("Server successfully Banned!");
+                            box("Server successfully Banned!",2);
                             //echo "<meta http-equiv='Refresh' Content='2'>";
                         } else {
                             mysqli_close($link);
-                            error("Failed to ban server!");
+                            box("Failed to ban server!", 3);
                             //echo "<meta http-equiv='Refresh' Content='2'>";
                         }
                     }
@@ -509,7 +509,7 @@ if (!$admin) {
 
                 wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `{$username}` has banned user `{$un}` for reason `{$reason}`", "RestoreCord Admin Logs");
 
-                success("Account Banned!");
+                box("Account Banned!", 2);
             }
 
             if (isset($_POST['unbanacc'])) {
@@ -519,7 +519,7 @@ if (!$admin) {
 
                 wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `{$username}` has unbanned user `{$un}`", "RestoreCord Admin Logs");
 
-                success("Account Unbanned!");
+                box("Account Unbanned!", 2);
             }
 
             if (isset($_POST['editacc'])) {
@@ -598,7 +598,7 @@ if (!$admin) {
                         $expires = NULL;
                         break;
                     default:
-                        error("Invalid role!");
+                        box("Invalid role!", 3);
                         //echo "<meta http-equiv='Refresh' Content='2'>";
                         return;
                 }
@@ -607,7 +607,7 @@ if (!$admin) {
 
                 wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `{$username}` has updated user `{$un}` email to `{$email}`, role to `{$role}`, and 2FA status to `{$totp}`", "RestoreCord Admin Logs");
 
-                success("Updated Account!");
+                box("Updated Account!", 2);
             }
             ?>
         </div>
