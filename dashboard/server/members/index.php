@@ -416,7 +416,7 @@ function changeServer($username)
 
                                             <tr>
 
-                                                <td><?php echo $user; ?></td>
+                                                <td><?php echo $user; ?> <?php if ($row['access_token'] === "broken") echo '<div class="badge badge-danger">Unlinked (broken)</div>'?></td>
 
                                                 <form method="POST">
                                                     <td>
@@ -475,18 +475,18 @@ function changeServer($username)
                 mysqli_query($link, "DELETE FROM `members` WHERE `userid` = '$user' AND `server` = '" . $_SESSION['serverid'] . "'");
                 if (mysqli_affected_rows($link) !== 0) // check query impacted something, else show error
                 {
-                    success("User Successfully Deleted!");
+                    box("User Successfully Deleted!",2);
                     echo "<meta http-equiv='Refresh' Content='2'>";
                 } else {
                     mysqli_close($link);
-                    error("Failed To Delete User!");
+                    box("Failed To Delete User!",3);
                 }
             }
 
             if (isset($_POST['banuser'])) {
                 if ($role !== "premium") {
                     mysqli_close($link);
-                    error("Premium only feature!");
+                    box("Premium only feature!",3);
                     echo "<meta http-equiv='Refresh' Content='2'>";
                     return;
                 }
@@ -496,7 +496,7 @@ function changeServer($username)
                 $result = mysqli_query($link, "SELECT `ip` FROM `members` WHERE `userid` = '$user' AND `server` = '" . $_SESSION['serverid'] . "'");
                 if (mysqli_num_rows($result) === 0) {
                     mysqli_close($link);
-                    error("User not Found!");
+                    box("User not Found!",3);
                     echo "<meta http-equiv='Refresh' Content='2'>";
                     return;
                 }
@@ -506,7 +506,7 @@ function changeServer($username)
 
                 if (is_null($ip)) {
                     mysqli_close($link);
-                    error("No IP could be found.<br>This will only ban the user from the server");
+                    box("No IP could be found.<br>This will only ban the user from the server",1);
                     echo "<meta http-equiv='Refresh' Content='5'>";
                     return;
                 }
@@ -514,11 +514,11 @@ function changeServer($username)
                 mysqli_query($link, "INSERT INTO `blacklist`(`userid`,`ip`, `server`) VALUES ('$user','$ip','" . $_SESSION['serverid'] . "')");
                 if (mysqli_affected_rows($link) !== 0) {
                     mysqli_query($link, "DELETE FROM `members` WHERE `userid` = '$user' AND `server` = '" . $_SESSION['serverid'] . "'");
-                    success("User Successfully Banned!");
+                    box("User Successfully Banned!",2);
                     echo "<meta http-equiv='Refresh' Content='2'>";
                 } else {
                     mysqli_close($link);
-                    error("Failed To Ban User!");
+                    box("Failed To Ban User!",3);
                 }
             }
 
