@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
 <?php
 
 // ini_set('display_errors', 1);
@@ -36,9 +39,36 @@ $_SESSION['role'] = $role;
 $darkmode = $row['darkmode'];
 $isadmin = $row['admin'];
 
+if (isset($_POST['change'])) {
+    changeServer($username);
+}
+
+function changeServer($username)
+{
+    global $link;
+    $selectOption = sanitize($_POST['taskOption']);
+    ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
+    if (mysqli_num_rows($result) === 0) {
+        mysqli_close($link);
+        box("You don't own this server!", 3);
+        return;
+    }
+    $row = mysqli_fetch_array($result);
+    $banned = $row["banned"];
+    if (!is_null($banned)) {
+        box("This server is banned! (" . sanitize($banned) . ")", 3);
+        return;
+    }
+
+    $_SESSION['server_to_manage'] = $row['name'];
+    $_SESSION['serverid'] = $row["guildid"];
+
+    box("You\'ve changed Server", 2);
+    echo "<meta http-equiv='Refresh' Content='2;'>";
+}
+
 ?>
-<!DOCTYPE html>
-<html dir="ltr" lang="en">
+
 
 <head>
     <meta charset="utf-8">
@@ -338,32 +368,56 @@ $isadmin = $row['admin'];
 
                 }
             </script>
-            <?php
-            if (isset($_POST['change'])) {
-                $selectOption = sanitize($_POST['taskOption']);
-                ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
-                if (mysqli_num_rows($result) === 0) {
-                    mysqli_close($link);
-                    error("You don\'t own server!");
-                    //echo "<meta http-equiv='Refresh' Content='2'>";
-                    return;
-                }
-                $row = mysqli_fetch_array($result);
-                $banned = $row["banned"];
-                if (!is_null($banned)) {
-                    error("This server has been banned for: " . sanitize($banned));
-                    //echo "<meta http-equiv='Refresh' Content='2;'>";
-                    return;
-                }
-
-                $_SESSION['server_to_manage'] = $row['name'];
-                $_SESSION['serverid'] = $row["guildid"];
-
-                success("You have changed Server!");
-                //echo "<meta http-equiv='Refresh' Content='2;'>";
-            }
-            ?>
         </div>
+
+        <?php if (isset($_SESSION['server_to_manage'])) { ?>
+        <div class="main-panel" id="renameapp" style="padding-left:30px;display:none;">
+            <!-- Page Heading -->
+            <br>
+            <h1 class="h3 mb-2 text-gray-800">Rename</h1>
+            <br>
+            <br>
+            <div class="col-12">
+                <div class="card-body">
+                    <form class="form" method="POST" action="">
+                        <div class="form-group row">
+                            <label for="example-tel-input" class="col-2 col-form-label">Selected App</label>
+                            <div class="col-10">
+                                <input class="form-control"
+                                       value="<?php echo htmlspecialchars($_SESSION['server_to_manage']); ?>"
+                                       placeholder="Old Server Name" required disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-tel-input" class="col-2 col-form-label">New Name</label>
+                            <div class="col-10">
+                                <input class="form-control" name="name" type="text" placeholder="New Name" required>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <button type="submit" name="renameserver" class="btn btn-primary" style="color:white;">Submit
+                        </button>
+                        <a style="padding-left:5px;color:#4e73df;" id="cancel">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            <?php } ?>
+            <script type="text/javascript">
+                var myLink = document.getElementById('createe');
+
+                myLink.onclick = function () {
+
+
+                    $(document).ready(function () {
+                        $("#changeapp").css("display", "none");
+                        $("#createapp").css("display", "block");
+                    });
+
+                }
+            </script>
+        </div>
+
 
         <!-- ============================================================== -->
         <div class="container-fluid" id="content" style="display:none">
@@ -381,15 +435,11 @@ $isadmin = $row['admin'];
                     <br>
                     <script type="text/javascript">
                         var myLink = document.getElementById('mylink');
-
                         myLink.onclick = function () {
-
-
                             $(document).ready(function () {
                                 $("#content").css("display", "none");
                                 $("#changeapp").css("display", "block");
                             });
-
                         }
                     </script>
                     <div class="card">
@@ -479,11 +529,11 @@ $isadmin = $row['admin'];
                 mysqli_query($link, "DELETE FROM `blacklist` WHERE `userid` = '$user' AND `server` = '" . $_SESSION['serverid'] . "'");
                 if (mysqli_affected_rows($link) !== 0) // check query impacted something, else show error
                 {
-                    success("Blacklist Successfully Deleted!");
+                    box("Blacklist Successfully Deleted!", 2);
                     //echo "<meta http-equiv='Refresh' Content='2'>";
                 } else {
                     mysqli_close($link);
-                    error("Failed To Delete Blacklist!");
+                    box("Failed To Delete Blacklist!", 3);
                 }
             }
 
