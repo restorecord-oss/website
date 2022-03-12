@@ -140,7 +140,7 @@ mysqli_close($link);
 
 <section class="showcase py-20 px-10 flex flex-col items-center justify-center">
     <h1 class="text-gray-900 font-bold text-5xl mb-5 text-center lg:text-8xl dark:text-gray-200">The <span
-                class="text-indigo-600">Superior</span> Discord Backup Bot</h1>
+                class="text-indigo-600">only</span> Backup Bot</h1>
     <p class="text-gray-600 lg:text-xl dark:text-gray-200 text-center">RestoreCord helps you Backup your Discord Server,
         you can
         save your Server
