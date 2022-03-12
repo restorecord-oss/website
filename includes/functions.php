@@ -53,22 +53,6 @@ function sanitize($input): ?string
 
 function heador()
 {
-    ?>
-    <form class="text-left" method="POST">
-        <p class="mb-4">Name:
-            <br><?php echo $_SESSION['server_to_manage']; ?><br/>
-        <div class="mb-4">Verify Link:
-            <br><a href="<?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?>"
-                   style="color:#00FFFF;"
-                   target="verifylink"><?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?></a><br/>
-        </div>
-        <a style="color:#4e73df;cursor: pointer;" id="mylink">Change</a>
-        <button style="border: none;padding:0;background:0;color:#FF0000;padding-left:5px;" name="deleteserver"
-                onclick="return confirm('Are you sure you want to delete server and all associated members?')">Delete
-        </button>
-        </p>
-    </form>
-    <?php
     function deleteServer()
     {
         global $link;
@@ -93,17 +77,25 @@ function heador()
         global $link;
         $name = sanitize($_POST['name']);
 
+        if (strlen($name) > 20) {
+            box("Character limit for server name is 20 characters, please try again with shorter name.", 3);
+            return;
+        }
+
+        if (strlen($name) < 3) {
+            box("Character limit for server name is 3 characters, please try again with longer name.", 3);
+            return;
+        }
+
         $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '" . $_SESSION['username'] . "' AND `name` = '$name'");
-        $num = mysqli_num_rows($result);
-        if ($num > 0) {
+        if (mysqli_num_rows($result) > 0) {
             box("You already have a server with this name!", 3);
             return;
         }
 
         $server = sanitize($_SESSION['server_to_manage']);
 
-        mysqli_query($link, "UPDATE `servers` SET `name` = '$name' WHERE `name` = '$server' AND `owner` = '$server'");
-
+        (mysqli_query($link, "UPDATE `servers` SET `name` = '$name' WHERE `name` = '$server' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
         $_SESSION['server_to_manage'] = $name;
 
         if (mysqli_affected_rows($link) !== 0) {
@@ -174,6 +166,40 @@ function heador()
         createApp();
     }
 
+    ?>
+    <form class="text-left" method="POST">
+        <p class="mb-4">Name:
+            <br><?php echo $_SESSION['server_to_manage']; ?><br/>
+        <div class="mb-4">Verify Link:
+            <br><a href="<?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?>"
+                   style="color:#00FFFF;"
+                   target="verifylink"><?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?></a><br/>
+        </div>
+        <a style="color:#4e73df;cursor: pointer;" id="mylink">Change</a>
+        <button style="border: none;padding:0;background:0;color:#FF0000;padding-left:5px;" name="deleteserver"
+                onclick="return confirm('Are you sure you want to delete server and all associated members?')">Delete
+        </button>
+        <a style="padding-left:5px;color:#ffff00;cursor:pointer;" id="renamesvr">Rename</a>
+        </p>
+    </form>
+    <script>
+        var renameSvr = document.getElementById("renamesvr");
+        renameSvr.onclick = function () {
+            $(document).ready(function () {
+                $("#content").css("display", "none");
+                $("#renameapp").css("display", "block")
+            })
+        }
+
+        var cancel = document.getElementById("cancel");
+        cancel.onclick = function () {
+            $(document).ready(function () {
+                $("#renameapp").css("display", "none");
+                $("#content").css("display", "block");
+            })
+        }
+    </script>
+    <?php
 }
 
 
@@ -206,41 +232,6 @@ function simple_color_thief($img, $default = 'eee')
     $newImg = imagecreatetruecolor(1, 1);
     imagecopyresampled($newImg, $image, 0, 0, 0, 0, 1, 1, imagesx($image), imagesy($image));
     return '#' . dechex(imagecolorat($newImg, 0, 0));
-}
-
-function vpncheck($ip, $webhook, $user)
-{
-    $url = "https://proxycheck.io/v2/{$ip}?key=0j7738-281108-49802e-55d520?vpn=1";
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $result = curl_exec($ch);
-    curl_close($ch);
-    $json = json_decode($result);
-    if ($json->$ip->proxy == "yes") {
-        if (!is_null($webhook)) {
-            /*
-                WEBHOOK START
-            */
-
-            $timestamp = date("c", strtotime("now"));
-            $json_data = json_encode(["embeds" => [["title" => "Failed VPN Check", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("ff0000"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . $_SERVER["HTTP_CF_CONNECTING_IP"] . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-            $ch = curl_init($webhook);
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_exec($ch);
-            curl_close($ch);
-            /*
-                WEBHOOK END
-            */
-        }
-    }
 }
 
 function get_timeago($ptime)
@@ -307,34 +298,6 @@ function getIp()
     return $ip;
 }
 
-function error($msg)
-{
-    echo '<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <script type=\'text/javascript\'>
-        const notyf = new Notyf();
-        notyf.error({
-            message: \'' . $msg . '\',
-            duration: 3500,
-            dismissible: true
-        });
-    </script>';
-}
-
-function success($msg)
-{
-    echo '<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <script type=\'text/javascript\'>
-        const notyf = new Notyf();
-        notyf.success({
-            message: \'' . $msg . '\',
-            duration: 3500,
-            dismissible: true
-        });               
-    </script>';
-}
-
 function premium_check($username)
 {
     global $link; // needed to refrence active MySQL connection
@@ -349,6 +312,13 @@ function premium_check($username)
 
 function test($username, $pw)
 {
+    if (empty($username) || empty($pw)) {
+        session_unset();
+        session_destroy();
+        header("Location: /");
+        exit();
+    }
+    
     global $link;
     $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'");
     if (mysqli_num_rows($result) === 1) {
@@ -356,8 +326,8 @@ function test($username, $pw)
         if (!password_verify($pw, $row['password'])) {
             session_unset();
             session_destroy();
-            echo "<meta http-equiv='Refresh' Content='0; url=/login'>";
-            die();
+            header("Location: /");
+            exit();
         }
     }
 }
