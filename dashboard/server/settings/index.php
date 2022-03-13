@@ -411,6 +411,54 @@ function changeServer($username) {
             </script>
         </div>
 
+        <?php if (isset($_SESSION['server_to_manage'])) { ?>
+        <div class="main-panel" id="renameapp" style="padding-left:30px;display:none;">
+            <!-- Page Heading -->
+            <br>
+            <h1 class="h3 mb-2 text-gray-800">Rename</h1>
+            <br>
+            <br>
+            <div class="col-12">
+                <div class="card-body">
+                    <form class="form" method="POST" action="">
+                        <div class="form-group row">
+                            <label for="example-tel-input" class="col-2 col-form-label">Selected App</label>
+                            <div class="col-10">
+                                <input class="form-control"
+                                       value="<?php echo htmlspecialchars($_SESSION['server_to_manage']); ?>"
+                                       placeholder="Old Server Name" required disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-tel-input" class="col-2 col-form-label">New Name</label>
+                            <div class="col-10">
+                                <input class="form-control" name="name" type="text" placeholder="New Name" required>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <button type="submit" name="renameserver" class="btn btn-primary" style="color:white;">Submit
+                        </button>
+                        <a style="padding-left:5px;color:#4e73df;" id="cancel">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            <?php } ?>
+            <script type="text/javascript">
+                var myLink = document.getElementById('createe');
+
+                myLink.onclick = function () {
+
+
+                    $(document).ready(function () {
+                        $("#changeapp").css("display", "none");
+                        $("#createapp").css("display", "block");
+                    });
+
+                }
+            </script>
+        </div>
+
         <!-- ============================================================== -->
         <div class="container-fluid" id="content" style="display:none">
             <!-- ============================================================== -->
