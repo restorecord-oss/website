@@ -65,6 +65,18 @@ function heador()
         if (mysqli_affected_rows($link) !== 0) {
             $_SESSION['server_to_manage'] = NULL;
             $_SESSION['serverid'] = NULL;
+            $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '" . $_SESSION['username'] . "' AND `banned` IS NULL"); // select all apps where owner is current user
+            if (mysqli_num_rows($result) > 0)
+            {
+                if (mysqli_num_rows($result) === 1)
+                {
+                    $row = mysqli_fetch_array($result);
+                    $_SESSION['server_to_manage'] = $row["name"];
+                    $_SESSION['serverid'] = $row["guildid"];
+                } else {
+                    header("Location: index.php");
+                }
+            }
             box("Successfully deleted Server!", 2);
         } else {
             box("Server Deletion Failed!", 3);
@@ -124,7 +136,8 @@ function heador()
         }
 
 
-        $result = mysqli_query($link, "SELECT * FROM servers WHERE name='$appname' AND owner='" . $_SESSION['username'] . "'");
+        $result = mysqli_query($link, "SELECT * FROM servers WHERE
+                            name='$appname' AND owner='" . $_SESSION['username'] . "'");
         if (mysqli_num_rows($result) > 0) {
             mysqli_close($link);
             box("You already own server with this name!", 3);

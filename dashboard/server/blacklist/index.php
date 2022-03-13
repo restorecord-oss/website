@@ -318,8 +318,7 @@ function changeServer($username)
                        placeholder="Server Name..."></input>
                 <br>
                 <br>
-                <button type="submit" name
-                "ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
+                <button type="submit" name="ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
             </form>
         </div>
 
