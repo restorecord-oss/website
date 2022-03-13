@@ -235,6 +235,7 @@ $isadmin = $row['admin'];
                                 <p>No Anti VPN/Proxy</p>
                                 <p>No Verification Logs</p>
                                 <p>No Auto Kick</p>
+                                <p>No User Role Backup</p>
                                 <p>No Customization</p>
                                 <p>No API Access</p>
                                 <br>
@@ -255,6 +256,7 @@ $isadmin = $row['admin'];
                                 <p>Anti VPN/Proxy</p>
                                 <p>Verification Logs</p>
                                 <p>Auto Kick</p>
+                                <p>No User Role Backup</p>
                                 <p>No Customization</p>
                                 <p>No API Access</p>
                                 <?php
@@ -275,12 +277,13 @@ $isadmin = $row['admin'];
                             <div class="form-group">
                                 <h4 class="card-title">Business <?php if(!empty($role) && $role === 'business'){echo '<span class="badge badge-success">Active</span>';} ?></h4>
                                 <p>Unlimited Member Capacity</p>
-                                <p>5 Servers</p>
+                                <p>Unlimited Servers</p>
                                 <p>Server Backups</p>
                                 <p>IP Bans</p>
                                 <p>Anti VPN/Proxy</p>
                                 <p>Verification Logs</p>
                                 <p>Auto Kick</p>
+                                <p>User Role Backup</p>
                                 <p>Customization</p>
                                 <p>API Access</p>
                                 <?php
