@@ -493,7 +493,7 @@ function changeServer($username) {
                                     <label for="example-tel-input" class="col-2 col-form-label">Webhook Link</label>
                                     <div class="col-10">
                                         <?php
-                                        if ($role !== "premium") {
+                                        if ($role == "free") {
                                             ?>
                                                 <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" name="wh">
@@ -512,7 +512,7 @@ function changeServer($username) {
                                     <label for="example-tel-input" class="col-2 col-form-label">VPN Check</label>
                                     <div class="col-10">
                                         <?php
-                                        if ($role !== "premium") {
+                                        if ($role == "free") {
                                             ?>
                                                 <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" value="0" name="vpncheck">

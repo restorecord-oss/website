@@ -484,7 +484,7 @@ function changeServer($username)
             }
 
             if (isset($_POST['banuser'])) {
-                if ($role !== "premium") {
+                if ($role == "free") {
                     mysqli_close($link);
                     box("Premium only feature!",3);
                     echo "<meta http-equiv='Refresh' Content='2'>";

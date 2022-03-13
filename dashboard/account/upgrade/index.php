@@ -224,17 +224,19 @@ $isadmin = $row['admin'];
             <!-- File export -->
             <div class="row">
                 <div class="col-md-4 col-sm-12">
-                    <div class="card" style="zoom: 1;">
+                    <div class="card">
                         <div class="card-body">
                             <div class="form-group">
                                 <h4 class="card-title">Free</h4>
-                                <p>100 Member Cap</p>
+                                <p>100 Member Capacity</p>
                                 <p>1 Server</p>
                                 <p>No Server Backups</p>
                                 <p>No IP Bans</p>
-                                <p>No VPN Check</p>
-                                <p>Standard Level Support</p>
-                                <p>No Verificiation Logs</p>
+                                <p>No Anti VPN/Proxy</p>
+                                <p>No Verification Logs</p>
+                                <p>No Auto Kick</p>
+                                <p>No Customization</p>
+                                <p>No API Access</p>
                                 <br>
                                 <button class="btn btn-lg btn-block font-medium btn-outline-success block-card disabled" disabled>Purchase</button>
                             </div>
@@ -246,16 +248,44 @@ $isadmin = $row['admin'];
                         <div class="card-body">
                             <div class="form-group">
                                 <h4 class="card-title">Premium <?php if(!empty($role) && $role === 'premium'){echo '<span class="badge badge-success">Active</span>';} ?></h4>
-                                <p>Unlimited Members</p>
-                                <p>Unlimited Servers</p>
+                                <p>Unlimited Member Capacity</p>
+                                <p>5 Servers</p>
                                 <p>Server Backups</p>
-                                <p>IP Ban</p>
-                                <p>VPN Check</p>
-                                <p>Premium Level Support</p>
-                                <p>Verificiation Logs</p>
+                                <p>IP Bans</p>
+                                <p>Anti VPN/Proxy</p>
+                                <p>Verification Logs</p>
+                                <p>Auto Kick</p>
+                                <p>No Customization</p>
+                                <p>No API Access</p>
+                                <?php
+                                if (!empty($_SESSION['role']) && $_SESSION['role'] != 'business') {
+                                    echo '<br><a data-shoppy-product="8hCOmd6" data-shoppy-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-warning block-sidenav">Purchase</a>';
+                                }
+                                else {
+                                    echo '<br><button class="btn btn-lg btn-block font-medium btn-outline-warning block-card disabled" disabled>Purchase</button>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <h4 class="card-title">Business <?php if(!empty($role) && $role === 'business'){echo '<span class="badge badge-success">Active</span>';} ?></h4>
+                                <p>Unlimited Member Capacity</p>
+                                <p>5 Servers</p>
+                                <p>Server Backups</p>
+                                <p>IP Bans</p>
+                                <p>Anti VPN/Proxy</p>
+                                <p>Verification Logs</p>
+                                <p>Auto Kick</p>
+                                <p>Customization</p>
+                                <p>API Access</p>
                                 <?php
                                 if (!empty($_SESSION['role'])) {
-                                    echo '<br><a data-shoppy-product="8hCOmd6" data-shoppy-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-warning block-sidenav">Purchase</a>';
+                                    echo '<br><a data-shoppy-product="jxFYHtn" data-shoppy-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-info block-sidenav">Purchase</a>';
                                 }
                                 ?>
                             </div>

@@ -142,6 +142,14 @@ function heador()
                 return;
             }
 
+        } else if ($role === "premium") {
+            $result = mysqli_query($link, "SELECT * FROM servers WHERE owner='$owner'");
+
+            if (mysqli_num_rows($result) > 4) {
+                mysqli_close($link);
+                box("Premium only supports 5 Servers!", 3);
+                return;
+            }
         }
 
         mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`) VALUES ('$owner','$appname','https://i.imgur.com/w65Dpnw.png')");
@@ -288,6 +296,7 @@ function sidebar($admin)
 
 function getIp()
 {
+    $ip = 'none';
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -301,7 +310,7 @@ function getIp()
 function premium_check($username)
 {
     global $link; // needed to refrence active MySQL connection
-    $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username' AND `role` = 'premium'");
+    $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username' AND `role` = ('premium' OR 'business')");
     if (mysqli_num_rows($result) === 1) {
         $expiry = mysqli_fetch_array($result)["expiry"];
         if ($expiry < time()) {
