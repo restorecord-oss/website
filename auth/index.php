@@ -21,7 +21,7 @@ if (get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION
         'code' => get('code')
     ));
 
-    if (!empty($token->access_token) && !empty($token->refresh_token)) {
+    if (!isset($token->access_token) && !isset($token->refresh_token)) {
         $_SESSION['access_token'] = $token->access_token;
         $_SESSION['refresh_token'] = $token->refresh_token;
     }
@@ -37,7 +37,7 @@ if (get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION
         'code' => get('code')
     ));
 
-    if (!empty($token->access_token) && !empty($token->refresh_token)) {
+    if (!isset($token->access_token) && !isset($token->refresh_token)) {
         $_SESSION['access_token'] = $token->access_token;
         $_SESSION['refresh_token'] = $token->refresh_token;
     }
