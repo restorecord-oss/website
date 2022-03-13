@@ -17,16 +17,24 @@ if (!isset($_SESSION['username'])) {
 $username = $_SESSION['username'];
 
 premium_check($username);
-test($_SESSION['username'], $_SESSION['pverif']);
+if (!is_null($_SESSION['username']) && !is_null($_SESSION['pverif'])) {
+    test($_SESSION['username'], $_SESSION['pverif']);
+} else {
+    session_destroy();
+    session_unset();
+    echo "<meta http-equiv='Refresh' Content='0; url=/login'>";
+    exit();
+}
+
 
 ($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
 $row = mysqli_fetch_array($result);
 
 $banned = $row['banned'];
 if (!is_null($banned)) {
-    echo "<meta http-equiv='Refresh' Content='0; url=/login'>";
     session_destroy();
     session_unset();
+    echo "<meta http-equiv='Refresh' Content='0; url=/login'>";
     exit();
 }
 

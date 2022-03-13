@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // When Discord redirects the user back here, there will be a "code" and "state" parameter in the query string
-if(get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION['owner']) && isset($_SESSION['name'])) {
+if (get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION['owner']) && isset($_SESSION['name'])) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
         "grant_type" => "authorization_code",
         'client_id' => '791106018175614988',
@@ -20,14 +20,15 @@ if(get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION[
         'redirect_uri' => 'https://restorecord.com/auth/',
         'code' => get('code')
     ));
-    $logout_token = $token->access_token;
-    $_SESSION['access_token'] = $token->access_token;
-    $_SESSION['refresh_token'] = $token->refresh_token;
-					
+
+    if (!empty($token->access_token) && !empty($token->refresh_token)) {
+        $_SESSION['access_token'] = $token->access_token;
+        $_SESSION['refresh_token'] = $token->refresh_token;
+    }
+
     $server = $_SESSION['owner'] . '/' . $_SESSION['name'];
     header('Location: https://restorecord.com/verify/' . $server);
-}
-else if(get('code') && strlen(get('code')) == 30 && get('state')) {
+} else if (get('code') && strlen(get('code')) == 30 && get('state')) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
         "grant_type" => "authorization_code",
         'client_id' => '791106018175614988',
@@ -35,9 +36,11 @@ else if(get('code') && strlen(get('code')) == 30 && get('state')) {
         'redirect_uri' => 'https://restorecord.com/auth/',
         'code' => get('code')
     ));
-    $logout_token = $token->access_token;
-    $_SESSION['access_token'] = $token->access_token;
-    $_SESSION['refresh_token'] = $token->refresh_token;
+
+    if (!empty($token->access_token) && !empty($token->refresh_token)) {
+        $_SESSION['access_token'] = $token->access_token;
+        $_SESSION['refresh_token'] = $token->refresh_token;
+    }
 
     header('Location: https://restorecord.com/verify/?guild=' . get('state'));
 }

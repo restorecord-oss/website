@@ -136,8 +136,7 @@ function heador()
         }
 
 
-        $result = mysqli_query($link, "SELECT * FROM servers WHERE
-                            name='$appname' AND owner='" . $_SESSION['username'] . "'");
+        $result = mysqli_query($link, "SELECT * FROM servers WHERE name='$appname' AND owner='" . $_SESSION['username'] . "'");
         if (mysqli_num_rows($result) > 0) {
             mysqli_close($link);
             box("You already own server with this name!", 3);
