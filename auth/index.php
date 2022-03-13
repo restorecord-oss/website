@@ -21,10 +21,8 @@ if (get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION
         'code' => get('code')
     ));
 
-    if (!isset($token->access_token) && !isset($token->refresh_token)) {
-        $_SESSION['access_token'] = $token->access_token;
-        $_SESSION['refresh_token'] = $token->refresh_token;
-    }
+    $_SESSION['access_token'] = $token->access_token;
+    $_SESSION['refresh_token'] = $token->refresh_token;
 
     $server = $_SESSION['owner'] . '/' . $_SESSION['name'];
     header('Location: https://restorecord.com/verify/' . $server);
@@ -37,10 +35,8 @@ if (get('code') && strlen(get('code')) == 30 && !get('state') && isset($_SESSION
         'code' => get('code')
     ));
 
-    if (!isset($token->access_token) && !isset($token->refresh_token)) {
-        $_SESSION['access_token'] = $token->access_token;
-        $_SESSION['refresh_token'] = $token->refresh_token;
-    }
+    $_SESSION['access_token'] = $token->access_token;
+    $_SESSION['refresh_token'] = $token->refresh_token;
 
     header('Location: https://restorecord.com/verify/?guild=' . get('state'));
 }
