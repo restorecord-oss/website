@@ -74,7 +74,7 @@ function heador()
                     $_SESSION['server_to_manage'] = $row["name"];
                     $_SESSION['serverid'] = $row["guildid"];
                 } else {
-                    header("Location: index.php");
+                    echo '<script type="text/javascript">window.location.reload()</script>';
                 }
             }
             box("Successfully deleted Server!", 2);
