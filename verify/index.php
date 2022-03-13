@@ -343,7 +343,8 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                 // echo var_dump($result);
                 // echo 'HTTP code: ' . $httpcode;
 
-                mysqli_query($link, "INSERT INTO `members` (`userid`, `access_token`, `refresh_token`, `server`, `ip`) VALUES ('" . $user->id . "', '" . $_SESSION['access_token'] . "', '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
+                //mysqli_query($link, "INSERT INTO `members` (`userid`, `access_token`, `refresh_token`, `server`, `ip`) VALUES ('" . $user->id . "', '" . $_SESSION['access_token'] . "', '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
+                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip` ) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "' ) ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
                 mysqli_query($link, "UPDATE `members` SET `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "' WHERE `userid` = '" . $user->id . "';");
                 // mysqli_query($link, "REPLACE INTO `members` (`userid`, `access_token`, `refresh_token`, `server`,`ip`) VALUES ('" . $user->id . "', '" . $_SESSION['access_token'] . "', '" . $_SESSION['refresh_token'] . "', '$guildid', '$ip')");
                 $_SESSION['access_token'] = NULL;
