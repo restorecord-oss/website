@@ -17,14 +17,7 @@ if (!isset($_SESSION['username'])) {
 $username = $_SESSION['username'];
 
 premium_check($username);
-if (!is_null($_SESSION['username']) && !is_null($_SESSION['pverif'])) {
-    test($_SESSION['username'], $_SESSION['pverif']);
-} else {
-    session_destroy();
-    session_unset();
-    echo "<meta http-equiv='Refresh' Content='0; url=/login'>";
-    exit();
-}
+test($_SESSION['username'], $_SESSION['pverif']);
 
 
 ($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
