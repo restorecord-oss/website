@@ -164,7 +164,7 @@ function heador()
             }
         }
 
-        mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`) VALUES ('$owner','$appname','https://i.imgur.com/w65Dpnw.png')");
+        mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`, `autoKickUnVerified`, `auto_join`) VALUES ('$owner','$appname','https://i.imgur.com/w65Dpnw.png', '0', '1')");
         if (mysqli_affected_rows($link) !== 0) {
             $_SESSION['server_to_manage'] = $appname;
             $_SESSION['serverid'] = NULL;
