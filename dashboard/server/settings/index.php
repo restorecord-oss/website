@@ -69,6 +69,12 @@ function update()
         $autokick_time = 0;
     }
 
+    if ($auto_join == "0") {
+        $auto_join = "0";
+    } else {
+        $auto_join = "1";
+    }
+
     $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid' AND `name` != '$servname'"); // select all apps where owner is current user
     if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
     {
@@ -86,7 +92,7 @@ function update()
                      `autoKickUnVerified` = NULLIF('$autokick', 0),
                      `autoKickUnVerifiedTime` = '$autokick_time',
                      `bg_image` = NULLIF('$bg_img', NULL),
-                     `auto_join` = NULLIF('$auto_join', 0),
+                     `auto_join` = '$auto_join',
                      `redirect_time` = '$redirect_time',
                      `verify_description` = NULLIF('$verify_description', NULL)
                       WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
