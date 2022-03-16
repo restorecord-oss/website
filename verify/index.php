@@ -559,6 +559,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         button.button[value="no"] {
+            transition: .5s;
             margin-left: .5rem;
             background: #CE6161;
             box-shadow: #CE6161 0 0 5px;
@@ -566,6 +567,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         a.button[value="yes"] {
+            transition: .5s;
             margin-right: .5rem;
             background: #61CE70;
             box-shadow: #61CE70 0 0 5px;
@@ -597,6 +599,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         .card {
+            transition: .5s;
             background-color: #17171A;
             margin: auto;
             color: white;
@@ -630,6 +633,15 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         @media (max-width: 960px) {
+            button.button[value="no"] {
+                transition: .5s;
+                margin-left: auto;
+            }
+            a.button[value="yes"] {
+                transition: .5s;
+                margin-right: auto;
+            }
+
             .bg-img {
                 display: none;
             }
