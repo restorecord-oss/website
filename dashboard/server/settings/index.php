@@ -664,7 +664,6 @@ function changeServer($username)
                                     <?php
                                     }
                                     ?>
-                                    </div>
 
                                 </div>
                                 <div class="form-group row">
