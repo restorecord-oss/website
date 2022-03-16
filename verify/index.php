@@ -211,17 +211,17 @@ if (session('access_token') && !isset($_GET['guild'])) {
                     // echo var_dump($result);
                     // echo 'HTTP code: ' . $httpcode;
 
-                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $result = curl_exec($ch);
-                    // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                    curl_close($ch);
                 }
+                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $result = curl_exec($ch);
+                // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                curl_close($ch);
 
                 // echo var_dump($result);
                 // echo 'HTTP code: ' . $httpcode;
@@ -362,19 +362,18 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
 
                     // echo var_dump($result);
                     // echo 'HTTP code: ' . $httpcode;
-
-                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $result = curl_exec($ch);
-                    // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                    curl_close($ch);
                 }
 
+                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $result = curl_exec($ch);
+                // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                curl_close($ch);
                 // echo var_dump($result);
                 // echo 'HTTP code: ' . $httpcode;
 
