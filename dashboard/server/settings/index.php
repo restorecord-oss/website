@@ -63,6 +63,12 @@ function update()
     $redirect_time = sanitize($_POST['redirect_time']);
     $verify_description = sanitize($_POST['verify_description']);
 
+
+    if (is_null($redirect_time) || is_null($autokick_time)) {
+        $redirect_time = 0;
+        $autokick_time = 0;
+    }
+
     $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid' AND `name` != '$servname'"); // select all apps where owner is current user
     if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
     {
