@@ -54,7 +54,14 @@ function update()
 
     $redirect = sanitize($_POST['redirect']);
     $wh = sanitize($_POST['wh']);
+
     $vpncheck = sanitize($_POST['vpncheck']);
+    $autokick = sanitize($_POST['autokick']);
+    $autokick_time = sanitize($_POST['autokick_time']);
+    $bg_img = sanitize($_POST['bg_img']);
+    $auto_join = sanitize($_POST['auto_join']);
+    $redirect_time = sanitize($_POST['redirect_time']);
+    $verify_description = sanitize($_POST['verify_description']);
 
     $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid' AND `name` != '$servname'"); // select all apps where owner is current user
     if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
@@ -63,7 +70,20 @@ function update()
         return;
     }
 
-    (mysqli_query($link, "UPDATE `servers` SET `guildid` = $guildid, `roleid` = $roleid, `pic` = '$serverico', `redirecturl` = NULLIF('$redirect', NULL), `webhook` = NULLIF('$wh', NULL), `vpncheck` = NULLIF($vpncheck, 0) WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
+    (mysqli_query($link, "UPDATE `servers` SET 
+                     `guildid` = $guildid, 
+                     `roleid` = $roleid, 
+                     `pic` = '$serverico', 
+                     `redirecturl` = NULLIF('$redirect', NULL), 
+                     `webhook` = NULLIF('$wh', NULL), 
+                     `vpncheck` = NULLIF($vpncheck, 0),
+                     `autoKickUnVerified` = NULLIF($autokick, 0),
+                     `autoKickUnVerifiedTime` = $autokick_time,
+                     `bg_image` = NULLIF('$bg_img', NULL),
+                     `auto_join` = NULLIF($auto_join, 0),
+                     `redirect_time` = $redirect_time,
+                     `verify_description` = NULLIF('$verify_description', NULL)
+                      WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
     mysqli_query($link, "UPDATE `members` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
     mysqli_query($link, "UPDATE `blacklist` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
 
@@ -99,7 +119,8 @@ if (isset($_POST['change'])) {
     changeServer($username);
 }
 
-function changeServer($username) {
+function changeServer($username)
+{
     global $link;
     $selectOption = sanitize($_POST['taskOption']);
     ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
@@ -120,6 +141,7 @@ function changeServer($username) {
 
     box("You have changed Server!", 2);
 }
+
 ?>
 
 
@@ -358,8 +380,8 @@ function changeServer($username) {
             <br>
             <br>
             <form method="POST" action="">
-                    <input type="text" id="appname" name="appname" class="form-control"
-                           placeholder="Server Name...">
+                <input type="text" id="appname" name="appname" class="form-control"
+                       placeholder="Server Name...">
                 <br>
                 <br>
                 <button type="submit" name="ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
@@ -497,6 +519,12 @@ function changeServer($username) {
                                 $ico = $row['pic'];
                                 $redirect = $row['redirecturl'];
                                 $vpncheck = $row['vpncheck'];
+                                $auto_kick = $row['autoKickUnVerified'];
+                                $auto_kick_timer = $row['autoKickUnVerifiedTime'];
+                                $bg_img = $row['bg_image'];
+                                $auto_join = $row['auto_join'];
+                                $redirect_time = $row['redirect_time'];
+                                $verify_description = $row['verify_description'];
                                 $wh = $row['webhook'];
                             }
                         }
@@ -509,34 +537,44 @@ function changeServer($username) {
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Server ID</label>
                                     <div class="col-10">
-                                            <input class="form-control" maxlength="18" name="serv" type="number"
-                                                   value="<?php echo $serv; ?>" placeholder="Guild/Server ID" required>
+                                        <input class="form-control" maxlength="18" name="serv" type="number"
+                                               value="<?php echo $serv; ?>" placeholder="Guild/Server ID" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Role ID</label>
                                     <div class="col-10">
-                                            <input class="form-control" maxlength="18" name="rol"
-                                                   value="<?php echo $rol; ?>" type="number"
-                                                   placeholder="Role of verified role" required>
+                                        <input class="form-control" maxlength="18" name="rol"
+                                               value="<?php echo $rol; ?>" type="number"
+                                               placeholder="Role of verified role" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Icon</label>
                                     <div class="col-10">
 
-                                            <input class="form-control" name="ico" value="<?php echo $ico; ?>"
-                                                   type="text" placeholder="URL to image for icon">
+                                        <input class="form-control" name="ico" value="<?php echo $ico; ?>"
+                                               type="text" placeholder="URL to image for icon">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Redirect
                                         Link</label>
                                     <div class="col-10">
-                                            <input class="form-control" name="redirect" value="<?php echo $redirect; ?>"
-                                                   type="url"
-                                                   placeholder="Link to redirect to after your members verify">
+                                        <input class="form-control" name="redirect" value="<?php echo $redirect; ?>"
+                                               type="url"
+                                               placeholder="Link to redirect to after your members verify">
                                     </div>
+                                    <?php
+                                    if ($role != "free") {
+                                        ?>
+                                        <label for="example-tel-input" class="col-2 col-form-label">Redirect Time (sec)</label>
+                                        <div class="col-10">
+                                        <input class="form-control" name="redirect_time" placeholder="Redirect after ... seconds after verifying" type="number" value="<?= $redirect_time ?>">
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Webhook Link</label>
@@ -544,17 +582,30 @@ function changeServer($username) {
                                         <?php
                                         if ($role == "free") {
                                             ?>
-                                                <input class="form-control" placeholder="Premium only feature" disabled>
+                                            <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" name="wh">
                                             <?php
                                         } else {
                                             ?>
-                                                <input class="form-control" name="wh" value="<?php echo $wh; ?>"
-                                                       type="url"
-                                                       placeholder="Discord webhook link for verification logs">
+                                            <input class="form-control" name="wh" value="<?php echo $wh; ?>"
+                                                   type="url"
+                                                   placeholder="Discord webhook link for verification logs">
                                             <?php
                                         }
                                         ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-tel-input" class="col-2 col-form-label">Auto Join Server (on verify)</label>
+                                    <div class="col-10">
+                                        <select name="auto_join" class="form-control">
+                                            <option value="1" <?= $auto_join == 1 ? ' selected="selected"' : '' ?>>
+                                                Enabled
+                                            </option>
+                                            <option value="0" <?= $auto_join == 0 ? ' selected="selected"' : '' ?>>
+                                                Disabled
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -563,19 +614,91 @@ function changeServer($username) {
                                         <?php
                                         if ($role == "free") {
                                             ?>
-                                                <input class="form-control" placeholder="Premium only feature" disabled>
+                                            <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" value="0" name="vpncheck">
                                             <?php
                                         } else {
                                             ?>
-                                                <select name="vpncheck" class="form-control">
-                                                    <option value="1" <?= $vpncheck == 1 ? ' selected="selected"' : '' ?>>
-                                                        true
-                                                    </option>
-                                                    <option value="0" <?= $vpncheck == 0 ? ' selected="selected"' : '' ?>>
-                                                        false
-                                                    </option>
-                                                </select>
+                                            <select name="vpncheck" class="form-control">
+                                                <option value="1" <?= $vpncheck == 1 ? ' selected="selected"' : '' ?>>
+                                                    Enabled
+                                                </option>
+                                                <option value="0" <?= $vpncheck == 0 ? ' selected="selected"' : '' ?>>
+                                                    Disabled
+                                                </option>
+                                            </select>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-tel-input" class="col-2 col-form-label">Auto kick</label>
+                                    <div class="col-10">
+                                        <?php
+                                        if ($role == "free") {
+                                            ?>
+                                            <input class="form-control" placeholder="Premium only feature" disabled>
+                                            <input type="hidden" value="0" name="autokick">
+                                            <input type="hidden" name="autokick_time">
+                                            <?php
+                                        } else {
+                                        ?>
+                                        <select name="autokick" class="form-control">
+                                            <option value="1" <?= $auto_kick == 1 ? ' selected="selected"' : '' ?>>
+                                                Enabled
+                                            </option>
+                                            <option value="0" <?= $auto_kick == 0 ? ' selected="selected"' : '' ?>>
+                                                Disabled
+                                            </option>
+                                        </select>
+
+                                    <label for="example-tel-input" class="col-2 col-form-label">Auto kick Timer
+                                        (minutes)</label>
+                                    <div class="col-10">
+                                        <input name="autokick_time" class="form-control"
+                                               placeholder="Kick after how many minutes" type="number"
+                                               value="<?= $auto_kick_timer ?>">
+                                    </div>
+                                    <?php
+                                    }
+                                    ?>
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-tel-input" class="col-2 col-form-label">Background Image</label>
+                                    <div class="col-10">
+                                        <?php
+                                        if ($role == "free" || $role == "premium") {
+                                            ?>
+                                            <input class="form-control" placeholder="Business only feature" disabled>
+                                            <input type="hidden" name="bg_img">
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <input class="form-control" name="bg_img" value="<?php echo $bg_img; ?>"
+                                                   type="url"
+                                                   placeholder="Verification page Background Image (url)">
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-tel-input" class="col-2 col-form-label">Verify page Description</label>
+                                    <div class="col-10">
+                                        <?php
+                                        if ($role == "free" || $role == "premium") {
+                                            ?>
+                                            <input class="form-control" placeholder="Business only feature" disabled>
+                                            <input type="hidden" name="verify_description">
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <input class="form-control" name="verify_description" value="<?php if(!is_null($verify_description)) { echo $verify_description; } ?>"
+                                                   type="text"
+                                                   placeholder="Verification page Description (long text below)">
                                             <?php
                                         }
                                         ?>

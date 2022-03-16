@@ -51,6 +51,12 @@ if (!isset($_GET['guild'])) {
             $redirecturl = $row['redirecturl'];
             $webhook = $row['webhook'];
             $vpncheck = $row['vpncheck'];
+            $redirect_time = $row['redirect_time'];
+            $auto_kick = $row['autoKickUnVerified'];
+            $auto_kick_time = $row['autoKickUnVerifiedTime'];
+            $auto_join = $row['auto_join'];
+            $bg_img = $row['bg_image'];
+            $verify_description = $row['verify_description'];
             $banned = $row['banned'];
         }
 
@@ -85,6 +91,12 @@ if (!isset($_GET['guild'])) {
             $redirecturl = $row['redirecturl'];
             $webhook = $row['webhook'];
             $vpncheck = $row['vpncheck'];
+            $redirect_time = $row['redirect_time'];
+            $auto_kick = $row['autoKickUnVerified'];
+            $auto_kick_time = $row['autoKickUnVerifiedTime'];
+            $auto_join = $row['auto_join'];
+            $bg_img = $row['bg_image'];
+            $verify_description = $row['verify_description'];
             $banned = $row['banned'];
         }
 
@@ -107,6 +119,12 @@ if (session('access_token') && !isset($_GET['guild'])) {
     global $svr;
     global $link;
     global $vpncheck;
+    global $redirect_time;
+    global $auto_kick;
+    global $auto_kick_time;
+    global $bg_img;
+    global $verify_description;
+    global $auto_join;
 
     $user_check = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$owner'");
     $role = mysqli_fetch_array($user_check)["role"];
@@ -151,9 +169,12 @@ if (session('access_token') && !isset($_GET['guild'])) {
                         /*
                             WEBHOOK START
                         */
+                        $ip = getIp();
+                        $ipExplode = explode(".", $ip);
+                        $ipClean = $ipExplode[0] . "." . $ipExplode[1] . "." . $ipExplode[2] . ".\*\*\*";
 
                         $timestamp = date("c");
-                        $json_data = json_encode(["embeds" => [["title" => "Failed VPN Check", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("ff0000"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . $_SERVER["HTTP_CF_CONNECTING_IP"] . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        $json_data = json_encode(["embeds" => [["title" => "Failed VPN Check", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("ff0000"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . $ipClean . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
                         $ch = curl_init($webhook);
 
@@ -176,29 +197,31 @@ if (session('access_token') && !isset($_GET['guild'])) {
             if ($status !== "vpndetect") {
                 $_SESSION['userid'] = $user->id;
 
-                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = curl_exec($ch);
-                // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
+                if ($auto_join) {
+                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
+                    // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
 
-                // echo var_dump($result);
-                // echo 'HTTP code: ' . $httpcode;
+                    // echo var_dump($result);
+                    // echo 'HTTP code: ' . $httpcode;
 
-                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = curl_exec($ch);
-                // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
+                    // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-                curl_close($ch);
+                    curl_close($ch);
+                }
 
                 // echo var_dump($result);
                 // echo 'HTTP code: ' . $httpcode;
@@ -246,7 +269,13 @@ if (session('access_token') && !isset($_GET['guild'])) {
 }
 
 if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) {
-    global $vpncheck;
+    global $redirect_time;
+    global $auto_kick;
+    global $auto_kick_time;
+    global $bg_img;
+    global $verify_description;
+    global $auto_join;
+
     $guildid = sanitize($_GET['guild']);
 
     $svr_check = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid'");
@@ -292,8 +321,12 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                             WEBHOOK START
                         */
 
+                        $ip = getIp();
+                        $ipExplode = explode(".", $ip);
+                        $ipClean = $ipExplode[0] . "." . $ipExplode[1] . "." . $ipExplode[2] . ".\*\*\*";
+
                         $timestamp = date("c");
-                        $json_data = json_encode(["embeds" => [["title" => "Failed VPN Check", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("ff0000"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . $_SERVER["HTTP_CF_CONNECTING_IP"] . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        $json_data = json_encode(["embeds" => [["title" => "Failed VPN Check", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("ff0000"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . $ipClean . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
                         $ch = curl_init($webhook);
 
@@ -315,30 +348,32 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
 
             if ($status !== "vpndetect") {
                 $_SESSION['userid'] = $user->id;
+                if ($auto_join) {
 
-                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = curl_exec($ch);
-                // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
+                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
+                    // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
 
-                // echo var_dump($result);
-                // echo 'HTTP code: ' . $httpcode;
+                    // echo var_dump($result);
+                    // echo 'HTTP code: ' . $httpcode;
 
-                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = curl_exec($ch);
-                // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
+                    // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-                curl_close($ch);
+                    curl_close($ch);
+                }
 
                 // echo var_dump($result);
                 // echo 'HTTP code: ' . $httpcode;
@@ -453,10 +488,14 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="RestoreCord">
     <meta property="og:title" content="Verify in <?php echo $svr ?>">
-    <meta property="og:description"
-          content="Verify in <?php echo $svr ?>, So you're added back if this one gets deleted.">
+    <?php
+    if (!empty($verify_description)) {
+        echo '<meta property="og:description" content="' . $verify_description . '">';
+    } else {
+        echo '<meta property="og:description" content="Verify in ' . $svr . ', So you\'re added back if this one gets deleted.">';
+    }
+    ?>
     <meta property="og:image" content="<?php echo $server_image ?>">
-    <meta name="twitter:card" content="summary_large_image">
     <style>
         body {
             overflow: hidden;
@@ -493,13 +532,17 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         .bg-img {
-            background: url(https://i.imgur.com/rYPnovh.png) repeat;
-            filter: blur(1rem);
+        <?php
+        if (!empty($bg_img) && strpos($bg_img, 'http') !== false) {
+            echo "background: url('" . htmlspecialchars($bg_img) . "') repeat;";
+        } else {
+            echo "background: url(https://i.imgur.com/rYPnovh.png) repeat;";
+        }?> filter: blur(1rem);
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -150%;
+            left: -100%;
+            width: 400%;
+            height: 400%;
             transform: rotate(-45deg);
             z-index: -1;
             animation: topLeftBottomRight 15s linear infinite;
@@ -516,12 +559,14 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         button.button[value="no"] {
+            margin-left: .5rem;
             background: #CE6161;
             box-shadow: #CE6161 0 0 5px;
             border: none;
         }
 
         a.button[value="yes"] {
+            margin-right: .5rem;
             background: #61CE70;
             box-shadow: #61CE70 0 0 5px;
         }
@@ -542,7 +587,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
             border-radius: 50%;
             padding: 5px;
             transition: .5s;
-            background: <?php echo $dominant_color; ?>;
+            background: <?= $dominant_color ?>;
             margin: 30px auto;
         }
 
@@ -693,12 +738,18 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
     }
 
     if (!empty($redirecturl) && $status === 'added') {
-        echo '<meta http-equiv="refresh" content="1;url=' . $redirecturl . '">';
+        echo '<meta http-equiv="refresh" content="' . htmlspecialchars($redirect_time) . ';url=' . htmlspecialchars($redirecturl) . '">';
     }
     ?>
-    <img class="card-img" src="<?php echo $server_image; ?>" alt="server">
+    <img class="card-img" src="<?= htmlspecialchars($server_image) ?>" alt="server">
     <h2><?php echo $svr; ?></h2>
-    <p>Click Verify to be joined to server if it is ever raided or deleted. Click opt out to stop joining the server</p>
+    <p><?php
+        if (!empty($verify_description)) {
+            echo htmlspecialchars($verify_description);
+        } else {
+            echo 'Click Verify to be joined to server if it is ever raided or deleted. Click opt out to stop joining the server';
+        }
+        ?></p>
     <hr>
     <!--<div class="info">
         <div class="no-margin row" style="justify-content: center;">
