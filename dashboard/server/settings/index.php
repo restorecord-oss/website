@@ -652,6 +652,7 @@ function changeServer($username)
                                                 Disabled
                                             </option>
                                         </select>
+                                    </div>
 
                                     <label for="example-tel-input" class="col-2 col-form-label">Auto kick Timer
                                         (minutes)</label>
