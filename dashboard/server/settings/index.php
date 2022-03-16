@@ -70,20 +70,7 @@ function update()
         return;
     }
 
-    (mysqli_query($link, "UPDATE `servers` SET 
-                     `guildid` = $guildid, 
-                     `roleid` = $roleid, 
-                     `pic` = '$serverico', 
-                     `redirecturl` = NULLIF('$redirect', NULL), 
-                     `webhook` = NULLIF('$wh', NULL), 
-                     `vpncheck` = NULLIF($vpncheck, 0),
-                     `autoKickUnVerified` = NULLIF($autokick, 0),
-                     `autoKickUnVerifiedTime` = $autokick_time,
-                     `bg_image` = NULLIF('$bg_img', NULL),
-                     `auto_join` = NULLIF($auto_join, 0),
-                     `redirect_time` = $redirect_time,
-                     `verify_description` = NULLIF('$verify_description', NULL)
-                      WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
+    (mysqli_query($link, "UPDATE `servers` SET `guildid` = $guildid, `roleid` = $roleid, `pic` = '$serverico', `redirecturl` = NULLIF('$redirect', NULL), `webhook` = NULLIF('$wh', NULL), `vpncheck` = NULLIF($vpncheck, 0), `autoKickUnVerified` = NULLIF($autokick, 0), `autoKickUnVerifiedTime` = $autokick_time, `bg_image` = NULLIF('$bg_img', NULL), `auto_join` = NULLIF($auto_join, 0), `redirect_time` = $redirect_time, `verify_description` = NULLIF('$verify_description', NULL) WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
     mysqli_query($link, "UPDATE `members` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
     mysqli_query($link, "UPDATE `blacklist` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
 
