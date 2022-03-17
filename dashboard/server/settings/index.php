@@ -85,7 +85,7 @@ function update()
                      `redirecturl` = NULLIF('$redirect', NULL), 
                      `webhook` = NULLIF('$wh', NULL), 
                      `vpncheck` = NULLIF('$vpncheck', 0),
-                     `autoKickUnVerified` = NULLIF('$autokick', 0),
+                     `autoKickUnVerified` = '$autokick',
                      `autoKickUnVerifiedTime` = '$autokick_time',
                      `bg_image` = NULLIF('$bg_img', NULL),
                      `auto_join` = '$auto_join',
