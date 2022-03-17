@@ -64,15 +64,11 @@ function update()
     $verify_description = sanitize($_POST['verify_description']);
 
 
-    if (is_null($redirect_time) || is_null($autokick_time)) {
+    if (is_null($redirect_time) || is_null($autokick_time) || is_null($autokick) || is_null($auto_join)) {
         $redirect_time = 0;
         $autokick_time = 0;
-    }
-
-    if ($auto_join == "0") {
-        $auto_join = "0";
-    } else {
-        $auto_join = "1";
+        $autokick = 0;
+        $auto_join = 0;
     }
 
     $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid' AND `name` != '$servname'"); // select all apps where owner is current user
