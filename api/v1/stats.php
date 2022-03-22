@@ -22,6 +22,4 @@ $stats = array('accounts' => $users, 'servers' => $servers, 'members' => $member
 
 header('Content-Type: application/json');
 
-sleep(1);
-
 echo json_encode($stats, JSON_THROW_ON_ERROR);
