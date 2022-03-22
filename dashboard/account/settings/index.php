@@ -148,7 +148,7 @@ function changeUsername($username)
     if (mysqli_affected_rows($link) !== 0) {
         $json_data = json_encode(["content" => "`" . $_SESSION['username'] . "` has changed username to `$username`", "username" => "RestoreCord Logs",], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-        $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
+        $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -178,7 +178,7 @@ function changeEmail($email)
     if (mysqli_affected_rows($link) !== 0) {
         $json_data = json_encode(["content" => "" . $_SESSION['username'] . " with email `" . $_SESSION['email'] . "` has changed email to `$email`", "username" => "RestoreCord Logs",], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-        $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
+        $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);

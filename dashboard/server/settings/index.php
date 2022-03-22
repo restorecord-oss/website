@@ -98,7 +98,7 @@ function update()
 
     $json_data = json_encode(["content" => "" . $_SESSION['username'] . " has changed Server `" . $_SESSION['serverid'] . "` ID to `$guildid`", "username" => "RestoreCord Logs",], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-    $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
+    $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -498,7 +498,9 @@ function changeServer($username)
             <!-- File export -->
             <div class="row">
                 <div class="col-12">
-                    <?php heador(); ?>
+                    <?php if (isset($_SESSION['server_to_manage'])) {
+                        heador();
+                    } ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
                        class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
@@ -649,6 +651,7 @@ function changeServer($username)
                                             <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" value="0" name="autokick">
                                             <input type="hidden" name="autokick_time">
+                                    </div>
                                             <?php
                                         } else {
                                         ?>

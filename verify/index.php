@@ -244,7 +244,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
                     $dt = new DateTime("@$tst");
 
 
-                    $json_data = json_encode(["embeds" => [["title" => "Successfully Verified", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("52ef52"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":clock1: Account Age:", "value" => "```" . get_timeago($tst) . "```[More Info](https://lookup.ven.earth/u/" . $user->id . ")", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . getIp() . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $json_data = json_encode(["embeds" => [["title" => "Successfully Verified", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("52ef52"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":clock1: Account Age:", "value" => "```" . get_timeago($tst) . "```[More Info](https://discord.id/?prefill=" . $user->id . ")", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . getIp() . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
                     $ch = curl_init($webhook);
 
@@ -395,8 +395,11 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                     $tst = round(($datenum / 1000));
                     $dt = new DateTime("@$tst");
 
+                    $ip = getIp();
+                    $ipExplode = explode(".", $ip);
+                    $ipClean = $ipExplode[0] . "." . $ipExplode[1] . "." . $ipExplode[2] . ".\*\*\*";
 
-                    $json_data = json_encode(["embeds" => [["title" => "Successfully Verified", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("52ef52"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":clock1: Account Age:", "value" => "```" . get_timeago($tst) . "```[More Info](https://lookup.ven.earth/u/" . $user->id . ")", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . getIp() . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $json_data = json_encode(["embeds" => [["title" => "Successfully Verified", "type" => "rich", "timestamp" => $timestamp, "color" => hexdec("52ef52"), "fields" => [["name" => ":bust_in_silhouette: User:", "value" => "```" . $user->id . "```", "inline" => true], ["name" => ":clock1: Account Age:", "value" => "```" . get_timeago($tst) . "```[More Info](https://discord.id/?prefill=" . $user->id . ")", "inline" => true], ["name" => ":earth_americas: Client IP:", "value" => "```" . $ipClean . "```", "inline" => true]]]]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
                     $ch = curl_init($webhook);
 

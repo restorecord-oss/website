@@ -1,23 +1,3 @@
-<?php
-include 'includes/connection.php';
-
-$result = mysqli_query($link, "SELECT max(id) FROM users");
-$row = mysqli_fetch_array($result);
-
-$users = number_format($row[0]);
-
-$result = mysqli_query($link, "SELECT max(id) FROM servers");
-$row = mysqli_fetch_array($result);
-
-$servers = number_format($row[0]);
-
-$result = mysqli_query($link, "SELECT max(id) FROM members");
-$row = mysqli_fetch_array($result);
-
-$members = number_format($row[0]);
-
-mysqli_close($link);
-?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -26,7 +6,9 @@ mysqli_close($link);
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RestoreCord</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+          integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -48,7 +30,6 @@ mysqli_close($link);
         }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-    <script src="https://shoppy.gg/api/embed.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine/dist/alpine.min.js" defer></script>
     <style>
         html {
@@ -148,10 +129,9 @@ mysqli_close($link);
         Channels, Roles, Settings and Members.</p>
 
     <div class="relative mt-10">
-        <button data-shoppy-product="8hCOmd6"
-                class="bg-indigo-600 p-3 rounded-full text-white block w-44 text-center shadow-lg transition-all border-2 border-indigo-600 hover:shadow-sm cursor-pointer hover:bg-transparent hover:text-indigo-600">
+        <a href="/register" class="bg-indigo-600 p-3 rounded-full text-white block w-44 text-center shadow-lg transition-all border-2 border-indigo-600 hover:shadow-sm cursor-pointer hover:bg-transparent hover:text-indigo-600">
             Purchase Now
-        </button>
+        </a>
         <p class="absolute -top-3 -right-2 bg-green-500 py-1 px-2 rounded-full text-white text-xs">only $9.99/year</p>
         <a href="https://discord.gg/s6gk5Y5fTC" class="block w-44 text-indigo-600 text-center mt-4">Support Server</a>
     </div>
@@ -243,7 +223,7 @@ mysqli_close($link);
 
             <div>
                 <img class="w-20 rounded-full"
-                     src="https://cdn.discordapp.com/avatars/902062159176032316/d1bbf61592a52c5b9a848e1d61208962?size=48"
+                     src="https://cdn.discordapp.com/avatars/902062159176032316/d35cdd997fac8488db7ea5a9c6d8ed48.png?size=48"
                      alt="recerse"
                      loading="lazy"/>
             </div>
@@ -372,10 +352,10 @@ mysqli_close($link);
                 </li>
             </ul>
 
-            <button data-shoppy-product="8hCOmd6"
+            <a href="/register"
                     class="bg-indigo-600 border border-indigo-600 block w-full rounded-lg p-3 hover:bg-indigo-700 text-white transition-all">
                 Select Plan
-            </button>
+            </a>
         </div>
 
         <div class="text-center border border-gray-400 p-5 rounded-lg hover:border-gray-300 transition-all">
@@ -424,10 +404,10 @@ mysqli_close($link);
                 </li>
             </ul>
 
-            <button data-shoppy-product="jxFYHtn"
+            <a href="/register"
                     class="border border-indigo-600 block w-full rounded-lg p-3 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all">
                 Select Plan
-            </button>
+            </a>
         </div>
     </div>
 </section>
@@ -439,19 +419,19 @@ mysqli_close($link);
         <div class="card bg-gray-100 px-5 pt-10 pb-5 mb-10 rounded-lg shadow-lg transition-all hover:shadow-sm text-center sm:mb-0 dark:bg-slate-800 dark:text-gray-300">
             <i class="text-white bg-indigo-600 p-5 rounded-full mb-5 fas fa-user"></i>
             <h4 class="font-bold text-xl text-gray-800 mb-2 dark:text-gray-200">Accounts</h4>
-            <p><?php echo $users; ?></p>
+            <div id="accounts" class="animate-pulse h-5 w-12 bg-slate-700 rounded flex mx-auto"></div>
         </div>
 
         <div class="card bg-gray-100 px-5 pt-10 pb-5 mb-10 rounded-lg shadow-lg transition-all hover:shadow-sm text-center sm:mb-0 dark:bg-slate-800 dark:text-gray-300">
             <i class="text-white bg-indigo-600 p-5 rounded-full mb-5 fas fa-server"></i>
             <h4 class="font-bold text-xl text-gray-800 mb-2 dark:text-gray-200">Servers</h4>
-            <p><?php echo $servers; ?></p>
+            <div id="servers" class="animate-pulse h-5 w-12 bg-slate-700 rounded flex mx-auto"></div>
         </div>
 
         <div class="card bg-gray-100 px-5 pt-10 pb-5 mb-10 rounded-lg shadow-lg transition-all hover:shadow-sm text-center sm:mb-0 dark:bg-slate-800 dark:text-gray-300">
             <i class="text-white bg-indigo-600 p-5 rounded-full mb-5 fas fa-user-group"></i>
             <h4 class="font-bold text-xl text-gray-800 mb-2 dark:text-gray-200">Members</h4>
-            <p><?php echo $members; ?></p>
+            <div id="members" class="animate-pulse h-5 w-12 bg-slate-700 rounded flex mx-auto"></div>
         </div>
     </div>
 </section>
@@ -472,22 +452,25 @@ mysqli_close($link);
 
     <ul class="flex items-center justify-center my-5">
         <li class="mx-1">
-            <a><i class="text-gray-600 text-xl hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-discord"></i></a>
+            <a><i class="text-gray-600 text-xl dark:hover:text-gray-400 hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-discord"></i></a>
         </li>
         <li class="mx-1">
-            <a><i class="text-gray-600 text-xl hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-youtube"></i></a>
+            <a><i class="text-gray-600 text-xl dark:hover:text-gray-400 hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-youtube"></i></a>
         </li>
         <li class="mx-1">
-            <a><i class="text-gray-600 text-xl hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-twitter"></i></a>
+            <a><i class="text-gray-600 text-xl dark:hover:text-gray-400 hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-twitter"></i></a>
         </li>
         <li class="mx-1">
-            <a><i class="text-gray-600 text-xl hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-youtube"></i></a>
+            <a><i class="text-gray-600 text-xl dark:hover:text-gray-400 hover:text-gray-900 dark:text-gray-200 transition-all cursor-pointer fab fa-youtube"></i></a>
         </li>
     </ul>
 
     <div class="text-center">
-        <p class="text-gray-900 dark:text-gray-400">Copyright © 2022 RestoreCord</p>
+        <p class="text-gray-900 dark:text-gray-400"></p>
     </div>
 </footer>
+<script>
+    window.addEventListener('load',function(){document.querySelector('footer.pb-10 .text-center p').innerText='Copyright © '+new Date().getFullYear()+' RestoreCord';fetch('/api/v1/stats').then(function(r){return r.json()}).then(function(d){document.getElementById('accounts').innerHTML=`<p>${d.accounts }</p>`;document.getElementById('servers').innerHTML=`<p>${d.servers }</p>`;document.getElementById('members').innerHTML=`<p>${d.members }</p>`;document.querySelectorAll('div.animate-pulse.h-5.w-12.bg-slate-700.rounded.flex.mx-auto').forEach(function(e){e.removeAttribute('class');e.removeAttribute('id')});console.log(d)})});
+</script>
 </body>
 </html>
