@@ -13,6 +13,7 @@
     <script>
         tailwind.config = {
             theme: {
+                darkMode: 'class',
                 extend: {
                     screens: {
                         'sm': '640px',
@@ -129,7 +130,8 @@
         Channels, Roles, Settings and Members.</p>
 
     <div class="relative mt-10">
-        <a href="/register" class="bg-indigo-600 p-3 rounded-full text-white block w-44 text-center shadow-lg transition-all border-2 border-indigo-600 hover:shadow-sm cursor-pointer hover:bg-transparent hover:text-indigo-600">
+        <a href="/register"
+           class="bg-indigo-600 p-3 rounded-full text-white block w-44 text-center shadow-lg transition-all border-2 border-indigo-600 hover:shadow-sm cursor-pointer hover:bg-transparent hover:text-indigo-600">
             Purchase Now
         </a>
         <p class="absolute -top-3 -right-2 bg-green-500 py-1 px-2 rounded-full text-white text-xs">only $9.99/year</p>
@@ -292,6 +294,14 @@
                 </li>
                 <li class="my-2 font-bold text-lg dark:text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
+                    Vanity Url
+                </li>
+                <li class="my-2 font-bold text-lg dark:text-gray-200">
+                    <i class="fas fa-x text-indigo-600"></i>
+                    User Role Backup
+                </li>
+                <li class="my-2 font-bold text-lg dark:text-gray-200">
+                    <i class="fas fa-x text-indigo-600"></i>
                     Customization
                 </li>
                 <li class="my-2 font-bold text-lg dark:text-gray-200">
@@ -344,6 +354,14 @@
                 </li>
                 <li class="my-2 font-bold text-lg dark:text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
+                    Vanity Url
+                </li>
+                <li class="my-2 font-bold text-lg dark:text-gray-200">
+                    <i class="fas fa-x text-indigo-600"></i>
+                    User Role Backup
+                </li>
+                <li class="my-2 font-bold text-lg dark:text-gray-200">
+                    <i class="fas fa-x text-indigo-600"></i>
                     Customization
                 </li>
                 <li class="my-2 font-bold text-lg dark:text-gray-200">
@@ -353,7 +371,7 @@
             </ul>
 
             <a href="/register"
-                    class="bg-indigo-600 border border-indigo-600 block w-full rounded-lg p-3 hover:bg-indigo-700 text-white transition-all">
+               class="bg-indigo-600 border border-indigo-600 block w-full rounded-lg p-3 hover:bg-indigo-700 text-white transition-all">
                 Select Plan
             </a>
         </div>
@@ -396,6 +414,14 @@
                 </li>
                 <li class="my-2 font-bold text-lg dark:text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
+                    Vanity Url
+                </li>
+                <li class="my-2 font-bold text-lg dark:text-gray-200">
+                    <i class="fas fa-check text-indigo-600"></i>
+                    User Role Backup
+                </li>
+                <li class="my-2 font-bold text-lg dark:text-gray-200">
+                    <i class="fas fa-check text-indigo-600"></i>
                     Customization
                 </li>
                 <li class="my-2 font-bold text-lg dark:text-gray-200">
@@ -405,7 +431,7 @@
             </ul>
 
             <a href="/register"
-                    class="border border-indigo-600 block w-full rounded-lg p-3 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all">
+               class="border border-indigo-600 block w-full rounded-lg p-3 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all">
                 Select Plan
             </a>
         </div>
@@ -470,7 +496,23 @@
     </div>
 </footer>
 <script>
-    window.addEventListener('load',function(){document.querySelector('footer.pb-10 .text-center p').innerText='Copyright © '+new Date().getFullYear()+' RestoreCord';fetch('/api/v1/stats').then(function(r){return r.json()}).then(function(d){document.getElementById('accounts').innerHTML=`<p>${d.accounts }</p>`;document.getElementById('servers').innerHTML=`<p>${d.servers }</p>`;document.getElementById('members').innerHTML=`<p>${d.members }</p>`;document.querySelectorAll('div.animate-pulse.h-5.w-12.bg-slate-700.rounded.flex.mx-auto').forEach(function(e){e.removeAttribute('class');e.removeAttribute('id')});console.log(d)})});
+    window.addEventListener('load', function () {
+        document.querySelector('footer.pb-10 .text-center p').innerText = 'Copyright © ' + new Date().getFullYear() + ' RestoreCord';
+
+        setInterval(() => {
+            fetch('/api/v1/stats').then(function (r) {
+                return r.json()
+            }).then(function (d) {
+                document.getElementById('accounts').innerHTML = `<p>${d.accounts}</p>`;
+                document.getElementById('servers').innerHTML = `<p>${d.servers}</p>`;
+                document.getElementById('members').innerHTML = `<p>${d.members}</p>`;
+                document.querySelectorAll('div.animate-pulse.h-5.w-12.bg-slate-700.rounded.flex.mx-auto').forEach(function (e) {
+                    e.removeAttribute('class');
+                });
+                console.log(d)
+            })
+        }, 1000)
+    });
 </script>
 </body>
 </html>
