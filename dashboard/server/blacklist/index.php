@@ -88,10 +88,6 @@ function changeServer($username)
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
 
-
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-
     <script src="https://cdn.restorecord.com/dashboard/unixtolocal.js"></script>
 
 

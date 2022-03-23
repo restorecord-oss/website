@@ -659,7 +659,6 @@ function register() {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 </body>
 
 </html>

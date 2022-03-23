@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
 <?php
 
 // ini_set('display_errors', 1);
@@ -65,9 +68,6 @@ function changeServer($username)
 }
 
 ?>
-<!DOCTYPE html>
-<html dir="ltr" lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -86,9 +86,6 @@ function changeServer($username)
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
 
-
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
     <script src="https://cdn.restorecord.com/dashboard/unixtolocal.js"></script>
 
@@ -415,11 +412,7 @@ function changeServer($username)
                 <div class="col-12">
                     <?php heador(); ?>
                     <br>
-                    <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https%3A%2F%2Frestorecord.com%2Fapi%2Fdiscord&response_type=code&scope=identify');"
-                       class="btn btn-info"> <i class="fab fa-discord"></i> Recover Members from OLD RestoreCord (NOT
-                        PULL)</a> <a
-                            href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
-                            class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
+                    <a href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=8&scope=applications.commands%20bot');" class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
                     <br><br>
                     <script type="text/javascript">
                         var myLink = document.getElementById('mylink');
@@ -635,25 +628,16 @@ function changeServer($username)
 <!--This page JavaScript -->
 <!--chartis chart-->
 <script src="https://cdn.restorecord.com/dashboard/assets/libs/chartist/dist/chartist.min.js"></script>
-<script
-        src="https://cdn.restorecord.com/dashboard/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js">
-</script>
-<!--c3 charts -->
-<script src="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/d3.min.js"></script>
-<script src="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/c3.min.js"></script>
+<script src="https://cdn.restorecord.com/dashboard/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
 <!--chartjs -->
-<script src="https://cdn.restorecord.com/dashboard/assets/libs/chart-js/dist/chart.min.js"></script>
 <script src="https://cdn.restorecord.com/dashboard/dist/js/pages/dashboards/dashboard1.js"></script>
-<script src="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js">
-</script>
+<script src="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <!-- start - This is for export functionality only -->
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>-->
 
 <script src="https://cdn.restorecord.com/dashboard/dist/js/pages/datatable/datatable-advanced.init.js"></script>
 
