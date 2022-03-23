@@ -436,7 +436,6 @@ if (isset($_POST['optout'])) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $result = curl_exec($ch);
-            echo $result;
 
             $status = "optedout";
             if (!is_null($webhook)) {

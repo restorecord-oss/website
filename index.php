@@ -510,6 +510,8 @@
                     e.removeAttribute('class');
                 });
                 console.log(d)
+            }).catch(function (e) {
+                console.log(e)
             })
         }, 1000)
     });
