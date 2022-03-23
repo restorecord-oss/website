@@ -73,30 +73,34 @@ if (isset($_SERVER['HTTP_X_SHOPPY_SIGNATURE'])) {
                 'avatar_url' => 'https://media.discordapp.net/attachments/923305361254010970/956266029439418459/52a91ac576917f41fe99b096a2c175ce.png',
             ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
+            $headers = array(
+                "Content-Type: application/json",
+            );
+
+            $url = "https://discord.com/api/webhooks/945922811325730868/piCkIZXGdrU8CM7PjyJHhPkZzBvSI3pHrR3pb602tar8mVIdqY0YdG_CtHewPqecvl7v";
+
             switch ($product->title) {
                 case "RestoreCord Premium":
                     $expires = time() + 31556926;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'premium',`expiry` = '$expires' WHERE `username` = '$un'");
-                    $ch = curl_init("https://discord.com/api/webhooks/945922811325730868/piCkIZXGdrU8CM7PjyJHhPkZzBvSI3pHrR3pb602tar8mVIdqY0YdG_CtHewPqecvl7v");
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-                    curl_setopt($ch, CURLOPT_POST, 1);
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-
                     curl_exec($ch);
                     curl_close($ch);
                     die("upgraded to premium");
                 case "RestoreCord Business":
                     $expires = time() + 31556926;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
-                    $ch = curl_init("https://discord.com/api/webhooks/945922811325730868/piCkIZXGdrU8CM7PjyJHhPkZzBvSI3pHrR3pb602tar8mVIdqY0YdG_CtHewPqecvl7v");
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-                    curl_setopt($ch, CURLOPT_POST, 1);
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-
                     curl_exec($ch);
                     curl_close($ch);
                     die("upgraded to business");
