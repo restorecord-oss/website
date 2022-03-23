@@ -125,7 +125,9 @@
         <p class="text-gray-500 lg:text-2xl dark:text-gray-100">1. AGREEMENT TO TERMS</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">These Terms of Use constitute a legally binding agreement
             made between you, whether personally or on behalf of an entity (“you”) and RestoreCord ("Company," “we,"
-            “us," or “our”), concerning your access to and use of the <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="https://restorecord.com">https://restorecord.com</a> website as well as any
+            “us," or “our”), concerning your access to and use of the <a
+                    class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all"
+                    href="https://restorecord.com">https://restorecord.com</a> website as well as any
             other media form, media channel, mobile website or mobile application related, linked, or otherwise
             connected thereto (collectively, the “Site”). You agree that by accessing the Site, you have read,
             understood, and agreed to be bound by all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS
@@ -263,8 +265,11 @@
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">Use the Site as part of any effort to compete with us or
             otherwise use the Site and/or the Content for any revenue-generating endeavor or commercial enterprise.</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">Sell or otherwise transfer your profile.</p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">Violating any part of <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="https://discord.com/terms">https://discord.com/terms</a> and
-            <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="https://discord.com/guidelines">https://discord.com/guidelines</a></p>
+        <p class="text-gray-700 lg:text-lg dark:text-gray-300">Violating any part of <a
+                    class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all"
+                    href="https://discord.com/terms">https://discord.com/terms</a> and
+            <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all"
+               href="https://discord.com/guidelines">https://discord.com/guidelines</a></p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">Attacks against our webserver, such as DDoS attacks or
             arbitrary code execution.</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">Attempting to libel RestoreCord with the intent of
@@ -344,7 +349,10 @@
 
         <p class="text-gray-500 lg:text-2xl dark:text-gray-100">10. PRIVACY POLICY</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">We care about data privacy and security. Please review
-            our Privacy Policy: <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="https://restorecord.com/privacy/">https://restorecord.com/privacy/</a>. By using the Site, you agree to be bound by our
+            our Privacy Policy: <a
+                    class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all"
+                    href="https://restorecord.com/privacy/">https://restorecord.com/privacy/</a>. By using the Site, you
+            agree to be bound by our
             Privacy Policy, which is incorporated into these Terms of Use. Please be advised the Site is hosted in
             United Kingdom. If you access the Site from any other region of the world with laws or other requirements
             governing personal data collection, use, or disclosure that differ from applicable laws in United Kingdom,
@@ -416,8 +424,12 @@
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">In order to resolve a complaint regarding the Site or to
             receive further information regarding use of the Site, please contact us at:</p>
         <br>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">Phone: <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="tel:+15083883458">+1 (508)-388-3458</a></p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">Email: <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="mailto:support@restorecord.com">support@restorecord.com</a></p>
+        <p class="text-gray-700 lg:text-lg dark:text-gray-300">Phone: <a
+                    class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all"
+                    href="tel:+15083883458">+1 (508)-388-3458</a></p>
+        <p class="text-gray-700 lg:text-lg dark:text-gray-300">Email: <a
+                    class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all"
+                    href="mailto:support@restorecord.com">support@restorecord.com</a></p>
     </div>
 </section>
 
@@ -454,5 +466,10 @@
         <p class="text-gray-900 dark:text-gray-400">Copyright © 2022 RestoreCord</p>
     </div>
 </footer>
+<script>
+    window.addEventListener('load', function () {
+        document.querySelector('footer.pb-10 .text-center p').innerText = 'Copyright © ' + new Date().getFullYear() + ' RestoreCord';
+    });
+</script>
 </body>
 </html>
