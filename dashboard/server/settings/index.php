@@ -498,9 +498,7 @@ function changeServer($username)
             <!-- File export -->
             <div class="row">
                 <div class="col-12">
-                    <?php if (isset($_SESSION['server_to_manage'])) {
-                        heador();
-                    } ?>
+                    <?php heador(); ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
                        class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
@@ -519,7 +517,7 @@ function changeServer($username)
                         }
                     </script>
                     <?php
-                    if ($_SESSION['server_to_manage']) {
+                    if (isset($_SESSION['server_to_manage'])) {
                         $servname = sanitize($_SESSION['server_to_manage']);
                         ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$servname' AND `owner` = '$username'")) or die(mysqli_error($link));
                         if (mysqli_num_rows($result) > 0) {
@@ -541,6 +539,9 @@ function changeServer($username)
                     }
                     ?>
 
+                    <?php
+                    if (isset($_SESSION['server_to_manage'])) {
+                    ?>
                     <div class="card">
                         <div class="card-body">
                             <form class="form" method="post">
@@ -578,11 +579,14 @@ function changeServer($username)
                                     <?php
                                     if ($role != "free") {
                                         ?>
-                                        <label for="example-tel-input" class="col-2 col-form-label">Redirect Time (sec)</label>
+                                        <label for="example-tel-input" class="col-2 col-form-label">Redirect Time
+                                            (sec)</label>
                                         <div class="col-10">
-                                        <input class="form-control" name="redirect_time" placeholder="Redirect after ... seconds after verifying" type="number" value="<?= $redirect_time ?>">
+                                            <input class="form-control" name="redirect_time"
+                                                   placeholder="Redirect after ... seconds after verifying"
+                                                   type="number" value="<?= $redirect_time ?>">
                                         </div>
-                                    <?php
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -606,7 +610,8 @@ function changeServer($username)
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="example-tel-input" class="col-2 col-form-label">Auto Join Server (on verify)</label>
+                                    <label for="example-tel-input" class="col-2 col-form-label">Auto Join Server (on
+                                        verify)</label>
                                     <div class="col-10">
                                         <select name="auto_join" class="form-control">
                                             <option value="1" <?= $auto_join == 1 ? ' selected="selected"' : '' ?>>
@@ -647,125 +652,129 @@ function changeServer($username)
                                     <div class="col-10">
                                         <?php
                                         if ($role == "free") {
-                                            ?>
-                                            <input class="form-control" placeholder="Premium only feature" disabled>
-                                            <input type="hidden" value="0" name="autokick">
-                                            <input type="hidden" name="autokick_time">
-                                    </div>
-                                            <?php
-                                        } else {
                                         ?>
-                                        <select name="autokick" class="form-control">
-                                            <option value="1" <?= $auto_kick == 1 ? ' selected="selected"' : '' ?>>
-                                                Enabled
-                                            </option>
-                                            <option value="0" <?= $auto_kick == 0 ? ' selected="selected"' : '' ?>>
-                                                Disabled
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <label for="example-tel-input" class="col-2 col-form-label">Auto kick Timer
-                                        (minutes)</label>
-                                    <div class="col-10">
-                                        <input name="autokick_time" class="form-control"
-                                               placeholder="Kick after how many minutes" type="number"
-                                               value="<?= $auto_kick_timer ?>">
+                                        <input class="form-control" placeholder="Premium only feature" disabled>
+                                        <input type="hidden" value="0" name="autokick">
+                                        <input type="hidden" name="autokick_time">
                                     </div>
                                     <?php
-                                    }
+                                    } else {
                                     ?>
+                                    <select name="autokick" class="form-control">
+                                        <option value="1" <?= $auto_kick == 1 ? ' selected="selected"' : '' ?>>
+                                            Enabled
+                                        </option>
+                                        <option value="0" <?= $auto_kick == 0 ? ' selected="selected"' : '' ?>>
+                                            Disabled
+                                        </option>
+                                    </select>
+                                </div>
 
+                                <label for="example-tel-input" class="col-2 col-form-label">Auto kick Timer
+                                    (minutes)</label>
+                                <div class="col-10">
+                                    <input name="autokick_time" class="form-control"
+                                           placeholder="Kick after how many minutes" type="number"
+                                           value="<?= $auto_kick_timer ?>">
                                 </div>
-                                <div class="form-group row">
-                                    <label for="example-tel-input" class="col-2 col-form-label">Background Image</label>
-                                    <div class="col-10">
-                                        <?php
-                                        if ($role == "free" || $role == "premium") {
-                                            ?>
-                                            <input class="form-control" placeholder="Business only feature" disabled>
-                                            <input type="hidden" name="bg_img">
-                                            <?php
-                                        } else {
-                                            ?>
-                                            <input class="form-control" name="bg_img" value="<?php echo $bg_img; ?>"
-                                                   type="url"
-                                                   placeholder="Verification page Background Image (url)">
-                                            <?php
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="example-tel-input" class="col-2 col-form-label">Verify page Description</label>
-                                    <div class="col-10">
-                                        <?php
-                                        if ($role == "free" || $role == "premium") {
-                                            ?>
-                                            <input class="form-control" placeholder="Business only feature" disabled>
-                                            <input type="hidden" name="verify_description">
-                                            <?php
-                                        } else {
-                                            ?>
-                                            <input class="form-control" name="verify_description" value="<?php if(!is_null($verify_description)) { echo $verify_description; } ?>"
-                                                   type="text"
-                                                   placeholder="Verification page Description (long text below)">
-                                            <?php
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                                <button name="updatesettings" class="btn btn-success"><i class="fa fa-check"></i>
-                                    Save
-                                </button>
-                            </form>
+                                <?php
+                                }
+                                ?>
+
                         </div>
+                        <div class="form-group row">
+                            <label for="example-tel-input" class="col-2 col-form-label">Background Image</label>
+                            <div class="col-10">
+                                <?php
+                                if ($role == "free" || $role == "premium") {
+                                    ?>
+                                    <input class="form-control" placeholder="Business only feature" disabled>
+                                    <input type="hidden" name="bg_img">
+                                    <?php
+                                } else {
+                                    ?>
+                                    <input class="form-control" name="bg_img" value="<?php echo $bg_img; ?>"
+                                           type="url"
+                                           placeholder="Verification page Background Image (url)">
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-tel-input" class="col-2 col-form-label">Verify page Description</label>
+                            <div class="col-10">
+                                <?php
+                                if ($role == "free" || $role == "premium") {
+                                    ?>
+                                    <input class="form-control" placeholder="Business only feature" disabled>
+                                    <input type="hidden" name="verify_description">
+                                    <?php
+                                } else {
+                                    ?>
+                                    <input class="form-control" name="verify_description"
+                                           value="<?php if (!is_null($verify_description)) {
+                                               echo $verify_description;
+                                           } ?>"
+                                           type="text"
+                                           placeholder="Verification page Description (long text below)">
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <button name="updatesettings" class="btn btn-success"><i class="fa fa-check"></i>
+                            Save
+                        </button>
+                        </form>
                     </div>
                 </div>
+                <?php } ?>
             </div>
-            <!-- Show / hide columns dynamically -->
-
-            <!-- Column rendering -->
-
-            <!-- Row grouping -->
-
-            <!-- DOM / jQuery events -->
-
-            <!-- Complex headers with column visibility -->
-
-            <!-- language file -->
-
-            <!-- Setting defaults -->
-
-            <!-- Footer callback -->
-
-            <!-- ============================================================== -->
-            <!-- End PAge Content -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Right sidebar -->
-            <!-- ============================================================== -->
-            <!-- .right-sidebar -->
-            <!-- ============================================================== -->
-            <!-- End Right sidebar -->
-            <!-- ============================================================== -->
         </div>
+        <!-- Show / hide columns dynamically -->
+
+        <!-- Column rendering -->
+
+        <!-- Row grouping -->
+
+        <!-- DOM / jQuery events -->
+
+        <!-- Complex headers with column visibility -->
+
+        <!-- language file -->
+
+        <!-- Setting defaults -->
+
+        <!-- Footer callback -->
+
         <!-- ============================================================== -->
-        <!-- End Container fluid  -->
+        <!-- End PAge Content -->
         <!-- ============================================================== -->
         <!-- ============================================================== -->
-        <!-- footer -->
+        <!-- Right sidebar -->
         <!-- ============================================================== -->
-        <footer class="footer text-center">
-            <script>document.getElementsByClassName("footer text-center")[0].innerText = "Copyright © " + new Date().getFullYear() + " RestoreCord";</script>
-        </footer>
+        <!-- .right-sidebar -->
         <!-- ============================================================== -->
-        <!-- End footer -->
+        <!-- End Right sidebar -->
         <!-- ============================================================== -->
     </div>
     <!-- ============================================================== -->
-    <!-- End Page wrapper  -->
+    <!-- End Container fluid  -->
     <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- footer -->
+    <!-- ============================================================== -->
+    <footer class="footer text-center">
+        <script>document.getElementsByClassName("footer text-center")[0].innerText = "Copyright © " + new Date().getFullYear() + " RestoreCord";</script>
+    </footer>
+    <!-- ============================================================== -->
+    <!-- End footer -->
+    <!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Page wrapper  -->
+<!-- ============================================================== -->
 </div>
 <!-- ============================================================== -->
 <!-- End Wrapper -->

@@ -426,9 +426,7 @@ function changeServer($username)
             <!-- File export -->
             <div class="row">
                 <div class="col-12">
-                    <?php if (isset($_SESSION['server_to_manage'])) {
-                        heador();
-                    } ?>
+                    <?php heador(); ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
                        class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>

@@ -66,10 +66,8 @@ function heador()
             $_SESSION['server_to_manage'] = NULL;
             $_SESSION['serverid'] = NULL;
             $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '" . $_SESSION['username'] . "' AND `banned` IS NULL"); // select all apps where owner is current user
-            if (mysqli_num_rows($result) > 0)
-            {
-                if (mysqli_num_rows($result) === 1)
-                {
+            if (mysqli_num_rows($result) > 0) {
+                if (mysqli_num_rows($result) === 1) {
                     $row = mysqli_fetch_array($result);
                     $_SESSION['server_to_manage'] = $row["name"];
                     $_SESSION['serverid'] = $row["guildid"];
@@ -164,7 +162,7 @@ function heador()
             }
         }
 
-        mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`, `autoKickUnVerified`, `auto_join`) VALUES ('$owner','$appname','https://i.imgur.com/w65Dpnw.png', '0', '1')");
+        mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`, `autoKickUnVerified`, `autoKickUnVerifiedTime`, `auto_join`, `redirect_time`) VALUES ('$owner','$appname','https://i.imgur.com/w65Dpnw.png', '0', '0', '1', '0')");
         if (mysqli_affected_rows($link) !== 0) {
             $_SESSION['server_to_manage'] = $appname;
             $_SESSION['serverid'] = NULL;
@@ -186,40 +184,43 @@ function heador()
         createApp();
     }
 
-    ?>
-    <form class="text-left" method="POST">
-        <p class="mb-4">Name:
-            <br><?php echo $_SESSION['server_to_manage']; ?><br/>
-        <div class="mb-4">Verify Link:
-            <br><a href="<?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?>"
-                   style="color:#00FFFF;"
-                   target="verifylink"><?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?></a><br/>
-        </div>
-        <a style="color:#4e73df;cursor: pointer;" id="mylink">Change</a>
-        <button style="border: none;padding:0;background:0;color:#FF0000;padding-left:5px;" name="deleteserver"
-                onclick="return confirm('Are you sure you want to delete server and all associated members?')">Delete
-        </button>
-        <a style="padding-left:5px;color:#ffff00;cursor:pointer;" id="renamesvr">Rename</a>
-        </p>
-    </form>
-    <script>
-        var renameSvr = document.getElementById("renamesvr");
-        renameSvr.onclick = function () {
-            $(document).ready(function () {
-                $("#content").css("display", "none");
-                $("#renameapp").css("display", "block")
-            })
-        }
+    if (isset($_SESSION['server_to_manage'])) {
+        ?>
+        <form class="text-left" method="POST">
+            <p class="mb-4">Name:
+                <br><?php echo $_SESSION['server_to_manage']; ?><br/>
+            <div class="mb-4">Verify Link:
+                <br><a href="<?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?>"
+                       style="color:#00FFFF;"
+                       target="verifylink"><?php echo "https://restorecord.com/verify/" . urlencode($_SESSION['username']) . "/" . urlencode($_SESSION['server_to_manage']); ?></a><br/>
+            </div>
+            <a style="color:#4e73df;cursor: pointer;" id="mylink">Change</a>
+            <button style="border: none;padding:0;background:0;color:#FF0000;padding-left:5px;" name="deleteserver"
+                    onclick="return confirm('Are you sure you want to delete server and all associated members?')">
+                Delete
+            </button>
+            <a style="padding-left:5px;color:#ffff00;cursor:pointer;" id="renamesvr">Rename</a>
+            </p>
+        </form>
+        <script>
+            var renameSvr = document.getElementById("renamesvr");
+            renameSvr.onclick = function () {
+                $(document).ready(function () {
+                    $("#content").css("display", "none");
+                    $("#renameapp").css("display", "block")
+                })
+            }
 
-        var cancel = document.getElementById("cancel");
-        cancel.onclick = function () {
-            $(document).ready(function () {
-                $("#renameapp").css("display", "none");
-                $("#content").css("display", "block");
-            })
-        }
-    </script>
-    <?php
+            var cancel = document.getElementById("cancel");
+            cancel.onclick = function () {
+                $(document).ready(function () {
+                    $("#renameapp").css("display", "none");
+                    $("#content").css("display", "block");
+                })
+            }
+        </script>
+        <?php
+    }
 }
 
 
@@ -339,7 +340,7 @@ function test($username, $pw)
         header("Location: /");
         exit();
     }
-    
+
     global $link;
     $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'");
     if (mysqli_num_rows($result) === 1) {

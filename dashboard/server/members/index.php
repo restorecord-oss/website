@@ -413,9 +413,7 @@ function changeServer($username)
             <!-- File export -->
             <div class="row">
                 <div class="col-12">
-                    <?php if (isset($_SESSION['server_to_manage'])) {
-                        heador();
-                    } ?>
+                    <?php heador(); ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https%3A%2F%2Frestorecord.com%2Fapi%2Fdiscord&response_type=code&scope=identify');"
                        class="btn btn-info"> <i class="fab fa-discord"></i> Recover Members from OLD RestoreCord (NOT
