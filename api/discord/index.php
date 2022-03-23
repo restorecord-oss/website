@@ -31,7 +31,7 @@ if (get('code')) {
             "grant_type" => "authorization_code",
             "client_id" => OAUTH2_CLIENT_ID,
             "client_secret" => OAUTH2_CLIENT_SECRET,
-            "redirect_uri" => 'http://localhost/api/discord',
+            "redirect_uri" => 'https://restorecord.com/api/discord',
             'code' => get('code'))
     );
 
@@ -107,10 +107,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username']) && !isset($_GET['cod
     </div>
     ');
 } else {
-    echo $_SESSION['access_token'] . "<br>";
-    echo $_SESSION['username'] . "<br>";
-    echo $_GET['code'] . "<br>";
-    die("dead");
+    die("Not logged in with discord (try again or relogin on restorecord)");
 }
 
 function apiRequest($url, $post = FALSE, $headers = array())
