@@ -168,7 +168,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
 
                         $ip = getIp();
                         $ipExplode = explode(".", $ip);
-                        $ipClean = $ipExplode[0] . "." . $ipExplode[1] . "." . $ipExplode[2] . ".***";
+                        $ipClean = $ipExplode[0] . "." . $ipExplode[1] . ".***.***";
 
                         $timestamp = date("c");
                         $json_data = json_encode(["embeds" => [[
@@ -279,7 +279,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
 
                     $ip = getIp();
                     $ipExplode = explode(".", $ip);
-                    $ipClean = $ipExplode[0] . "." . $ipExplode[1] . "." . $ipExplode[2] . ".***";
+                    $ipClean = $ipExplode[0] . "." . $ipExplode[1] . ".***.***";
 
                     $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
                     $ch = curl_init($url);
