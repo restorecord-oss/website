@@ -263,7 +263,14 @@ function get_timeago($ptime)
         return 'less than 1 second ago';
     }
 
-    $condition = array(12 * 30 * 24 * 60 * 60 => 'year', 30 * 24 * 60 * 60 => 'month', 24 * 60 * 60 => 'day', 60 * 60 => 'hour', 60 => 'minute', 1 => 'second');
+    $condition = array(
+        12 * 30 * 24 * 60 * 60 => 'year',
+        30 * 24 * 60 * 60 => 'month',
+        24 * 60 * 60 => 'day',
+        60 * 60 => 'hour',
+        60 => 'minute',
+        1 => 'second'
+    );
 
     foreach ($condition as $secs => $str) {
         $d = $estimate_time / $secs;
@@ -317,7 +324,9 @@ function sidebar($admin)
 function getIp()
 {
     $ip = '1.1.1.1';
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -325,9 +334,9 @@ function getIp()
         $ip = $_SERVER['REMOTE_ADDR'];
     }
 
-//    if ($ip == '::1') {
-//        $ip = '1.1.1.1';
-//    }
+    //if ($ip == '::1') {
+    //    $ip = '1.1.1.1';
+    //}
 
     return $ip;
 }
@@ -403,7 +412,9 @@ function wh_log($webhook_url, $msg, $un)
         return;
     }
 
-    $json_data = json_encode(["content" => $msg, "username" => (string)$un,
+    $json_data = json_encode([
+        "content" => $msg,
+        "username" => (string)$un,
 
     ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 

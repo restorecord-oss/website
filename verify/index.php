@@ -371,6 +371,14 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
     $svr_check = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid'");
     $svr_ck = mysqli_fetch_array($svr_check);
 
+    // check if server exists
+    if (mysqli_num_rows($svr_check) < 1) {
+        $svr = "Not Available";
+        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $status = "noserver";
+        return;
+    }
+
     $user_check = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '" . $svr_ck['owner'] . "'");
     $role = mysqli_fetch_array($user_check)["role"];
 
@@ -608,6 +616,11 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
 
 if (isset($_POST['optout'])) {
     if (session('userid')) {
+
+        if (isset($_GET['guild'])) {
+            $guildid = $_GET['guild'];
+        }
+
         mysqli_query($link, "DELETE FROM `members` WHERE `userid` = '" . session('userid') . "' AND `server`  = '$guildid'");
         if (mysqli_affected_rows($link) !== 0) {
             $headers = array(
