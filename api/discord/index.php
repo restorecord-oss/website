@@ -145,8 +145,8 @@ function session($key, $default = NULL)
 <html>
 
 <head>
-    <title>RestoreCord - Member Restore Complete</title>
-    <link rel="icon" type="image/png" href="https://keyauth.com/static/images/favicon.png">
+    <title>RestoreCord</title>
+    <link rel="icon" type="image/png" href="https://cdn.restorecord.com/static/images/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
 </head>
 <style>
