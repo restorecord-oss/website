@@ -31,11 +31,11 @@ if (isset($_SERVER['HTTP_X_SHOPPY_SIGNATURE'])) {
                     $expires = time() + 31556926;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
                     die("upgraded to business");
-                case "RestoreCord Premium Lifetime":
+                case "RestoreCord Premium 10 Years":
                     $expires = time() + (31556926 * 10);
                     mysqli_query($link, "UPDATE `users` SET `role` = 'premium',`expiry` = '$expires' WHERE `username` = '$un'");
                     die("upgraded to premium lifetime");
-                case "RestoreCord Business Lifetime":
+                case "RestoreCord Business 10 Years":
                     $expires = time() + (31556926 * 10);
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
                     die("upgraded to business lifetime");
