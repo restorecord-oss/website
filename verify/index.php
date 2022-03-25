@@ -256,7 +256,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
                 curl_close($ch);
 
                 $avatar = $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5;
-                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
+                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . "#" . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
                 mysqli_query($link, "UPDATE `members` SET `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "' WHERE `userid` = '" . $user->id . "';");
                 $_SESSION['access_token'] = NULL;
                 $_SESSION['refresh_token'] = NULL;
@@ -511,7 +511,7 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                 curl_close($ch);
 
                 $avatar = $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5;
-                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
+                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . "#" . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
                 mysqli_query($link, "UPDATE `members` SET `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "' WHERE `userid` = '" . $user->id . "';");
                 $_SESSION['access_token'] = NULL;
                 $_SESSION['refresh_token'] = NULL;
