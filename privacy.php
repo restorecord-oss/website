@@ -121,14 +121,6 @@
 <section class="py-20 px-10">
     <h1 class="text-gray-900 font-bold text-5xl mb-5 text-center lg:text-8xl dark:text-gray-200">Privacy Policy</h1>
     <div class="items-left justify-start text-left md:pl-24 md:pr-24 lg:pl-32 lg:pr-32">
-
-        <p class="text-gray-500 lg:text-2xl dark:text-gray-100">0. POSSIBLE DATA SHARED WITH SERVER OWNER</p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">discord username, avatar & id</p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">ip address</p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">internet provider (isp)</p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">country</p>
-        <br>
-
         <p class="text-gray-500 lg:text-2xl dark:text-gray-100">1. WHAT INFORMATION DO WE COLLECT?</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">Personal information you disclose to us
         <p>
@@ -151,7 +143,7 @@
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">email addresses</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">usernames</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">passwords (hashed)</p>
-        <p class="text-gray-700 lg:text-lg dark:text-gray-300">ip address</p>
+        <p class="text-gray-700 lg:text-lg dark:text-gray-300">ip address (censored: xx.xx.xx.**)</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">discord oauth2 tokens (not account)</p>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">discord oauth2 information (e.g. username, avatar,
             banner)</p>

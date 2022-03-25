@@ -279,30 +279,23 @@ function get_timeago($ptime)
 function sidebar($admin)
 {
     ?>
-    <li class="nav-small-cap">
-        <i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Server</span></li>
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard/server/settings/"
-           aria-expanded="false"><i data-feather="settings"></i><span class="hide-menu">Settings</span></a>
-    </li>
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard/server/members/"
-           aria-expanded="false"><i data-feather="users"></i><span class="hide-menu">Members</span></a>
-    </li>
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard/server/blacklist/"
-           aria-expanded="false"><i data-feather="user-x"></i><span class="hide-menu">Blacklist</span></a>
-    </li>
-    <li class="nav-small-cap">
-        <i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Account</span></li>
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard/account/settings/"
-           aria-expanded="false"><i data-feather="settings"></i><span class="hide-menu">Settings</span></a>
-    </li>
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard/account/upgrade/"
-           aria-expanded="false"><i data-feather="activity"></i><span class="hide-menu">Upgrade</span></a>
-    </li>
+    <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Server</span></li>
+    <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="/dashboard/server/settings/" aria-expanded="false"><i data-feather="settings"></i><span
+                    class="hide-menu">Settings</span></a></li>
+    <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="/dashboard/server/members/" aria-expanded="false"><i
+                    data-feather="users"></i><span class="hide-menu">Members</span></a></li>
+    <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="/dashboard/server/blacklist/" aria-expanded="false"><i
+                    data-feather="user-x"></i><span class="hide-menu">Blacklist</span></a></li>
+    <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Account</span></li>
+    <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="/dashboard/account/settings/" aria-expanded="false"><i
+                    data-feather="settings"></i><span class="hide-menu">Settings</span></a></li>
+    <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="/dashboard/account/upgrade/" aria-expanded="false"><i data-feather="activity"></i><span
+                    class="hide-menu">Upgrade</span></a></li>
     <?php
     if ($admin) {
         ?>
@@ -316,7 +309,7 @@ function sidebar($admin)
 
 function getIp()
 {
-    $ip = '1.1.1.1';
+    $ip = 'none';
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -324,11 +317,6 @@ function getIp()
     } else {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
-
-//    if ($ip == '::1') {
-//        $ip = '1.1.1.1';
-//    }
-
     return $ip;
 }
 
