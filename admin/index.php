@@ -334,11 +334,8 @@ if (!$admin) {
                             "Authorization: o5rlO1DwCUHGjNsfs8pKTq1wheGNmEpWeDNie8mumNGhrw33Or", // shoppy API key, variable found in includes/connection.php
                         );
                         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                        //for debug only!
-                        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-                        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-                        $resp = curl_exec($curl);
+                        curl_exec($curl);
                         curl_close($curl);
 
                         $json = json_decode($resp);
