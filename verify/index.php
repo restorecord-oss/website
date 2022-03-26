@@ -23,7 +23,7 @@ if (!isset($_GET['guild'])) {
     global $svr;
 
     $pieces = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-    // check if pieces array is empty
+
     if (!isset($pieces[1], $pieces[2])) {
         header('Location: /');
         exit();
@@ -147,7 +147,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
             'Authorization: Bot ' . $token
         );
         $data = array("access_token" => session('access_token'));
-        $data_string = json_encode($data);
+        $data_string = json_encode($data, JSON_THROW_ON_ERROR);
 
         $result = mysqli_query($link, "SELECT * FROM `blacklist` WHERE (`userid` = '" . $user->id . "' OR `ip` = '" . getIp() . "') AND `server` = '$guildid'");
         if (mysqli_num_rows($result) > 0) {
@@ -161,9 +161,9 @@ if (session('access_token') && !isset($_GET['guild'])) {
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($ch);
                 curl_close($ch);
-                $json = json_decode($result);
-                if ($json->status == "ok") {
-                    if ($json->$ip->proxy == "yes") {
+                $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
+                if ($json->status === "ok") {
+                    if ($json->$ip->proxy === "yes") {
                         $status = 'vpndetect';
                         if (!is_null($webhook)) {
                             /*
@@ -277,8 +277,8 @@ if (session('access_token') && !isset($_GET['guild'])) {
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     $result = curl_exec($ch);
                     curl_close($ch);
-                    $json = json_decode($result);
-                    if ($json->status == "error") {
+                    $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
+                    if ($json->status === "error") {
                         $newJson = [
                             "status" => "error",
                             $ip => [
@@ -290,7 +290,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
                             ]
                         ];
                         $JaySon = json_encode($newJson, JSON_THROW_ON_ERROR);
-                        $json = json_decode($JaySon);
+                        $json = json_decode($JaySon, false, 512, JSON_THROW_ON_ERROR);
                     }
 
                     $json_data = json_encode([
@@ -400,7 +400,7 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
             'Authorization: Bot ' . $token
         );
         $data = array("access_token" => session('access_token'));
-        $data_string = json_encode($data);
+        $data_string = json_encode($data, JSON_THROW_ON_ERROR);
 
         $result = mysqli_query($link, "SELECT * FROM `blacklist` WHERE (`userid` = '" . $user->id . "' OR `ip` = '" . getIp() . "') AND `server` = '$guildid'");
         if (mysqli_num_rows($result) > 0) {
@@ -414,9 +414,9 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($ch);
                 curl_close($ch);
-                $json = json_decode($result);
-                if ($json->status == "ok") {
-                    if ($json->$ip->proxy == "yes") {
+                $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
+                if ($json->status === "ok") {
+                    if ($json->$ip->proxy === "yes") {
                         $status = 'vpndetect';
                         if (!is_null($webhook)) {
                             /*
@@ -532,8 +532,8 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     $result = curl_exec($ch);
                     curl_close($ch);
-                    $json = json_decode($result);
-                    if ($json->status == "error") {
+                    $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
+                    if ($json->status === "error") {
                         $newJson = [
                             "status" => "error",
                             $ip => [
@@ -545,7 +545,7 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                             ]
                         ];
                         $JaySon = json_encode($newJson, JSON_THROW_ON_ERROR);
-                        $json = json_decode($JaySon);
+                        $json = json_decode($JaySon, false, 512, JSON_THROW_ON_ERROR);
                     }
 
                     $json_data = json_encode([
