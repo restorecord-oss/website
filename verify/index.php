@@ -51,12 +51,12 @@ if (!isset($_GET['guild'])) {
             $redirecturl = $row['redirecturl'];
             $webhook = $row['webhook'];
             $vpncheck = $row['vpncheck'];
-            $redirect_time = $row['redirect_time'];
+            $redirectTime = $row['redirectTime'];
             $auto_kick = $row['autoKickUnVerified'];
             $auto_kick_time = $row['autoKickUnVerifiedTime'];
-            $auto_join = $row['auto_join'];
+            $autoJoin = $row['autoJoin'];
             $bg_img = $row['bg_image'];
-            $verify_description = $row['verify_description'];
+            $verifyDescription = $row['verifyDescription'];
             $banned = $row['banned'];
         }
 
@@ -91,12 +91,12 @@ if (!isset($_GET['guild'])) {
             $redirecturl = $row['redirecturl'];
             $webhook = $row['webhook'];
             $vpncheck = $row['vpncheck'];
-            $redirect_time = $row['redirect_time'];
+            $redirectTime = $row['redirectTime'];
             $auto_kick = $row['autoKickUnVerified'];
             $auto_kick_time = $row['autoKickUnVerifiedTime'];
-            $auto_join = $row['auto_join'];
+            $autoJoin = $row['autoJoin'];
             $bg_img = $row['bg_image'];
-            $verify_description = $row['verify_description'];
+            $verifyDescription = $row['verifyDescription'];
             $banned = $row['banned'];
         }
 
@@ -119,12 +119,12 @@ if (session('access_token') && !isset($_GET['guild'])) {
     global $svr;
     global $link;
     global $vpncheck;
-    global $redirect_time;
+    global $redirectTime;
     global $auto_kick;
     global $auto_kick_time;
     global $bg_img;
-    global $verify_description;
-    global $auto_join;
+    global $verifyDescription;
+    global $autoJoin;
 
     $user_check = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$owner'");
     $role = mysqli_fetch_array($user_check)["role"];
@@ -235,7 +235,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
             if ($status !== "vpndetect") {
                 $_SESSION['userid'] = $user->id;
 
-                if ($auto_join) {
+                if ($autoJoin) {
                     $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
                     $ch = curl_init($url);
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -359,12 +359,12 @@ if (session('access_token') && !isset($_GET['guild'])) {
 }
 
 if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) {
-    global $redirect_time;
+    global $redirectTime;
     global $auto_kick;
     global $auto_kick_time;
     global $bg_img;
-    global $verify_description;
-    global $auto_join;
+    global $verifyDescription;
+    global $autoJoin;
 
     $guildid = sanitize($_GET['guild']);
 
@@ -488,7 +488,7 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
 
             if ($status !== "vpndetect") {
                 $_SESSION['userid'] = $user->id;
-                if ($auto_join) {
+                if ($autoJoin) {
 
                     $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
                     $ch = curl_init($url);
@@ -709,8 +709,8 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
     <meta property="og:site_name" content="RestoreCord">
     <meta property="og:title" content="Verify in <?php echo $svr ?>">
     <?php
-    if (!empty($verify_description)) {
-        echo '<meta property="og:description" content="' . $verify_description . '">';
+    if (!empty($verifyDescription)) {
+        echo '<meta property="og:description" content="' . $verifyDescription . '">';
     } else {
         echo '<meta property="og:description" content="Verify in ' . $svr . ', So you\'re added back if this one gets deleted.">';
     }
@@ -970,14 +970,14 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
     }
 
     if (!empty($redirecturl) && $status === 'added') {
-        echo '<meta http-equiv="refresh" content="' . htmlspecialchars($redirect_time) . ';url=' . htmlspecialchars($redirecturl) . '">';
+        echo '<meta http-equiv="refresh" content="' . htmlspecialchars($redirectTime) . ';url=' . htmlspecialchars($redirecturl) . '">';
     }
     ?>
     <img class="card-img" src="<?= htmlspecialchars($server_image) ?>" alt="server">
     <h2><?php echo $svr; ?></h2>
     <p><?php
-        if (!empty($verify_description)) {
-            echo htmlspecialchars($verify_description);
+        if (!empty($verifyDescription)) {
+            echo htmlspecialchars($verifyDescription);
         } else {
             echo 'Click Verify to be joined to server if it is ever raided or deleted. Click opt out to stop joining the server';
         }

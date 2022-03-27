@@ -59,16 +59,16 @@ function update()
     $autokick = sanitize($_POST['autokick']);
     $autokick_time = sanitize($_POST['autokick_time']);
     $bg_img = sanitize($_POST['bg_img']);
-    $auto_join = sanitize($_POST['auto_join']);
-    $redirect_time = sanitize($_POST['redirect_time']);
-    $verify_description = sanitize($_POST['verify_description']);
+    $autoJoin = sanitize($_POST['autoJoin']);
+    $redirectTime = sanitize($_POST['redirectTime']);
+    $verifyDescription = sanitize($_POST['verifyDescription']);
 
 
-    if (is_null($redirect_time) || is_null($autokick_time) || is_null($autokick) || is_null($auto_join)) {
-        $redirect_time = 0;
+    if (is_null($redirectTime) || is_null($autokick_time) || is_null($autokick) || is_null($autoJoin)) {
+        $redirectTime = 0;
         $autokick_time = 0;
         $autokick = 0;
-        $auto_join = 0;
+        $autoJoin = 0;
     }
 
     $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid' AND `name` != '$servname'"); // select all apps where owner is current user
@@ -88,9 +88,9 @@ function update()
                      `autoKickUnVerified` = '$autokick',
                      `autoKickUnVerifiedTime` = '$autokick_time',
                      `bg_image` = NULLIF('$bg_img', NULL),
-                     `auto_join` = '$auto_join',
-                     `redirect_time` = '$redirect_time',
-                     `verify_description` = NULLIF('$verify_description', NULL)
+                     `autoJoin` = '$autoJoin',
+                     `redirectTime` = '$redirectTime',
+                     `verifyDescription` = NULLIF('$verifyDescription', NULL)
                       WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
     mysqli_query($link, "UPDATE `members` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
     mysqli_query($link, "UPDATE `blacklist` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
@@ -530,9 +530,9 @@ function changeServer($username)
                                 $auto_kick = $row['autoKickUnVerified'];
                                 $auto_kick_timer = $row['autoKickUnVerifiedTime'];
                                 $bg_img = $row['bg_image'];
-                                $auto_join = $row['auto_join'];
-                                $redirect_time = $row['redirect_time'];
-                                $verify_description = $row['verify_description'];
+                                $autoJoin = $row['autoJoin'];
+                                $redirectTime = $row['redirectTime'];
+                                $verifyDescription = $row['verifyDescription'];
                                 $wh = $row['webhook'];
                             }
                         }
@@ -582,9 +582,9 @@ function changeServer($username)
                                         <label for="example-tel-input" class="col-2 col-form-label">Redirect Time
                                             (sec)</label>
                                         <div class="col-10">
-                                            <input class="form-control" name="redirect_time"
+                                            <input class="form-control" name="redirectTime"
                                                    placeholder="Redirect after ... seconds after verifying"
-                                                   type="number" value="<?= $redirect_time ?>">
+                                                   type="number" value="<?= $redirectTime ?>">
                                         </div>
                                         <?php
                                     }
@@ -613,11 +613,11 @@ function changeServer($username)
                                     <label for="example-tel-input" class="col-2 col-form-label">Auto Join Server (on
                                         verify)</label>
                                     <div class="col-10">
-                                        <select name="auto_join" class="form-control">
-                                            <option value="1" <?= $auto_join == 1 ? ' selected="selected"' : '' ?>>
+                                        <select name="autoJoin" class="form-control">
+                                            <option value="1" <?= $autoJoin == 1 ? ' selected="selected"' : '' ?>>
                                                 Enabled
                                             </option>
-                                            <option value="0" <?= $auto_join == 0 ? ' selected="selected"' : '' ?>>
+                                            <option value="0" <?= $autoJoin == 0 ? ' selected="selected"' : '' ?>>
                                                 Disabled
                                             </option>
                                         </select>
@@ -708,13 +708,13 @@ function changeServer($username)
                                 if ($role == "free" || $role == "premium") {
                                     ?>
                                     <input class="form-control" placeholder="Business only feature" disabled>
-                                    <input type="hidden" name="verify_description">
+                                    <input type="hidden" name="verifyDescription">
                                     <?php
                                 } else {
                                     ?>
-                                    <input class="form-control" name="verify_description"
-                                           value="<?php if (!is_null($verify_description)) {
-                                               echo $verify_description;
+                                    <input class="form-control" name="verifyDescription"
+                                           value="<?php if (!is_null($verifyDescription)) {
+                                               echo $verifyDescription;
                                            } ?>"
                                            type="text"
                                            placeholder="Verification page Description (long text below)">
