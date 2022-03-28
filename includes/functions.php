@@ -323,25 +323,7 @@ function sidebar($admin)
 
 function getIp()
 {
-    $ip = '1.1.1.1';
-    if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
-        $ip = $_SERVER['HTTP_X_REAL_IP']; 
-    } 
-    else if (!empty($_SERVER['HTTP_CLIENT_IP'])) { 
-        $ip = $_SERVER['HTTP_CLIENT_IP']; 
-    } 
-    else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) { 
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR']; 
-    } 
-    else {
-        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-    }
-    
-    if ($ip == "::1" || $ip == "127.0.0.1") {
-        $ip = '1.1.1.1';
-    }
-
-    return $ip;
+    return $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
 }
 
 function premium_check($username)
