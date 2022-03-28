@@ -158,9 +158,7 @@ function login() {
                                                             <div
                                                                 style="color:#8f8e93;font-family:Roboto,sans-serif;font-size:12px;font-weight:400;line-height:1.5;text-align:left">
                                                                 Use of this Website constitutes acceptance of the
-                                                                <a href="/terms/"
-                                                                    style="color: #7388db;text-decoration:none;"
-                                                                    target="_blank">Terms of Service and Privacy policy.</a> All copyrights, trade
+                                                                <a href="https://restorecord.com/terms"style="color: #7388db;text-decoration:none;"target="_blank">Terms of Service</a> and <a href="https://restorecord.com/privacy"style="color: #7388db;text-decoration:none;"target="_blank">Privacy policy.</a> All copyrights, trade
                                                                 marks, service
                                                                 marks belong to the corresponding owners.</div>
                                                         </td>
