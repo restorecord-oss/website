@@ -8,5 +8,5 @@ if(isset($_SERVER['REMOTE_ADDR']) && ($_SERVER['REMOTE_ADDR'] === '::1' ||  $_SE
 $token = "NzkxMTA2MDE4MTc1NjE0OTg4.X-KU5A.5JLKR-T1tfcmu5hSFbj2Ol9z5aE";
 $secret = "";
 $client_id = "";
-$shoppy_secret = "JFQNRShog9Du30rE";
+$shoppy_secret = "A8EQT7WBLhZmBprV";
 $shoppy_api = "YLRuBGd1qkOx4YdTnLtHjgyciFOR80giOJksOO5DChqf6e2kVA";
