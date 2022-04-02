@@ -47,14 +47,12 @@ $isadmin = $row['admin'];
           content="Xtreme is powerful and clean admin dashboard template, inpired from Google's Material Design">
     <meta name="robots" content="noindex,nofollow">
     <title>RestoreCord - Upgrade</title>
-    <script src="https://shoppy.gg/api/embed.js"></script>
+    <script src="https://cdn.sellix.io/static/js/embed.js"></script>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="300x250" href="https://i.imgur.com/Nfy4OoG.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
-    <link
-            href="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css"
-            rel="stylesheet">
+    <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet">
     <link href="https://cdn.restorecord.com/dashboard/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
     <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -261,7 +259,7 @@ $isadmin = $row['admin'];
                                 <p>No API Access</p>
                                 <?php
                                 if (!empty($_SESSION['role']) && $_SESSION['role'] != 'business') {
-                                    echo '<br><a data-shoppy-product="8hCOmd6" data-shoppy-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-warning block-sidenav">Purchase</a>';
+                                    echo '<br><button data-sellix-product="624829ad729e4" data-sellix-custom-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-warning block-sidenav">Purchase</button>';
                                 }
                                 else {
                                     echo '<br><button class="btn btn-lg btn-block font-medium btn-outline-warning block-card disabled" disabled>Purchase</button>';
@@ -288,7 +286,7 @@ $isadmin = $row['admin'];
                                 <p>API Access</p>
                                 <?php
                                 if (!empty($_SESSION['role'])) {
-                                    echo '<br><a data-shoppy-product="jxFYHtn" data-shoppy-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-info block-sidenav">Purchase</a>';
+                                    echo '<br><button data-sellix-product="62483a36d6bec" data-sellix-custom-username="' . $_SESSION['username'] . '" class="btn btn-lg btn-block font-medium btn-outline-info block-sidenav">Purchase</button>';
                                 }
                                 ?>
                             </div>

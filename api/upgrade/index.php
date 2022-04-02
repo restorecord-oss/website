@@ -1,54 +1,50 @@
 <?php
 include '../../includes/connection.php';
 
-if (isset($_SERVER['HTTP_X_SHOPPY_SIGNATURE'])) {
+if (isset($_SERVER['HTTP_X_SELLIX_SIGNATURE'])) {
 
     $payload = file_get_contents('php://input');
 
-    $secret = $shoppy_secret; // replace with your webhook secret
-    $header_signature = $_SERVER["HTTP_X_SHOPPY_SIGNATURE"]; // get our signature header
-
+    $secret = $sellix_secret;
+    $header_signature = $_SERVER["HTTP_X_SELLIX_SIGNATURE"];
     $signature = hash_hmac('sha512', $payload, $secret);
-
     if (hash_equals($signature, $header_signature)) {
 
         $json = json_decode($payload, false, 512, JSON_THROW_ON_ERROR);
-        // in terms of looking at shoppy API, $json = $payload
-        if ($json->event === 'order:paid') {
-            $data = $json->data;
-            $order = $data->order;
-            // $product = $order->product;
+        if ($json->event == 'product:dynamic') {
 
-            $product = $json->data->order->product;
-            $un = $json->data->order->custom_fields[0]->value;
+            $un = $json->data->custom_fields->username;
 
-            switch ($product->title) {
+            switch ($json->data->product_title) {
                 case "RestoreCord Premium":
                     $expires = time() + 31556926;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'premium',`expiry` = '$expires' WHERE `username` = '$un'");
-                    die("upgraded to premium");
+                    echo "Your Account has been upgraded to " . $json->data->product_title;
+                    break;
                 case "RestoreCord Business":
                     $expires = time() + 31556926;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
-                    die("upgraded to business");
+                    echo "Your Account has been upgraded to " . $json->data->product_title;
+                    break;
                 case "RestoreCord Premium 10 Years":
                     $expires = time() + (31556926 * 10);
                     mysqli_query($link, "UPDATE `users` SET `role` = 'premium',`expiry` = '$expires' WHERE `username` = '$un'");
-                    die("upgraded to premium lifetime");
+                    echo "Your Account has been upgraded to " . $json->data->product_title;
+                    break;
                 case "RestoreCord Business 10 Years":
                     $expires = time() + (31556926 * 10);
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
-                    die("upgraded to business lifetime");
+                    echo "Your Account has been upgraded to " . $json->data->product_title;
+                    break;
                 default:
-                    die("invalid product");
+                    echo "Product does not exist contact support.";
+                    break;
             }
         } else {
-            die("didn't pay");
+            echo "Transaction failed (not paid) contact support.";
         }
 
     }
+} else {
+    echo "Invalid Signature";
 }
-
-die("You shouldn't be here");
-
-?>

@@ -212,13 +212,6 @@ if (!$admin) {
                                         ×
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form method="post">
-                                        <div class="form-group">
-                                            <label for="recipient-name" class="control-label">Order ID:</label>
-                                            <input class="form-control" name="orderid" placeholder="Shoppy Order ID">
-                                        </div>
-                                </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">
                                         Close
@@ -321,32 +314,6 @@ if (!$admin) {
                         </div>
                     </div>
                     <?php
-                    if (isset($_POST['checkorder'])) {
-
-                        $orderid = sanitize($_POST['orderid']);
-                        $url = "https://shoppy.gg/api/v1/orders/{$orderid}";
-
-                        $curl = curl_init($url);
-                        curl_setopt($curl, CURLOPT_URL, $url);
-                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-                        $headers = array("User-Agent: RestoreCord", // must set a useragent for Shoppy API, anything.
-                            "Authorization: " . $shoppy_api, // shoppy API key, variable found in includes/connection.php
-                        );
-                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-                        curl_exec($curl);
-                        curl_close($curl);
-
-                        $json = json_decode($resp);
-
-                        if ($json->message == "Requested resource not found") {
-                            box("Order not found", 3);
-                        } else {
-                            box("Order from " . $json->email . " for $" . $json->price . " was found", 2);
-                        }
-                    }
-
                     if (isset($_POST['searchemail'])) {
                         $email = sanitize($_POST['email']);
                         header("Location:./?email=" . $email);

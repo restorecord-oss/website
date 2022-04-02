@@ -27,7 +27,6 @@
         }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-    <script src="https://shoppy.gg/api/embed.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine/dist/alpine.min.js" defer></script>
     <style>
         html {
@@ -158,8 +157,8 @@
         <br>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">Payment Data. We may collect data necessary to process
             your payment if you make purchases, such as your payment instrument number (such as a credit card number),
-            and the security code associated with your payment instrument. All payment data is stored by Shoppy.gg. You
-            may find their privacy notice link(s) here: <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="https://shoppy.gg/legal/privacy">https://shoppy.gg/legal/privacy</a>.
+            and the security code associated with your payment instrument. All payment data is stored by Sellix.io. You
+            may find their privacy notice link(s) here: <a class="text-white border-b border-sky-400 font-semibold hover:border-b-2 transition-all" href="https://help.sellix.io/en/articles/4534109-privacy-and-cookie-policy">https://help.sellix.io/en/articles/4534109-privacy-and-cookie-policy</a>.
         <p>
             <br>
         <p class="text-gray-700 lg:text-lg dark:text-gray-300">All personal information that you provide to us must be
