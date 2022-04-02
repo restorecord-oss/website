@@ -331,7 +331,7 @@ if (!$admin) {
                         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
                         $headers = array("User-Agent: RestoreCord", // must set a useragent for Shoppy API, anything.
-                            "Authorization: o5rlO1DwCUHGjNsfs8pKTq1wheGNmEpWeDNie8mumNGhrw33Or", // shoppy API key, variable found in includes/connection.php
+                            "Authorization: " . $shoppy_api, // shoppy API key, variable found in includes/connection.php
                         );
                         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 

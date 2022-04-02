@@ -5,7 +5,7 @@ if (isset($_SERVER['HTTP_X_SHOPPY_SIGNATURE'])) {
 
     $payload = file_get_contents('php://input');
 
-    $secret = "JFQNRShog9Du30rE"; // replace with your webhook secret
+    $secret = $shoppy_secret; // replace with your webhook secret
     $header_signature = $_SERVER["HTTP_X_SHOPPY_SIGNATURE"]; // get our signature header
 
     $signature = hash_hmac('sha512', $payload, $secret);
