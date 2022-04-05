@@ -26,13 +26,13 @@ if (isset($_SERVER['HTTP_X_SELLIX_SIGNATURE'])) {
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
                     echo "Your Account has been upgraded to " . $json->data->product_title;
                     break;
-                case "RestoreCord Premium 10 Years":
-                    $expires = time() + (31556926 * 10);
+                case "RestoreCord Premium Monthly":
+                    $expires = time() + 2629743;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'premium',`expiry` = '$expires' WHERE `username` = '$un'");
                     echo "Your Account has been upgraded to " . $json->data->product_title;
                     break;
-                case "RestoreCord Business 10 Years":
-                    $expires = time() + (31556926 * 10);
+                case "RestoreCord Business Monthly":
+                    $expires = time() + 2629743;
                     mysqli_query($link, "UPDATE `users` SET `role` = 'business',`expiry` = '$expires' WHERE `username` = '$un'");
                     echo "Your Account has been upgraded to " . $json->data->product_title;
                     break;
