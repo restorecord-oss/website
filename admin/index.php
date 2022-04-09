@@ -512,11 +512,14 @@ if (!$admin) {
                                     <div class="form-group">
                                         <label for="recipient-name" class="control-label">Role:</label>
                                         <select class="form-control" name="role">
-                                            <option value="premium" <?= $role == 'premium' ? ' selected="selected"' : ''; ?>>
+                                           <option value="premium" <?= $role == 'premium' ? ' selected="selected"' : ''; ?>>
                                                 premium
                                             </option>
                                             <option value="free" <?= $role == 'free' ? ' selected="selected"' : ''; ?>>
                                                 free
+                                            </option>
+                                           <option value="business" <?= $role == 'business' ? ' selected="selected"' : ''; ?>>
+                                                business
                                             </option>
                                         </select>
                                     </div>
@@ -554,6 +557,9 @@ if (!$admin) {
 
                 switch ($role) {
                     case 'premium':
+                        $expires = time() + 31556926;
+                        break;
+                    case 'business':
                         $expires = time() + 31556926;
                         break;
                     case 'free':
