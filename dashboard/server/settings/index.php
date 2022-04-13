@@ -63,13 +63,10 @@ function update()
     $redirectTime = sanitize($_POST['redirectTime']);
     $verifyDescription = sanitize($_POST['verifyDescription']);
 
-
-    if (is_null($redirectTime) || is_null($autokick_time) || is_null($autokick) || is_null($autoJoin)) {
-        $redirectTime = 0;
-        $autokick_time = 0;
-        $autokick = 0;
-        $autoJoin = 0;
-    }
+    $redirectTime = isNull($redirectTime) ? 0 : $redirectTime;
+    $autokick_time = isNull($autokick_time) ? 0 : $autokick_time;
+    $autokick = isNull($autokick) ? 0 : $autokick;
+    $autoJoin = isNull($autoJoin) ? 0 : $autoJoin;
 
     $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid' AND `name` != '$servname'"); // select all apps where owner is current user
     if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
@@ -589,6 +586,7 @@ function changeServer($username)
                                         <?php
                                     }
                                     ?>
+                                    <input type="hidden" name="redirectTime">
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Webhook Link</label>

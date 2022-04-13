@@ -51,6 +51,11 @@ function sanitize($input): ?string
     //return strip_tags(trim($input));
 }
 
+function isNull($input): bool
+{
+    return empty($input) & !is_numeric($input);
+}
+
 function heador()
 {
     function deleteServer()
