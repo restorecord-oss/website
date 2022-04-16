@@ -4,6 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+function script() {
+    return 'if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+            navigator.serviceWorker
+                .register("/serviceWorker.js")
+                .then(res => console.log("service worker registered"))
+                .catch(err => console.log("service worker not registered", err))
+        })
+    }';
+}
+
 function box($str, $type = 0): void
 {
     $str_type = static function ($type) {
@@ -18,6 +29,14 @@ function box($str, $type = 0): void
     ?>
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-title {
+            color: #FFFFFF !important;
+        }
+        .swal2-popup.swal2-toast {
+            background: #283046 !important;
+        }
+    </style>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function (event) {
             swal.mixin({
@@ -362,22 +381,17 @@ function premium_check($username)
 
 function test($username, $pw)
 {
-    if (empty($username) || empty($pw)) {
-        session_unset();
-        session_destroy();
-        header("Location: /");
-        exit();
-    }
-
-    global $link;
-    $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'");
-    if (mysqli_num_rows($result) === 1) {
-        $row = mysqli_fetch_array($result);
-        if (!password_verify($pw, $row['password'])) {
-            session_unset();
-            session_destroy();
-            header("Location: /");
-            exit();
+    if (!empty($username) && !empty($pw)) {
+        global $link;
+        $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'");
+        if (mysqli_num_rows($result) === 1) {
+            $row = mysqli_fetch_array($result);
+            if (!password_verify($pw, $row['password'])) {
+                session_unset();
+                session_destroy();
+                header("Location: /");
+                exit();
+            }
         }
     }
 }

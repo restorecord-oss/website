@@ -75,11 +75,11 @@ class GoogleAuthenticator
      * @return string
      */
     public function getQRCodeGoogleUrl($name, $secret, $title = null) {
-        $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
+        $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret);
 	if(isset($title)) {
                 $urlencoded .= urlencode('&issuer='.urlencode($title));
         }
-        return 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl='.$urlencoded.'';
+        return 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl='.$urlencoded;
     }
 
     /**
