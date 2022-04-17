@@ -844,6 +844,10 @@ function register()
             </form>
         </div>
     </div>
+
+    <script>
+        <?php echo script(); ?>
+    </script>
 </div>
 
 </body>
