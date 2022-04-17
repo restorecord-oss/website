@@ -1,6 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RestoreCord</title>
+
+    <link rel="manifest" href="manifest.json"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-192x192.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-256x256.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-384x384.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-512x512.png"/>
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
+    <meta name="apple-mobile-web-app-title" content="RestoreCord">
+    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileColor" content="#4338ca">
+    <meta name="theme-color" content="#4338ca"/>
+    <meta property="og:title" content="RestoreCord"/>
+    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:url" content="https://restorecord.com"/>
+    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register("/serviceWorker.js")
+                    .then(res => console.log("service worker registered"))
+                    .catch(err => console.log("service worker not registered", err))
+            })
+        }
+    </script>
+</head>
+
 <?php
 
 include '../../includes/connection.php';
+include '../../includes/functions.php';
 
 /*
 	This code is pretty much all from https://gist.github.com/Jengas/ad128715cb4f73f5cde9c467edf64b00
@@ -26,14 +71,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // When Discord redirects the user back here, there will be a "code" and "state" parameter in the query string
-if (get('code')) {
+if (get('code') && get('state')) {
     $token = apiRequest($tokenURL, array(
-            "grant_type" => "authorization_code",
-            "client_id" => OAUTH2_CLIENT_ID,
-            "client_secret" => OAUTH2_CLIENT_SECRET,
-            "redirect_uri" => 'https://restorecord.com/api/discord',
-            'code' => get('code'))
-    );
+        "grant_type" => "authorization_code",
+        "client_id" => OAUTH2_CLIENT_ID,
+        "client_secret" => OAUTH2_CLIENT_SECRET,
+        "redirect_uri" => 'https://restorecord.com/api/discord',
+        'code' => get('code')
+    ));
 
     $_SESSION['access_token'] = $token->access_token;
     $_SESSION['state'] = get('state');
@@ -41,50 +86,57 @@ if (get('code')) {
     header('Location: ' . $_SERVER['PHP_SELF']);
 }
 
-if (isset($_SESSION['access_token'], $_SESSION['username']) && !isset($_GET['code'])) {
-    $user = apiRequest("https://discord.com/api/users/@me");
-    $result = mysqli_query($link, "UPDATE `users` SET `userId` = '" . $user->id . "' WHERE `username` = '" . $_SESSION['username'] . "';");
-    $json_data = json_encode(["content" => "" . $_SESSION['username'] . " linked account `" . $user->id . "`", "username" => "RestoreCord Logs",], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) && !isset($_GET['code'])) {
+    if ($_SESSION['state'] === "link") {
+        $user = apiRequest("https://discord.com/api/users/@me");
+        $result = mysqli_query($link, "UPDATE `users` SET `userId` = '" . $user->id . "' WHERE `username` = '" . $_SESSION['username'] . "';");
+        $json_data = json_encode([
+            "content" => "" . $_SESSION['username'] . " linked account `" . $user->id . "`",
+            "username" => "RestoreCord Logs",
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-    $username = $_SESSION['username'];
-    ($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
-    $row = mysqli_fetch_array($result);
+        $username = $_SESSION['username'];
+        ($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
+        $row = mysqli_fetch_array($result);
 
-    $headers = array('Content-Type: application/json', 'Authorization: Bot ' . $token);
-    $data = array("access_token" => session('access_token'));
-    $data_string = json_encode($data);
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bot ' . $token
+        );
+        $data = array("access_token" => session('access_token'));
+        $data_string = json_encode($data);
 
-    $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_exec($ch);
-    curl_close($ch);
-
-    if ($row['role'] == "premium") {
-        $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/939535559146209300";
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_exec($ch);
         curl_close($ch);
-    } else if ($row['role'] == "business") {
-        $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/956242821222920212";
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($ch);
-        curl_close($ch);
-    }
+
+        if ($row['role'] == "premium") {
+            $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/939535559146209300";
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+            curl_close($ch);
+        } else if ($row['role'] == "business") {
+            $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/956242821222920212";
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+            curl_close($ch);
+        }
 
 
-    die('
+        die('
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
@@ -106,39 +158,70 @@ if (isset($_SESSION['access_token'], $_SESSION['username']) && !isset($_GET['cod
         </div>
     </div>
     ');
+    }
+} else if (isset($_SESSION['access_token'], $_SESSION['state']) && !isset($_GET['code'])) {
+    if ($_SESSION['state'] === 'login') {
+        $user = apiRequest("https://discord.com/api/users/@me");
+        $result = mysqli_query($link, "SELECT * FROM `users` WHERE `userId` = '" . $user->id . "'");
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_array($result);
+            $username = $row['username'];
+            $email = $row['email'];
+            $role = $row['role'];
+
+            try {
+                $json_data = json_encode([
+                    "content" => "$username has logged in with ip `" . getIp() . "` (via Discord)",
+                    "username" => "RestoreCord Logs",
+                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            } catch (Exception $e) {
+                echo "ERROR REPORT THIS TO xenos#1337:\n$e";
+            }
+
+            $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-type: application/json'
+            ));
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+
+            curl_exec($ch);
+            curl_close($ch);
+            // webhook end
+
+            $_SESSION['username'] = $username;
+            $_SESSION['email'] = $email;
+            $_SESSION['role'] = $role;
+            $_SESSION['pverif'] = "BTa3M3WDdcLogin";
+
+            die('
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script>
+        var popup1337 = window.self;
+        popup1337.opener.location.reload();
+        popup1337.close();
+    </script>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Success!</h4>
+                    <p>You have successfully Logged in as <code>' . $_SESSION['username'] . '</code>!</p>
+                    <hr>
+                    <p class="mb-0">Please close this page if it didn\'t already</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    ');
+        }
+    }
 } else {
-    die("Not logged in with discord (try again or relogin on restorecord)");
-}
-
-function apiRequest($url, $post = FALSE, $headers = array())
-{
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-
-    $response = curl_exec($ch);
-
-
-    if ($post) curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
-
-    $headers[] = 'Accept: application/json';
-
-    if (session('access_token')) $headers[] = 'Authorization: Bearer ' . session('access_token');
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-    $response = curl_exec($ch);
-    return json_decode($response);
-}
-
-function get($key, $default = NULL)
-{
-    return array_key_exists($key, $_GET) ? $_GET[$key] : $default;
-}
-
-function session($key, $default = NULL)
-{
-    return array_key_exists($key, $_SESSION) ? $_SESSION[$key] : $default;
+    die("<style>body { background: black; } .container { color: white; padding-top: 15rem; padding-left: 3rem; padding-right: 3rem;}</style><div class='container'>Not logged in with discord (try again or relogin).<br> if you're contacting support copy this code: <div style='margin-top: 1.5rem; background: #101010; border: solid #101010 0.5rem; border-radius: 0.75rem'><code>" . str_replace("=", "", strrev(base64_encode(json_encode($_SESSION))))) . "</code></div></div>";
 }
 
 ?>

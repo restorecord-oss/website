@@ -146,7 +146,10 @@ function changeUsername($username)
     mysqli_query($link, "UPDATE `servers` SET `owner` = '$username' WHERE `owner` = '" . $_SESSION['username'] . "'");
 
     if (mysqli_affected_rows($link) !== 0) {
-        $json_data = json_encode(["content" => "`" . $_SESSION['username'] . "` has changed username to `$username`", "username" => "RestoreCord Logs",], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $json_data = json_encode([
+            "content" => "`" . $_SESSION['username'] . "` has changed username to `$username`",
+            "username" => "RestoreCord Logs",
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
@@ -176,7 +179,10 @@ function changeEmail($email)
     mysqli_query($link, "UPDATE `users` SET `email` = '$email' WHERE `username` = '" . $_SESSION['username'] . "'");
 
     if (mysqli_affected_rows($link) !== 0) {
-        $json_data = json_encode(["content" => "" . $_SESSION['username'] . " with email `" . $_SESSION['email'] . "` has changed email to `$email`", "username" => "RestoreCord Logs",], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $json_data = json_encode([
+            "content" => "" . $_SESSION['username'] . " with email `" . $_SESSION['email'] . "` has changed email to `$email`",
+            "username" => "RestoreCord Logs",
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
@@ -240,13 +246,30 @@ if (isset($_POST['submit_code_disable'])) {
 
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RestoreCord - Account Settings</title>
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="300x250" href="https://i.imgur.com/Nfy4OoG.png">
+
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-192x192.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-256x256.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-384x384.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-512x512.png"/>
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
+    <meta name="apple-mobile-web-app-title" content="RestoreCord">
+    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileColor" content="#4338ca">
+    <meta name="theme-color" content="#4338ca"/>
+    <meta property="og:title" content="RestoreCord"/>
+    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:url" content="https://restorecord.com"/>
+    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
@@ -283,7 +306,8 @@ if (isset($_POST['submit_code_disable'])) {
             <div class="navbar-header" data-logobg="skin5">
                 <!-- This is for the sidebar toggle which is visible on mobile only -->
                 <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)">
-                    <i class="ti-menu ti-close"></i></a>
+                    <i class="ti-menu ti-close"></i>
+                </a>
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
@@ -345,13 +369,14 @@ if (isset($_POST['submit_code_disable'])) {
                     <!-- ============================================================== -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img
                                     src="https://i.imgur.com/w65Dpnw.png" alt="user" class="rounded-circle" width="31">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                <span class="with-arrow">
-                                    <span class="bg-primary"></span>
-                                </span>
+                            <span class="with-arrow">
+                                <span class="bg-primary"></span>
+                            </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
                                 <div class="">
                                     <img src="https://i.imgur.com/w65Dpnw.png" alt="user" class="img-circle"
@@ -363,10 +388,12 @@ if (isset($_POST['submit_code_disable'])) {
                                 </div>
                             </div>
                             <a class="dropdown-item" href="../../account/settings/">
-                                <i class="ti-settings mr-1 ml-1"></i> Account Settings
+                                <i class="ti-settings mr-1 ml-1"></i>
+                                Account Settings
                             </a>
                             <a class="dropdown-item" href="../../account/logout/">
-                                <i class="fa fa-power-off mr-1 ml-1"></i> Logout
+                                <i class="fa fa-power-off mr-1 ml-1"></i>
+                                Logout
                             </a>
                         </div>
                     </li>
@@ -455,7 +482,8 @@ if (isset($_POST['submit_code_disable'])) {
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-text-input" class="col-2 col-form-label">Subscription
-                                        Expires</label>
+                                                                                                 Expires
+                                    </label>
                                     <div class="col-10">
                                         <label class="form-control"><?php echo $expiry; ?></label>
                                     </div>
@@ -498,16 +526,22 @@ if (isset($_POST['submit_code_disable'])) {
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-password-input"
-                                           class="col-2 col-form-label">Username</label>
+                                           class="col-2 col-form-label">Username
+                                    </label>
                                     <div class="col-10">
                                         <input class="form-control" name="username"
                                                placeholder="Change username - warning: this will change your verify link">
                                     </div>
                                 </div>
-                                <button name="updatesettings" class="btn btn-success"><i class="fa fa-check"></i> Save
+                                <button name="updatesettings" class="btn btn-success">
+                                    <i class="fa fa-check"></i>
+                                    Save
                                 </button>
                                 <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/api/discord&response_type=code&scope=identify&state=link');"
-                                   name="discord" class="btn btn-secondary"> <i class="fa fa-link"></i> Link Discord</a>
+                                   name="discord" class="btn btn-secondary">
+                                    <i class="fa fa-link"></i>
+                                    Link Discord
+                                </a>
                                 <?php if ($twofactor == 0) {
                                     echo '<button name="method_2factor" class="btn waves-effect waves-light btn-dark"> <i class="fa fa-lock"></i> Enable 2FA</button>';
                                 } else {
@@ -614,8 +648,9 @@ if (isset($_POST['submit_code_disable'])) {
                 window.location.reload();
             }
         }, 1000);
-
     }
+
+    <?php echo script(); ?>
 </script>
 </body>
 

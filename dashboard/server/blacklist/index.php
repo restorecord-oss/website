@@ -71,13 +71,30 @@ function changeServer($username)
 
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RestoreCord - Blacklist</title>
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/w65Dpnw.png">
+
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-192x192.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-256x256.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-384x384.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-512x512.png"/>
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
+    <meta name="apple-mobile-web-app-title" content="RestoreCord">
+    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileColor" content="#4338ca">
+    <meta name="theme-color" content="#4338ca"/>
+    <meta property="og:title" content="RestoreCord"/>
+    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:url" content="https://restorecord.com"/>
+    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
     <link
@@ -176,8 +193,10 @@ function changeServer($username)
         <nav class="navbar top-navbar navbar-expand-md navbar-dark">
             <div class="navbar-header" data-logobg="skin5">
                 <!-- This is for the sidebar toggle which is visible on mobile only -->
-                <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i
-                            class="ti-menu ti-close"></i></a>
+                <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)">
+                    <i
+                            class="ti-menu ti-close"></i>
+                </a>
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
@@ -196,8 +215,10 @@ function changeServer($username)
                 <!-- ============================================================== -->
                 <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
                    data-toggle="collapse" data-target="#navbarSupportedContent"
-                   aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
-                            class="ti-more"></i></a>
+                   aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <i
+                            class="ti-more"></i>
+                </a>
             </div>
             <!-- ============================================================== -->
             <!-- End Logo -->
@@ -207,9 +228,13 @@ function changeServer($username)
                 <!-- toggle and nav items -->
                 <!-- ============================================================== -->
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item d-none d-md-block"><a
+                    <li class="nav-item d-none d-md-block">
+                        <a
                                 class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)"
-                                data-sidebartype="mini-sidebar"><i class="mdi mdi-menu font-24"></i></a></li>
+                                data-sidebartype="mini-sidebar">
+                            <i class="mdi mdi-menu font-24"></i>
+                        </a>
+                    </li>
                 </ul>
                 <!-- ============================================================== -->
                 <!-- Right side toggle and nav items -->
@@ -220,13 +245,15 @@ function changeServer($username)
                     <!-- ============================================================== -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                           href="/discord/" target="discord"> <i
+                           href="/discord/" target="discord">
+                            <i
                                     class="mdi mdi-discord font-24"></i>
                         </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                           href="/telegram/" target="telegram"> <i
+                           href="/telegram/" target="telegram">
+                            <i
                                     class="mdi mdi-telegram font-24"></i>
                         </a>
                     </li>
@@ -235,23 +262,35 @@ function changeServer($username)
                     <!-- ============================================================== -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img
                                     src="https://i.imgur.com/w65Dpnw.png" alt="user" class="rounded-circle"
-                                    width="31"></a>
+                                    width="31">
+                        </a>
                         <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                            <span class="with-arrow"><span class="bg-primary"></span></span>
+                            <span class="with-arrow">
+                                <span class="bg-primary"></span>
+                            </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
-                                <div class=""><img src="https://i.imgur.com/w65Dpnw.png" alt="user"
-                                                   class="img-circle" width="60"></div>
+                                <div class="">
+                                    <img src="https://i.imgur.com/w65Dpnw.png" alt="user"
+                                         class="img-circle" width="60">
+                                </div>
                                 <div class="ml-2">
                                     <h4 class="mb-0"><?php echo $_SESSION['username']; ?></h4>
                                     <p class=" mb-0"><?php echo $_SESSION['email']; ?></p>
                                 </div>
                             </div>
-                            <a class="dropdown-item" href="../../account/settings/"><i
-                                        class="ti-settings mr-1 ml-1"></i> Account Settings</a>
-                            <a class="dropdown-item" href="../../account/logout/"><i
-                                        class="fa fa-power-off mr-1 ml-1"></i> Logout</a>
+                            <a class="dropdown-item" href="../../account/settings/">
+                                <i
+                                        class="ti-settings mr-1 ml-1"></i>
+                                Account Settings
+                            </a>
+                            <a class="dropdown-item" href="../../account/logout/">
+                                <i
+                                        class="fa fa-power-off mr-1 ml-1"></i>
+                                Logout
+                            </a>
                         </div>
                     </li>
                     <!-- ============================================================== -->
@@ -348,7 +387,8 @@ function changeServer($username)
                 <br>
                 <button type="submit" name="change" class="btn btn-primary" style="color:white;">Submit</button>
                 <a
-                        style="padding-left:5px;color:#4e73df;" id="createe">Create Server</a>
+                        style="padding-left:5px;color:#4e73df;" id="createe">Create Server
+                </a>
             </form>
             <script type="text/javascript">
                 var myLink = document.getElementById('createe');
@@ -425,7 +465,10 @@ function changeServer($username)
                     <?php heador(); ?>
                     <br>
                     <a href="JavaScript:newPopup('https://discord.com/oauth2/authorize?client_id=791106018175614988&permissions=268435457&scope=applications.commands%20bot');"
-                       class="btn btn-info"> <i class="fab fa-discord"></i> Add Bot</a>
+                       class="btn btn-info">
+                        <i class="fab fa-discord"></i>
+                        Add Bot
+                    </a>
                     <br>
                     <br>
                     <script type="text/javascript">
@@ -621,6 +664,8 @@ function changeServer($username)
             url, 'popUpWindow',
             'menubar=no,width=500,height=777,location=no,resizable=no,scrollbars=yes,status=no')
     }
+
+    <?php echo script();?>
 </script>
 </body>
 
