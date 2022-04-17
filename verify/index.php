@@ -162,13 +162,15 @@ if (session('access_token') && !isset($_GET['guild'])) {
                 $result = curl_exec($ch);
                 curl_close($ch);
                 $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
-                if ($json->status === "ok") {
-                    if ($json->$ip->proxy === "yes") {
+                if ($json->status == "ok") {
+                    if ($json->$ip->proxy == "yes") {
                         $status = 'vpndetect';
                         if (!is_null($webhook)) {
                             /*
                                 WEBHOOK START
                             */
+
+                            $operator = $json->$ip->operator->name ? "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")" : "";
                             $timestamp = date("c");
                             $json_data = json_encode([
                                 "embeds" => [
@@ -205,7 +207,7 @@ if (session('access_token') && !isset($_GET['guild'])) {
                                             ],
                                             [
                                                 "name" => ":globe_with_meridians: Connection Info:",
-                                                "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``",
+                                                "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``\n" . $operator,
                                                 "inline" => true
                                             ]
                                         ]
@@ -415,14 +417,15 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                 $result = curl_exec($ch);
                 curl_close($ch);
                 $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
-                if ($json->status === "ok") {
-                    if ($json->$ip->proxy === "yes") {
+                if ($json->status == "ok") {
+                    if ($json->$ip->proxy == "yes") {
                         $status = 'vpndetect';
                         if (!is_null($webhook)) {
                             /*
                                 WEBHOOK START
                             */
 
+                            $operator = $json->$ip->operator->name ? "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")" : "";
                             $timestamp = date("c");
                             $json_data = json_encode([
                                 "embeds" => [
@@ -459,7 +462,7 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
                                             ],
                                             [
                                                 "name" => ":globe_with_meridians: Connection Info:",
-                                                "value" => "Type: ``" . $json->$ip->type . "``\nVPN ``" . $json->$ip->proxy . "``",
+                                                "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``\n" . $operator,
                                                 "inline" => true
                                             ]
                                         ]
