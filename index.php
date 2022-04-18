@@ -545,6 +545,7 @@
         <p class="text-gray-900 dark:text-gray-400"></p>
     </div>
 </footer>
+
 <script>
     window.addEventListener('load', function () {
         document.querySelector('footer.pb-10 .text-center p').innerText = 'Copyright © ' + new Date().getFullYear() + ' RestoreCord';
@@ -565,6 +566,12 @@
             return func;
         }(), 5000)
     });
+
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+    } else {
+        document.documentElement.classList.remove('dark')
+    }
 
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {

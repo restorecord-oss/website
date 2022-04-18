@@ -60,7 +60,9 @@
 <body class="antialiased dark:bg-slate-900 dark" id="home">
 <header class="header sticky top-0 z-10 flex w-full items-center justify-between py-5 border-b border-gray-200 dark:border-slate-800 backdrop-filter backdrop-blur-lg bg-opacity-30 transition-all">
     <div class="logo mx-12 xl:mx-32 hidden md:block">
-        <h2 class="text-gray-900 font-bold text-xl dark:text-gray-200">Restore<span class="text-indigo-600">Cord</span></h2>
+        <h2 class="text-gray-900 font-bold text-xl dark:text-gray-200">Restore
+            <span class="text-indigo-600">Cord</span>
+        </h2>
     </div>
 
     <div class="md:hidden mx-8">
@@ -580,6 +582,12 @@
     window.addEventListener('load', function () {
         document.querySelector('footer.pb-10 .text-center p').innerText = 'Copyright © ' + new Date().getFullYear() + ' RestoreCord';
     });
+
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+    } else {
+        document.documentElement.classList.remove('dark')
+    }
 </script>
 </body>
 </html>

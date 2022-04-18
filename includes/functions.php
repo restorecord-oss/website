@@ -65,6 +65,9 @@ function sanitize($input): ?string
         return NULL;
     }
 
+    $input = str_replace("'", "\'", $input);
+
+
     global $link; // needed to reference active MySQL connection
     //return $input;
     return mysqli_real_escape_string($link, htmlspecialchars($input));
@@ -113,12 +116,12 @@ function heador()
         global $link;
         $name = sanitize($_POST['name']);
 
-        if (strlen($name) > 20) {
+        if (mb_strlen($name, 'UTF-8') > 20) {
             box("Character limit for server name is 20 characters, please try again with shorter name.", 3);
             return;
         }
 
-        if (strlen($name) < 3) {
+        if (mb_strlen($name, 'UTF-8') < 3) {
             box("Character limit for server name is 3 characters, please try again with longer name.", 3);
             return;
         }
@@ -132,12 +135,12 @@ function heador()
         $server = sanitize($_SESSION['server_to_manage']);
 
         (mysqli_query($link, "UPDATE `servers` SET `name` = '$name' WHERE `name` = '$server' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
-        $_SESSION['server_to_manage'] = $name;
 
         if (mysqli_affected_rows($link) !== 0) {
             box("Successfully Renamed Server!", 2);
+            $_SESSION['server_to_manage'] = $name;
         } else {
-            box("Server Rename Failed!", 3);
+            box("Server Rename Failed! Contact Support", 3);
         }
     }
 
@@ -147,13 +150,13 @@ function heador()
         global $role;
         $appname = sanitize($_POST['appname']);
 
-        if (strlen($appname) > 20) {
+        if (mb_strlen($appname, 'UTF-8') > 20) {
             mysqli_close($link);
             box("Character limit for server name is 20 characters, please try again with shorter name.", 3);
             return;
         }
 
-        if (strlen($appname) < 3) {
+        if (mb_strlen($appname, 'UTF-8') < 3) {
             mysqli_close($link);
             box("Character limit for server name is 3 characters, please try again with longer name.", 3);
             return;
@@ -214,7 +217,7 @@ function heador()
         ?>
         <form class="text-left" method="POST">
             <p class="mb-4">Name:
-                <br><?php echo $_SESSION['server_to_manage']; ?>
+                <br><?php echo sanitize($_SESSION['server_to_manage']); ?>
                 <br/>
             <div class="mb-4">Verify Link:
                 <br>

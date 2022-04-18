@@ -41,6 +41,19 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+$serv = '';
+$rol = '';
+$ico = '';
+$redirect = '';
+$vpncheck = '';
+$auto_kick = '';
+$auto_kick_timer = '';
+$bg_img = '';
+$autoJoin = '';
+$redirectTime = '';
+$verifyDescription = '';
+$wh = '';
+
 
 function update()
 {
@@ -148,6 +161,50 @@ function changeServer($username)
     $_SESSION['serverid'] = $row["guildid"];
 
     box("You have changed Server!", 2);
+}
+
+if (isset($_SESSION['server_to_manage'])) {
+    try {
+        LoadServerSettings();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+}
+
+function LoadServerSettings() {
+    global $link;
+    global $serv;
+    global $rol;
+    global $ico;
+    global $redirect;
+    global $vpncheck;
+    global $auto_kick;
+    global $auto_kick_timer;
+    global $bg_img;
+    global $autoJoin;
+    global $redirectTime;
+    global $verifyDescription;
+    global $wh;
+    global $username;
+
+    $servname = sanitize($_SESSION['server_to_manage']);
+    ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$servname' AND `owner` = '$username'")) or die(mysqli_error($link));
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_array($result)) {
+            $serv = $row['guildid'];
+            $rol = $row['roleid'];
+            $ico = $row['pic'];
+            $redirect = $row['redirecturl'];
+            $vpncheck = $row['vpncheck'];
+            $auto_kick = $row['autoKickUnVerified'];
+            $auto_kick_timer = $row['autoKickUnVerifiedTime'];
+            $bg_img = $row['bg_image'];
+            $autoJoin = $row['autoJoin'];
+            $redirectTime = $row['redirectTime'];
+            $verifyDescription = $row['verifyDescription'];
+            $wh = $row['webhook'];
+        }
+    }
 }
 
 ?>
@@ -456,7 +513,7 @@ function changeServer($username)
 
                         $appname = $row['name'];
                         ?>
-                        <option><?php echo $appname; ?></option>
+                        <option><?php echo sanitize($appname); ?></option>
                         <?php
                     }
                     ?>
@@ -495,7 +552,7 @@ function changeServer($username)
                             <label for="example-tel-input" class="col-2 col-form-label">Selected App</label>
                             <div class="col-10">
                                 <input class="form-control"
-                                       value="<?php echo htmlspecialchars($_SESSION['server_to_manage']); ?>"
+                                       value="<?php echo sanitize($_SESSION['server_to_manage']); ?>"
                                        placeholder="Old Server Name" required disabled>
                             </div>
                         </div>
@@ -559,28 +616,6 @@ function changeServer($username)
 
                         }
                     </script>
-                    <?php
-                    if (isset($_SESSION['server_to_manage'])) {
-                        $servname = sanitize($_SESSION['server_to_manage']);
-                        ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$servname' AND `owner` = '$username'")) or die(mysqli_error($link));
-                        if (mysqli_num_rows($result) > 0) {
-                            while ($row = mysqli_fetch_array($result)) {
-                                $serv = $row['guildid'];
-                                $rol = $row['roleid'];
-                                $ico = $row['pic'];
-                                $redirect = $row['redirecturl'];
-                                $vpncheck = $row['vpncheck'];
-                                $auto_kick = $row['autoKickUnVerified'];
-                                $auto_kick_timer = $row['autoKickUnVerifiedTime'];
-                                $bg_img = $row['bg_image'];
-                                $autoJoin = $row['autoJoin'];
-                                $redirectTime = $row['redirectTime'];
-                                $verifyDescription = $row['verifyDescription'];
-                                $wh = $row['webhook'];
-                            }
-                        }
-                    }
-                    ?>
 
                     <?php
                     if (isset($_SESSION['server_to_manage'])) {
