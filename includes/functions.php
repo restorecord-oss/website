@@ -65,7 +65,7 @@ function sanitize($input): ?string
         return NULL;
     }
 
-    $input = str_replace(["'", " "], ["", ""], $input);
+    $input = str_replace("'", "", $input);
     $input = trim($input);
 
     global $link; // needed to reference active MySQL connection
