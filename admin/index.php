@@ -337,7 +337,6 @@ if (!$admin) {
                             box("Server successfully Banned!",2);
                             //echo "<meta http-equiv='Refresh' Content='2'>";
                         } else {
-                            mysqli_close($link);
                             box("Failed to ban server!", 3);
                             //echo "<meta http-equiv='Refresh' Content='2'>";
                         }

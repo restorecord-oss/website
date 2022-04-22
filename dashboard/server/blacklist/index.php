@@ -49,7 +49,6 @@ function changeServer($username)
     $selectOption = sanitize($_POST['taskOption']);
     ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
     if (mysqli_num_rows($result) === 0) {
-        mysqli_close($link);
         box("You don't own this server!", 3);
         return;
     }
@@ -570,7 +569,6 @@ function changeServer($username)
                     box("Blacklist Successfully Deleted!", 2);
                     //echo "<meta http-equiv='Refresh' Content='2'>";
                 } else {
-                    mysqli_close($link);
                     box("Failed To Delete Blacklist!", 3);
                 }
             }

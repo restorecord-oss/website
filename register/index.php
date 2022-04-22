@@ -266,7 +266,6 @@ function register()
     $_SESSION['email'] = $email;
     $_SESSION['role'] = 'tester';
     $_SESSION['img'] = 'https://i.imgur.com/w65Dpnw.png	';
-    mysqli_close($link);
 
     header("location: ../dashboard/server/settings/");
 }

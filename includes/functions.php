@@ -65,8 +65,8 @@ function sanitize($input): ?string
         return NULL;
     }
 
-    $input = str_replace("'", "\'", $input);
-
+    $input = str_replace(["'", " "], ["", ""], $input);
+    $input = trim($input);
 
     global $link; // needed to reference active MySQL connection
     //return $input;
@@ -151,13 +151,11 @@ function heador()
         $appname = sanitize($_POST['appname']);
 
         if (mb_strlen($appname, 'UTF-8') > 20) {
-            mysqli_close($link);
             box("Character limit for server name is 20 characters, please try again with shorter name.", 3);
             return;
         }
 
         if (mb_strlen($appname, 'UTF-8') < 3) {
-            mysqli_close($link);
             box("Character limit for server name is 3 characters, please try again with longer name.", 3);
             return;
         }
@@ -165,7 +163,6 @@ function heador()
 
         $result = mysqli_query($link, "SELECT * FROM servers WHERE name='$appname' AND owner='" . $_SESSION['username'] . "'");
         if (mysqli_num_rows($result) > 0) {
-            mysqli_close($link);
             box("You already own server with this name!", 3);
             return;
         }
@@ -176,7 +173,6 @@ function heador()
             $result = mysqli_query($link, "SELECT * FROM servers WHERE owner='$owner'");
 
             if (mysqli_num_rows($result) > 0) {
-                mysqli_close($link);
                 box("Free plan only supports one server!", 3);
                 return;
             }
@@ -185,7 +181,6 @@ function heador()
             $result = mysqli_query($link, "SELECT * FROM servers WHERE owner='$owner'");
 
             if (mysqli_num_rows($result) > 4) {
-                mysqli_close($link);
                 box("Premium only supports 5 Servers!", 3);
                 return;
             }
