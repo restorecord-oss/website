@@ -39,6 +39,6 @@ else
     $_SESSION['owner'] = $owner;
     $_SESSION['name'] = $server;
  
-	header("Location: https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https%3A%2F%2Frestorecord.com%2Fauth%2F&response_type=code&scope=identify+guilds.join");
+	header("Location: https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https%3A%2F%2Frestorecord.com%2Fauth%2F&response_type=code&prompt=none&scope=identify+guilds.join");
 }
 ?>

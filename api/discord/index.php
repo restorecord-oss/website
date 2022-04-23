@@ -1,47 +1,3 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>RestoreCord</title>
-
-    <link rel="manifest" href="manifest.json"/>
-    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-192x192.png"/>
-    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-256x256.png"/>
-    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-384x384.png"/>
-    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-512x512.png"/>
-
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
-    <meta name="apple-mobile-web-app-title" content="RestoreCord">
-    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
-    <meta name="msapplication-TileColor" content="#4338ca">
-    <meta name="theme-color" content="#4338ca"/>
-    <meta property="og:title" content="RestoreCord"/>
-    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
-    <meta property="og:url" content="https://restorecord.com"/>
-    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-
-    <script>
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", function () {
-                navigator.serviceWorker
-                    .register("/serviceWorker.js")
-                    .then(res => console.log("service worker registered"))
-                    .catch(err => console.log("service worker not registered", err))
-            })
-        }
-    </script>
-</head>
-
 <?php
 
 include '../../includes/connection.php';
@@ -115,7 +71,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
         curl_exec($ch);
         curl_close($ch);
 
-        if ($row['role'] == "premium") {
+        if ($row['role'] === "premium") {
             $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/939535559146209300";
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -124,7 +80,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_exec($ch);
             curl_close($ch);
-        } else if ($row['role'] == "business") {
+        } else if ($row['role'] === "business") {
             $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/956242821222920212";
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");

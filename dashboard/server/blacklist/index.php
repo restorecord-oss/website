@@ -662,8 +662,6 @@ function changeServer($username)
             url, 'popUpWindow',
             'menubar=no,width=500,height=777,location=no,resizable=no,scrollbars=yes,status=no')
     }
-
-    <?php echo script();?>
 </script>
 </body>
 

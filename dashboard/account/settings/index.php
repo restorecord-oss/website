@@ -537,7 +537,7 @@ if (isset($_POST['submit_code_disable'])) {
                                     <i class="fa fa-check"></i>
                                     Save
                                 </button>
-                                <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/api/discord&response_type=code&scope=identify&state=link');"
+                                <a href="JavaScript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/api/discord&response_type=code&scope=identify&prompt=none&state=link');"
                                    name="discord" class="btn btn-secondary">
                                     <i class="fa fa-link"></i>
                                     Link Discord
@@ -649,8 +649,6 @@ if (isset($_POST['submit_code_disable'])) {
             }
         }, 1000);
     }
-
-    <?php echo script(); ?>
 </script>
 </body>
 

@@ -21,7 +21,7 @@ function resetpww()
 {
     global $link;
     $recaptcha_response = sanitize($_POST['recaptcha_response']);
-    $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=6LczE5wcAAAAAPaxp7B95p3NWrzMxA4A_0HoB4BE&response=' . $recaptcha_response);
+    $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=6Lcqx1weAAAAAPiN1x9BGVXswfn-ifNjOQtzVf3O&response=' . $recaptcha_response);
     $recaptcha = json_decode($recaptcha);
 
     // Take action based on the score returned:
@@ -584,10 +584,10 @@ function resetpww()
         /*//////////////////////////////////////////////////////////////////
         [ Responsive ]*/
     </style>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LczE5wcAAAAAHXJy3TX_KzaK45ZvegzqcAeoJ-i"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lcqx1weAAAAAItfxuTTU-iodSGuQ0l6HUVErTkv"></script>
     <script>
         grecaptcha.ready(function () {
-            grecaptcha.execute('6LczE5wcAAAAAHXJy3TX_KzaK45ZvegzqcAeoJ-i', {
+            grecaptcha.execute('6Lcqx1weAAAAAItfxuTTU-iodSGuQ0l6HUVErTkv', {
                 action: 'contact'
             }).then(function (token) {
                 var recaptchaResponse = document.getElementById('recaptchaResponse');

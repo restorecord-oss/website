@@ -395,9 +395,6 @@ $isadmin = $row['admin'];
 <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.restorecord.com/dashboard/dist/js/pages/datatable/datatable-advanced.init.js"></script>
-<script>
-    <?php echo script(); ?>
-</script>
 </body>
 
 </html>

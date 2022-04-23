@@ -35,7 +35,7 @@ if (!isset($_GET['guild'])) {
 
     premium_check($owner);
 
-    $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '$owner' AND `name` = '$server'");
+    $result = mysqli_query($link, "SELECT `guildid`,`roleid`,`pic`,`redirecturl`,`webhook`,`vpncheck`,`redirectTime`,`autoKickUnVerified`,`autoKickUnVerifiedTime`,`autoJoin`,`bg_image`,`verifyDescription`,`banned` FROM `servers` WHERE `owner` = '$owner' AND `name` = '$server'");
 
     if (mysqli_num_rows($result) === 0) {
         $svr = "Not Available";
@@ -71,7 +71,7 @@ if (!isset($_GET['guild'])) {
 
     }
 } else {
-    $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '" . $_GET['guild'] . "'");
+    $result = mysqli_query($link, "SELECT `owner`,`name`,`guildid`,`roleid`,`pic`,`redirecturl`,`webhook`,`vpncheck`,`redirectTime`,`autoKickUnVerified`,`autoKickUnVerifiedTime`,`autoJoin`,`bg_image`,`verifyDescription`,`banned` FROM `servers` WHERE `guildid` = '" . $_GET['guild'] . "'");
 
     if (mysqli_num_rows($result) === 0) {
         $svr = "Not Available";
@@ -112,7 +112,7 @@ if (!isset($_GET['guild'])) {
     }
 }
 
-if (session('access_token') && !isset($_GET['guild'])) {
+if (!isset($_GET['guild']) && session('access_token')) {
     global $pieces;
     global $owner;
     global $server;
@@ -126,241 +126,22 @@ if (session('access_token') && !isset($_GET['guild'])) {
     global $verifyDescription;
     global $autoJoin;
 
-    $user_check = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$owner'");
-    $role = mysqli_fetch_array($user_check)["role"];
-
-    $result = mysqli_query($link, "SELECT * FROM `members` WHERE `server` = '$guildid'");
-    if (mysqli_num_rows($result) > 100 && $role === "free") {
-        $status = "needpremium";
+    $result = mysqli_query($link, "SELECT COUNT(`id`) FROM `members` WHERE `server` = '$guildid'");
+    if (!(mysqli_num_rows($result) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT `role` FROM `users` WHERE `username` = '$owner'"))["role"] === "premium")) {
+        $user = apiRequest("https://discord.com/api/users/@me");
+        $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid);
     } else {
-
-        try {
-            $user = apiRequest("https://discord.com/api/users/@me");
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-
-        // echo var_dump($user);
-
-        $headers = array(
-            'Content-Type: application/json',
-            'Authorization: Bot ' . $token
-        );
-        $data = array("access_token" => session('access_token'));
-        $data_string = json_encode($data, JSON_THROW_ON_ERROR);
-
-        $result = mysqli_query($link, "SELECT * FROM `blacklist` WHERE (`userid` = '" . $user->id . "' OR `ip` = '" . getIp() . "') AND `server` = '$guildid'");
-        if (mysqli_num_rows($result) > 0) {
-            $status = "blacklisted";
-        } else {
-
-            $ip = getIp();
-            if ($vpncheck) {
-                $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = curl_exec($ch);
-                curl_close($ch);
-                $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
-                if ($json->status == "ok") {
-                    if ($json->$ip->proxy == "yes") {
-                        $status = 'vpndetect';
-                        if (!is_null($webhook)) {
-                            /*
-                                WEBHOOK START
-                            */
-
-                            $operator = $json->$ip->operator->name ? "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")" : "";
-                            $timestamp = date("c");
-                            $json_data = json_encode([
-                                "embeds" => [
-                                    [
-                                        "title" => "Failed VPN Check",
-                                        "type" => "rich",
-                                        "timestamp" => $timestamp,
-                                        "color" => hexdec("ff0000"),
-                                        "author" => [
-                                            "name" => $user->username . "#" . $user->discriminator,
-                                            "url" => "https://discord.id/?prefill=" . $user->id,
-                                            "icon_url" => $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5
-                                        ],
-                                        "fields" => [
-                                            [
-                                                "name" => ":bust_in_silhouette: User:",
-                                                "value" => "``" . $user->id . "``",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => ":earth_americas: Client IP:",
-                                                "value" => "``" . $ip . "``",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => "​",
-                                                "value" => "​",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
-                                                "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => ":globe_with_meridians: Connection Info:",
-                                                "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``\n" . $operator,
-                                                "inline" => true
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-                            $ch = curl_init($webhook);
-
-                            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-
-                            curl_setopt($ch, CURLOPT_POST, 1);
-                            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                            curl_setopt($ch, CURLOPT_HEADER, 0);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                            curl_exec($ch);
-                            curl_close($ch);
-                            /*
-                                WEBHOOK END
-                            */
-                        }
-                    }
-                }
-            }
-
-            if ($status !== "vpndetect") {
-                $_SESSION['userid'] = $user->id;
-
-                if ($autoJoin) {
-                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_exec($ch);
-                    curl_close($ch);
-                }
-                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_exec($ch);
-
-                curl_close($ch);
-
-                $avatar = $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5;
-                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . "#" . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
-                mysqli_query($link, "UPDATE `members` SET `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "' WHERE `userid` = '" . $user->id . "';");
-                $_SESSION['access_token'] = NULL;
-                $_SESSION['refresh_token'] = NULL;
-
-                if (!is_null($webhook)) {
-                    /*
-                        WEBHOOK START
-                    */
-
-                    $timestamp = date("c");
-
-                    $datenum = ((float)$user->id / 4194304) + 1420070400000;
-                    $tst = round(($datenum / 1000));
-                    $dt = new DateTime("@$tst");
-
-                    $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $result = curl_exec($ch);
-                    curl_close($ch);
-                    $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
-                    if ($json->status === "error") {
-                        $newJson = [
-                            "status" => "error",
-                            $ip => [
-                                "isocode" => "us",
-                                "country" => "United States",
-                                "provider" => "CloudFlare, Inc.",
-                                "proxy" => "Unknown",
-                                "type" => "Unknown",
-                            ]
-                        ];
-                        $JaySon = json_encode($newJson, JSON_THROW_ON_ERROR);
-                        $json = json_decode($JaySon, false, 512, JSON_THROW_ON_ERROR);
-                    }
-
-                    $json_data = json_encode([
-                        "embeds" => [
-                            [
-                                "title" => "Successfully Verified",
-                                "type" => "rich",
-                                "timestamp" => $timestamp,
-                                "color" => hexdec("52ef52"),
-                                "author" => [
-                                    "name" => $user->username . "#" . $user->discriminator,
-                                    "url" => "https://discord.id/?prefill=" . $user->id,
-                                    "icon_url" => $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5
-                                ],
-                                "fields" => [
-                                    [
-                                        "name" => ":bust_in_silhouette: User:",
-                                        "value" => "``" . $user->id . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":earth_americas: Client IP:",
-                                        "value" => "``" . $ip . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":clock1: Account Age:",
-                                        "value" => "``" . get_timeago($tst) . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
-                                        "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":globe_with_meridians: Connection Info:",
-                                        "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``",
-                                        "inline" => true
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-                    $ch = curl_init($webhook);
-
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_exec($ch);
-                    curl_close($ch);
-                    /*
-                        WEBHOOK END
-                    */
-                }
-
-                $status = "added"; // successfully verified user
-            }
-        }
+        $status = "needpremium";
     }
 }
 
-if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) {
+if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token')) {
+    global $pieces;
+    global $owner;
+    global $server;
+    global $svr;
+    global $link;
+    global $vpncheck;
     global $redirectTime;
     global $auto_kick;
     global $auto_kick_time;
@@ -370,8 +151,8 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
 
     $guildid = sanitize($_GET['guild']);
 
-    $svr_check = mysqli_query($link, "SELECT * FROM `servers` WHERE `guildid` = '$guildid'");
-    $svr_ck = mysqli_fetch_array($svr_check);
+    $svr_check = mysqli_query($link, "SELECT `owner` FROM `servers` WHERE `guildid` = '$guildid'");
+    $owner = mysqli_fetch_array($svr_check)['owner'];
 
     // check if server exists
     if (mysqli_num_rows($svr_check) < 1) {
@@ -381,239 +162,12 @@ if (isset($_GET['guild']) && session('access_token') && !empty($_GET['guild'])) 
         return;
     }
 
-    $user_check = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '" . $svr_ck['owner'] . "'");
-    $role = mysqli_fetch_array($user_check)["role"];
-
-    $result = mysqli_query($link, "SELECT * FROM `members` WHERE `server` = '$guildid'");
-    if (mysqli_num_rows($result) > 100 && $role === "free") {
-        $status = "needpremium";
+    $result = mysqli_query($link, "SELECT COUNT(`id`) FROM `members` WHERE `server` = '$guildid'");
+    if (!(mysqli_num_rows($result) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT `role` FROM `users` WHERE `username` = '$owner'"))["role"] === "premium")) {
+        $user = apiRequest("https://discord.com/api/users/@me");
+        $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid);
     } else {
-
-        try {
-            $user = apiRequest("https://discord.com/api/users/@me");
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-
-        // echo var_dump($user);
-
-        $headers = array(
-            'Content-Type: application/json',
-            'Authorization: Bot ' . $token
-        );
-        $data = array("access_token" => session('access_token'));
-        $data_string = json_encode($data, JSON_THROW_ON_ERROR);
-
-        $result = mysqli_query($link, "SELECT * FROM `blacklist` WHERE (`userid` = '" . $user->id . "' OR `ip` = '" . getIp() . "') AND `server` = '$guildid'");
-        if (mysqli_num_rows($result) > 0) {
-            $status = "blacklisted";
-        } else {
-
-            $ip = getIp();
-            if ($vpncheck) {
-                $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = curl_exec($ch);
-                curl_close($ch);
-                $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
-                if ($json->status == "ok") {
-                    if ($json->$ip->proxy == "yes") {
-                        $status = 'vpndetect';
-                        if (!is_null($webhook)) {
-                            /*
-                                WEBHOOK START
-                            */
-
-                            $operator = $json->$ip->operator->name ? "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")" : "";
-                            $timestamp = date("c");
-                            $json_data = json_encode([
-                                "embeds" => [
-                                    [
-                                        "title" => "Failed VPN Check",
-                                        "type" => "rich",
-                                        "timestamp" => $timestamp,
-                                        "color" => hexdec("ff0000"),
-                                        "author" => [
-                                            "name" => $user->username . "#" . $user->discriminator,
-                                            "url" => "https://discord.id/?prefill=" . $user->id,
-                                            "icon_url" => $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5
-                                        ],
-                                        "fields" => [
-                                            [
-                                                "name" => ":bust_in_silhouette: User:",
-                                                "value" => "``" . $user->id . "``",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => ":earth_americas: Client IP:",
-                                                "value" => "``" . $ip . "``",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => "​",
-                                                "value" => "​",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
-                                                "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
-                                                "inline" => true
-                                            ],
-                                            [
-                                                "name" => ":globe_with_meridians: Connection Info:",
-                                                "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``\n" . $operator,
-                                                "inline" => true
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-                            $ch = curl_init($webhook);
-
-                            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-
-                            curl_setopt($ch, CURLOPT_POST, 1);
-                            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                            curl_setopt($ch, CURLOPT_HEADER, 0);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                            curl_exec($ch);
-                            curl_close($ch);
-                            /*
-                                WEBHOOK END
-                            */
-                        }
-                    }
-                }
-            }
-
-            if ($status !== "vpndetect") {
-                $_SESSION['userid'] = $user->id;
-                if ($autoJoin) {
-
-                    $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_exec($ch);
-                    curl_close($ch);
-                }
-
-                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_exec($ch);
-
-                curl_close($ch);
-
-                $avatar = $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5;
-                mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . "#" . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
-                mysqli_query($link, "UPDATE `members` SET `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "' WHERE `userid` = '" . $user->id . "';");
-                $_SESSION['access_token'] = NULL;
-                $_SESSION['refresh_token'] = NULL;
-
-                if (!is_null($webhook)) {
-                    /*
-                        WEBHOOK START
-                    */
-
-                    $timestamp = date("c");
-
-                    $datenum = ((float)$user->id / 4194304) + 1420070400000;
-                    $tst = round(($datenum / 1000));
-                    $dt = new DateTime("@$tst");
-
-                    $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $result = curl_exec($ch);
-                    curl_close($ch);
-                    $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
-                    if ($json->status === "error") {
-                        $newJson = [
-                            "status" => "error",
-                            $ip => [
-                                "isocode" => "us",
-                                "country" => "United States",
-                                "provider" => "CloudFlare, Inc.",
-                                "proxy" => "Unknown",
-                                "type" => "Unknown",
-                            ]
-                        ];
-                        $JaySon = json_encode($newJson, JSON_THROW_ON_ERROR);
-                        $json = json_decode($JaySon, false, 512, JSON_THROW_ON_ERROR);
-                    }
-
-                    $json_data = json_encode([
-                        "embeds" => [
-                            [
-                                "title" => "Successfully Verified",
-                                "type" => "rich",
-                                "timestamp" => $timestamp,
-                                "color" => hexdec("52ef52"),
-                                "author" => [
-                                    "name" => $user->username . "#" . $user->discriminator,
-                                    "url" => "https://discord.id/?prefill=" . $user->id,
-                                    "icon_url" => $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5
-                                ],
-                                "fields" => [
-                                    [
-                                        "name" => ":bust_in_silhouette: User:",
-                                        "value" => "``" . $user->id . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":earth_americas: Client IP:",
-                                        "value" => "``" . $ip . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":clock1: Account Age:",
-                                        "value" => "``" . get_timeago($tst) . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
-                                        "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
-                                        "inline" => true
-                                    ],
-                                    [
-                                        "name" => ":globe_with_meridians: Connection Info:",
-                                        "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``",
-                                        "inline" => true
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-
-                    $ch = curl_init($webhook);
-
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_exec($ch);
-                    curl_close($ch);
-                    /*
-                        WEBHOOK END
-                    */
-                }
-
-                $status = "added"; // successfully verified user
-            }
-        }
+        $status = "needpremium";
     }
 }
 
@@ -852,18 +406,22 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         }
 
         .card .row {
-            margin: 1.5rem;
+            margin-left: 1.5rem;
+            margin-right: 1.5rem;
+            margin-bottom: -0.5rem;
         }
 
         @media (max-width: 960px) {
             button.button[value="no"] {
                 transition: .5s;
-                margin-left: auto;
+                margin-left: 0.5rem;
+                font-size: 1.5rem;
             }
 
             a.button[value="yes"] {
                 transition: .5s;
-                margin-right: auto;
+                margin-right: 0.5rem;
+                font-size: 1.5rem;
             }
 
             .bg-img {
@@ -871,22 +429,15 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
             }
 
             .card p {
-                margin-left: 20px;
-                margin-right: 20px;
-                font-size: 16px;
-            }
-
-            .row a:first-child {
-                margin-bottom: 5px;
-            }
-
-            .row a:last-child {
-                margin-top: 5px;
+                margin-left: 40px;
+                margin-right: 40px;
+                font-size: 20px;
             }
 
             .card {
                 width: 100%;
                 height: 100%;
+                max-width: 100%;
             }
 
             .card-img {
@@ -894,7 +445,24 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
             }
 
             .card h2 {
-                font-size: 20px;
+                font-size: 40px;
+            }
+
+            button.button[value="report"] {
+                width: 3.3rem !important;
+                font-size: x-small !important;
+            }
+        }
+
+        @media (max-width: 477px) {
+            a.button[value="yes"] {
+                margin-right: auto;
+                margin-bottom: 0.25rem;
+            }
+
+            button.button[value="no"] {
+                margin-left: auto;
+                margin-top: 0.25rem;
             }
         }
 
@@ -933,6 +501,35 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         .alert-danger {
             border: 2px solid #c43232;
         }
+
+        button.button[value="report"] {
+            cursor: pointer;
+            transition: .5s;
+            margin: 0.5rem;
+            background: #ce616140;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            box-shadow: #ce616140 0 0 5px;
+            border: none;
+            width: 5.5rem;
+            font-size: medium;
+        }
+
+
+        button.button[value="report"]:hover {
+            cursor: pointer;
+            transition: .5s;
+            margin: 0.5rem;
+            background: #ce616160;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            box-shadow: #ce616160 0 0 5px;
+            border: none;
+            width: 5.5rem;
+            font-size: medium;
+        }
     </style>
 </head>
 
@@ -970,6 +567,9 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         case 'needpremium':
             echo '<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> The Server Owner needs to Upgrade, he has reached 100 member limit for free users. Please tell him, thank you.</div>';
             break;
+        case 'alreadyverified':
+            echo '<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> You\'ve already verified.</div>';
+            break;
     }
 
     if (!empty($redirecturl) && $status === 'added') {
@@ -982,7 +582,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         if (!empty($verifyDescription)) {
             echo htmlspecialchars($verifyDescription);
         } else {
-            echo 'Click Verify to be joined to server if it is ever raided or deleted. Click opt out to stop joining the server';
+            echo 'Click Verify to be pulled into server if it is ever raided or deleted. Click opt out to stop getting pulled into the server';
         }
         ?></p>
     <hr>
@@ -996,14 +596,15 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
     <form method="POST">
         <div class="row">
             <a class="button" value="yes"
-               href="https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/auth/&response_type=code&scope=identify+guilds.join">
+               href="https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/auth/&response_type=code&prompt=none&scope=identify+guilds.join">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
                      viewBox="0 0 16 16" style="transform: scale(2.5);margin-right: 10px;">
                     <path
                             d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z">
                     </path>
                 </svg>
-                Verify</a>
+                Verify
+            </a>
             <button class="button" value="no" name="optout" style="cursor: pointer" type="submit">
                 <svg style="transform: scale(2.5);margin-right: 10px;" xmlns="http://www.w3.org/2000/svg" width="16"
                      height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
@@ -1016,9 +617,16 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
     </form>
 
     <div class="text-center text-muted">
-        <h6><small>By verifying you agree to the <a href="/privacy" class="link-primary">privacy policy</a></small></h6>
+        <h6>
+            <small>By verifying you agree to the
+                <a href="/privacy" class="link-primary">privacy policy</a>
+            </small>
+        </h6>
     </div>
-</div>
-</body>
 
+</div>
+<!--<button class="button" value="report" type="submit">-->
+<!--    Report-->
+<!--</button>-->
+</body>
 </html>

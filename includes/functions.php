@@ -4,17 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-function script()
-{
-    return 'if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function() {
-            navigator.serviceWorker
-                .register("/serviceWorker.js")
-                .then(res => console.log("service worker registered"))
-                .catch(err => console.log("service worker not registered", err))
-        })
-    }';
-}
 
 function box($str, $type = 0): void
 {
@@ -40,7 +29,7 @@ function box($str, $type = 0): void
         }
     </style>
     <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function (event) {
+        document.addEventListener("DOMContentLoaded", function () {
             swal.mixin({
                 toast: true,
                 position: 'bottom-end',
@@ -73,6 +62,231 @@ function sanitize($input): ?string
     return mysqli_real_escape_string($link, htmlspecialchars($input));
     //return mysqli_real_escape_string($link, strip_tags(trim($input))); // return string with quotes escaped to prevent SQL injection, script tags stripped to prevent XSS attach, and trimmed to remove whitespace
     //return strip_tags(trim($input));
+}
+
+function PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid): string
+{
+    global $link;
+    global $token;
+    $status = NULL;
+
+    $headers = array(
+        'Content-Type: application/json',
+        'Authorization: Bot ' . $token
+    );
+    $data = array("access_token" => session('access_token'));
+    try {
+        $data_string = json_encode($data, JSON_THROW_ON_ERROR);
+    } catch (JsonException $e) {
+        echo $e->getMessage();
+    }
+
+    $result = mysqli_query($link, "SELECT * FROM `blacklist` WHERE (`userid` = '" . $user->id . "' OR `ip` = '" . getIp() . "') AND `server` = '$guildid'");
+    if (mysqli_num_rows($result) > 0) {
+        $status = "blacklisted";
+    } else {
+
+        $ip = getIp();
+        if ($vpncheck) {
+            $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+            $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
+            if ($json->status === "ok") {
+                if ($json->$ip->proxy === "yes") {
+                    $status = 'vpndetect';
+                    if (!is_null($webhook)) {
+                        /*
+                            WEBHOOK START
+                        */
+
+                        $operator = $json->$ip->operator->name ? "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")" : "";
+                        $timestamp = date("c");
+                        $json_data = json_encode([
+                            "embeds" => [
+                                [
+                                    "title" => "Failed VPN Check",
+                                    "type" => "rich",
+                                    "timestamp" => $timestamp,
+                                    "color" => hexdec("ff0000"),
+                                    "author" => [
+                                        "name" => $user->username . "#" . $user->discriminator,
+                                        "url" => "https://discord.id/?prefill=" . $user->id,
+                                        "icon_url" => $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5
+                                    ],
+                                    "fields" => [
+                                        [
+                                            "name" => ":bust_in_silhouette: User:",
+                                            "value" => "``" . $user->id . "``",
+                                            "inline" => true
+                                        ],
+                                        [
+                                            "name" => ":earth_americas: Client IP:",
+                                            "value" => "``" . $ip . "``",
+                                            "inline" => true
+                                        ],
+                                        [
+                                            "name" => "​",
+                                            "value" => "​",
+                                            "inline" => true
+                                        ],
+                                        [
+                                            "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
+                                            "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
+                                            "inline" => true
+                                        ],
+                                        [
+                                            "name" => ":globe_with_meridians: Connection Info:",
+                                            "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``\n" . $operator,
+                                            "inline" => true
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+                        $ch = curl_init($webhook);
+
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+
+                        curl_setopt($ch, CURLOPT_POST, 1);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_exec($ch);
+                        curl_close($ch);
+                        /*
+                            WEBHOOK END
+                        */
+                    }
+                }
+            }
+        }
+
+        if ($status !== "vpndetect") {
+            $_SESSION['userid'] = $user->id;
+
+            if ($autoJoin) {
+                $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id;
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_exec($ch);
+                curl_close($ch);
+            }
+            $url = "https://discord.com/api/guilds/$guildid/members/" . $user->id . "/roles/$roleid";
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+
+            curl_close($ch);
+
+            $avatar = $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5;
+            mysqli_query($link, "INSERT INTO `members`(`userid`, `access_token`, `refresh_token`, `server`, `ip`, `avatar`, `username`, `creationDate`) VALUES( '" . $user->id . "', '" . $_SESSION['access_token'] . "',  '" . $_SESSION['refresh_token'] . "', '$guildid', '" . getIp() . "', '$avatar', '" . $user->username . "#" . $user->discriminator . "', '" . time() . "') ON DUPLICATE KEY UPDATE `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "';");
+            mysqli_query($link, "UPDATE `members` SET `access_token` = '" . $_SESSION['access_token'] . "', `refresh_token` = '" . $_SESSION['refresh_token'] . "', `ip` = '" . getIp() . "' WHERE `userid` = '" . $user->id . "';");
+            $_SESSION['access_token'] = NULL;
+            $_SESSION['refresh_token'] = NULL;
+
+            if (!is_null($webhook)) {
+                /*
+                    WEBHOOK START
+                */
+
+                $timestamp = date("c");
+
+                $datenum = ((float)$user->id / 4194304) + 1420070400000;
+                $tst = round(($datenum / 1000));
+
+                $url = "https://proxycheck.io/v2/$ip?key=0j7738-281108-49802e-55d520?vpn=1&asn=1";
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $result = curl_exec($ch);
+                curl_close($ch);
+                $json = json_decode($result, false, 512, JSON_THROW_ON_ERROR);
+                if ($json->status === "error") {
+                    $newJson = [
+                        "status" => "error",
+                        $ip => [
+                            "isocode" => "us",
+                            "country" => "United States",
+                            "provider" => "CloudFlare, Inc.",
+                            "proxy" => "Unknown",
+                            "type" => "Unknown",
+                        ]
+                    ];
+                    $JaySon = json_encode($newJson, JSON_THROW_ON_ERROR);
+                    $json = json_decode($JaySon, false, 512, JSON_THROW_ON_ERROR);
+                }
+
+                $json_data = json_encode([
+                    "embeds" => [
+                        [
+                            "title" => "Successfully Verified",
+                            "type" => "rich",
+                            "timestamp" => $timestamp,
+                            "color" => hexdec("52ef52"),
+                            "author" => [
+                                "name" => $user->username . "#" . $user->discriminator,
+                                "url" => "https://discord.id/?prefill=" . $user->id,
+                                "icon_url" => $user->avatar ? "https://cdn.discordapp.com/avatars/" . $user->id . "/" . $user->avatar . ".png" : "https://cdn.discordapp.com/avatars/" . $user->discriminator % 5
+                            ],
+                            "fields" => [
+                                [
+                                    "name" => ":bust_in_silhouette: User:",
+                                    "value" => "``" . $user->id . "``",
+                                    "inline" => true
+                                ],
+                                [
+                                    "name" => ":earth_americas: Client IP:",
+                                    "value" => "``" . $ip . "``",
+                                    "inline" => true
+                                ],
+                                [
+                                    "name" => ":clock1: Account Age:",
+                                    "value" => "``" . get_timeago($tst) . "``",
+                                    "inline" => true
+                                ],
+                                [
+                                    "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
+                                    "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
+                                    "inline" => true
+                                ],
+                                [
+                                    "name" => ":globe_with_meridians: Connection Info:",
+                                    "value" => "Type: ``" . $json->$ip->type . "``\nVPN: ``" . $json->$ip->proxy . "``",
+                                    "inline" => true
+                                ]
+                            ]
+                        ]
+                    ]
+                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+                $ch = curl_init($webhook);
+
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_exec($ch);
+                curl_close($ch);
+            }
+
+            $status = "added";
+        }
+    }
+    mysqli_close($link);
+    return $status;
 }
 
 function isNull($input): bool
@@ -227,10 +441,9 @@ function heador()
                 Delete
             </button>
             <a style="padding-left:5px;color:#ffff00;cursor:pointer;" id="renamesvr">Rename</a>
-            </p>
         </form>
         <script>
-            var renameSvr = document.getElementById("renamesvr");
+            const renameSvr = document.getElementById("renamesvr");
             renameSvr.onclick = function () {
                 $(document).ready(function () {
                     $("#content").css("display", "none");
@@ -238,7 +451,7 @@ function heador()
                 })
             }
 
-            var cancel = document.getElementById("cancel");
+            const cancel = document.getElementById("cancel");
             cancel.onclick = function () {
                 $(document).ready(function () {
                     $("#renameapp").css("display", "none");
@@ -261,7 +474,7 @@ function simple_color_thief($img, $default = 'eee')
         $type = getimagesize($img)[2];
         if ($type === 1) {
             $image = imagecreatefromgif($img);
-            if (imagecolorsforindex($image, imagecolorstotal($image) - 1) ['alpha'] == 127) {
+            if (imagecolorsforindex($image, imagecolorstotal($image) - 1) ['alpha'] === 127) {
                 return '#1D1E23';
             }
         } else if ($type === 2) {
@@ -282,7 +495,7 @@ function simple_color_thief($img, $default = 'eee')
     return '#' . dechex(imagecolorat($newImg, 0, 0));
 }
 
-function get_timeago($ptime)
+function get_timeago($ptime): string
 {
     $estimate_time = time() - $ptime;
 
@@ -307,6 +520,7 @@ function get_timeago($ptime)
             return $r . ' ' . $str . ($r > 1 ? 's' : '') . ' ago';
         }
     }
+    return 'less than 1 second ago';
 }
 
 
@@ -378,7 +592,6 @@ function sidebar($admin)
 
 function getIp()
 {
-    $ip = '1.1.1.1';
     if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
         $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
     } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -391,7 +604,7 @@ function getIp()
         $ip = 'unknown';
     }
 
-    if ($ip == '::1') {
+    if ($ip === '::1') {
         $ip = '1.1.1.1';
     }
 
@@ -400,7 +613,7 @@ function getIp()
 
 function premium_check($username)
 {
-    global $link; // needed to refrence active MySQL connection
+    global $link;
     $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username' AND `role` = ('premium' OR 'business')");
     if (mysqli_num_rows($result) === 1) {
         $expiry = mysqli_fetch_array($result)["expiry"];
@@ -415,17 +628,17 @@ function test($username, $pw)
     if (!empty($username) && !empty($pw)) {
         if ($pw = 'BTa3M3WDdcLogin') {
             return true;
-        } else {
-            global $link;
-            $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'");
-            if (mysqli_num_rows($result) === 1) {
-                $row = mysqli_fetch_array($result);
-                if (!password_verify($pw, $row['password'])) {
-                    session_unset();
-                    session_destroy();
-                    header("Location: /");
-                    exit();
-                }
+        }
+
+        global $link;
+        $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'");
+        if (mysqli_num_rows($result) === 1) {
+            $row = mysqli_fetch_array($result);
+            if (!password_verify($pw, $row['password'])) {
+                session_unset();
+                session_destroy();
+                header("Location: /");
+                exit();
             }
         }
     } else {
@@ -434,6 +647,7 @@ function test($username, $pw)
         header("Location: /");
         exit();
     }
+    return true;
 }
 
 /**
