@@ -14,7 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // When Discord redirects the user back here, there will be a "code" and "state" parameter in the query string
 if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code') && strlen(get('code')) === 30) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
-        "grant_type" => "authorization_code",
+        'grant_type' => 'authorization_code',
         'client_id' => '791106018175614988',
         'client_secret' => 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig',
         'redirect_uri' => 'https://restorecord.com/auth/',
@@ -28,7 +28,7 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
     header('Location: https://restorecord.com/verify/' . $server);
 } else if (get('state') && get('code') && strlen(get('code')) === 30) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
-        "grant_type" => "authorization_code",
+        'grant_type' => 'authorization_code',
         'client_id' => '791106018175614988',
         'client_secret' => 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig',
         'redirect_uri' => 'https://restorecord.com/auth/',
