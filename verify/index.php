@@ -15,6 +15,7 @@ $pieces = NULL;
 $owner = NULL;
 $server = NULL;
 $svr = NULL;
+$guildid = NULL;
 
 if (!isset($_GET['guild'])) {
     global $pieces;
@@ -123,6 +124,7 @@ if (!isset($_GET['guild']) && session('access_token')) {
     global $auto_kick;
     global $auto_kick_time;
     global $bg_img;
+    global $guildid;
     global $verifyDescription;
     global $autoJoin;
 
