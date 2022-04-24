@@ -115,62 +115,49 @@ function changeServer($username)
     <![endif]-->
     <?php
 
-    if (!$_SESSION['server_to_manage']) // no app selected yet
-
-    {
+    if (!isset($_SESSION['server_to_manage'])) {
 
         $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '$username' AND `banned` IS NULL"); // select all apps where owner is current user
-    if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
-    {
+        if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
+        {
+            if (mysqli_num_rows($result) === 1) // if the user only owns one app, load that app (they can still change app after it's loaded)
+            {
+                $row = mysqli_fetch_array($result);
+                $_SESSION['server_to_manage'] = $row["name"];
+                $_SESSION['serverid'] = $row["guildid"];
 
-    if (mysqli_num_rows($result) === 1) // if the user only owns one app, load that app (they can still change app after it's loaded)
-    {
-        $row = mysqli_fetch_array($result);
-        $_SESSION['server_to_manage'] = $row["name"];
-        $_SESSION['serverid'] = $row["guildid"];
-        ?>
-        <script>
-            $(document).ready(function () {
-                $('#content').css("display", "block")
-            });
-        </script>
-    <?php
-    }
-    else
-    {
-    // otherwise if the user has more than one app, choose which app to load
-    ?>
-        <script>
-            $(document).ready(function () {
-                $('#changeapp').css("display", "block")
-            });
-        </script>
-    <?php
-    }
-    }
-    else
-    {
-    // if user doesnt have any apps created, take them to the screen to create an app
-    ?>
-        <script>
-            $(document).ready(function () {
-                $('#createapp').css("display", "block")
-            });
-        </script>
-    <?php
-    }
-    }
-    else
-    {
-    // app already selected, load page like normal
-    ?>
-        <script>
+                echo '<script>
+                    $(document).ready(function () {
+                        $("#content").css("display", "block")
+                    });
+                </script>';
+            } else {
+                // otherwise if the user has more than one app, choose which app to load
+
+                echo '<script>
+                    $(document).ready(function () {
+                        $("#changeapp").css("display", "block")
+                    });
+                </script>';
+            }
+        } else {
+            // if user doesnt have any apps created, take them to the screen to create an app
+
+            echo '<script>
+                $(document).ready(function () {
+                    $("#createapp").css("display", "block")
+                });
+            </script>';
+
+        }
+    } else {
+        // app already selected, load page like normal
+        echo '<script>
             $(document).ready(function () {
                 $("#content").css("display", "block")
                 $("#sticky-footer bg-white").css("display", "block")
             });
-        </script>
-        <?php
+        </script>';
     }
     ?>
 </head>

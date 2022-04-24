@@ -102,7 +102,11 @@ function PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid): str
                             WEBHOOK START
                         */
 
-                        $operator = $json->$ip->operator->name ? "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")" : "";
+                        if (isset($json->$ip->operator->name)) {
+                            $operator = "Operator: [``" . $json->$ip->operator->name . "``](" . $json->$ip->operator->url . ")";
+                        } else {
+                            $operator = "";
+                        }
                         $timestamp = date("c");
                         $json_data = json_encode([
                             "embeds" => [
