@@ -17,11 +17,11 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
         'grant_type' => 'authorization_code',
         'client_id' => '791106018175614988',
         'client_secret' => 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig',
-        'redirect_uri' => 'http://localhost/auth/',
+        'redirect_uri' => 'https://restorecord.com/auth/',
         'code' => get('code')
     ));
 
-    if (!empty($token->access_token) && !empty($token->refresh_token)) {
+    if (isset($token->access_token, $token->refresh_token)) {
         $_SESSION['access_token'] = $token->access_token;
         $_SESSION['refresh_token'] = $token->refresh_token;
 
@@ -33,11 +33,11 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
         'grant_type' => 'authorization_code',
         'client_id' => '791106018175614988',
         'client_secret' => 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig',
-        'redirect_uri' => 'http://localhost/auth/',
+        'redirect_uri' => 'https://restorecord.com/auth/',
         'code' => get('code')
     ));
 
-    if (!empty($token->access_token) && !empty($token->refresh_token)) {
+    if (isset($token->access_token, $token->refresh_token)) {
         $_SESSION['access_token'] = $token->access_token;
         $_SESSION['refresh_token'] = $token->refresh_token;
 
