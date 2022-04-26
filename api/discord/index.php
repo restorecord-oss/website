@@ -125,14 +125,10 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
             $email = $row['email'];
             $role = $row['role'];
 
-            try {
-                $json_data = json_encode([
-                    "content" => "$username has logged in with ip `" . getIp() . "` (via Discord)",
-                    "username" => "RestoreCord Logs",
-                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            } catch (Exception $e) {
-                echo "ERROR REPORT THIS TO xenos#1337:\n$e";
-            }
+            $json_data = json_encode([
+                "content" => "$username has logged in with ip `" . getIp() . "` (via Discord)",
+                "username" => "RestoreCord Logs",
+            ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
             $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(

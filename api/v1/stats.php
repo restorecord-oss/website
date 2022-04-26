@@ -18,7 +18,11 @@ $members = number_format($row[0]);
 
 mysqli_close($link);
 
-$stats = array('accounts' => $users, 'servers' => $servers, 'members' => $members);
+$stats = array(
+    'accounts' => $users,
+    'servers' => $servers,
+    'members' => $members
+);
 
 header('Content-Type: application/json');
 

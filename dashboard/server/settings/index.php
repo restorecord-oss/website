@@ -41,18 +41,18 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$serv = '';
-$rol = '';
-$ico = '';
-$redirect = '';
-$vpncheck = '';
-$auto_kick = '';
-$auto_kick_timer = '';
-$bg_img = '';
-$autoJoin = '';
-$redirectTime = '';
-$verifyDescription = '';
-$wh = '';
+$serv = NULL;
+$rol = NULL;
+$ico = NULL;
+$redirect = NULL;
+$vpncheck = NULL;
+$auto_kick = NULL;
+$auto_kick_timer = NULL;
+$bg_img = NULL;
+$autoJoin = NULL;
+$redirectTime = NULL;
+$verifyDescription = NULL;
+$wh = NULL;
 
 
 function update()
@@ -170,7 +170,8 @@ if (isset($_SESSION['server_to_manage'])) {
     }
 }
 
-function LoadServerSettings() {
+function LoadServerSettings()
+{
     global $link;
     global $serv;
     global $rol;
@@ -310,7 +311,7 @@ function LoadServerSettings() {
     ?>
 </head>
 
-<body data-theme="<?php echo(($darkmode ? 1 : 0) ? 'light' : 'dark'); ?>">
+<body data-theme="<?php echo($darkmode ? 'light' : 'dark'); ?>">
 <!-- ============================================================== -->
 <!-- Preloader - style you can find in spinners.css -->
 <!-- ============================================================== -->
@@ -655,7 +656,7 @@ function LoadServerSettings() {
                                                placeholder="Link to redirect to after your members verify">
                                     </div>
                                     <?php
-                                    if ($role != "free") {
+                                    if ($role !== "free") {
                                         ?>
                                         <label for="example-tel-input" class="col-2 col-form-label">Redirect Time
                                                                                                     (sec)
@@ -666,15 +667,18 @@ function LoadServerSettings() {
                                                    type="number" value="<?= $redirectTime ?>">
                                         </div>
                                         <?php
+                                    } else {
+                                        ?>
+                                        <input type="hidden" name="redirectTime">
+                                        <?php
                                     }
                                     ?>
-                                    <input type="hidden" name="redirectTime">
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Webhook Link</label>
                                     <div class="col-10">
                                         <?php
-                                        if ($role == "free") {
+                                        if ($role === "free") {
                                             ?>
                                             <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" name="wh">
@@ -708,7 +712,7 @@ function LoadServerSettings() {
                                     <label for="example-tel-input" class="col-2 col-form-label">VPN Check</label>
                                     <div class="col-10">
                                         <?php
-                                        if ($role == "free") {
+                                        if ($role === "free") {
                                             ?>
                                             <input class="form-control" placeholder="Premium only feature" disabled>
                                             <input type="hidden" value="0" name="vpncheck">
@@ -732,7 +736,7 @@ function LoadServerSettings() {
                                     <label for="example-tel-input" class="col-2 col-form-label">Auto kick</label>
                                     <div class="col-10">
                                         <?php
-                                        if ($role == "free") {
+                                        if ($role === "free") {
                                         ?>
                                         <input class="form-control" placeholder="Premium only feature" disabled>
                                         <input type="hidden" value="0" name="autokick">
@@ -768,7 +772,7 @@ function LoadServerSettings() {
                             <label for="example-tel-input" class="col-2 col-form-label">Background Image</label>
                             <div class="col-10">
                                 <?php
-                                if ($role == "free" || $role == "premium") {
+                                if ($role === "free" || $role === "premium") {
                                     ?>
                                     <input class="form-control" placeholder="Business only feature" disabled>
                                     <input type="hidden" name="bg_img">
@@ -787,7 +791,7 @@ function LoadServerSettings() {
                             <label for="example-tel-input" class="col-2 col-form-label">Verify page Description</label>
                             <div class="col-10">
                                 <?php
-                                if ($role == "free" || $role == "premium") {
+                                if ($role === "free" || $role === "premium") {
                                     ?>
                                     <input class="form-control" placeholder="Business only feature" disabled>
                                     <input type="hidden" name="verifyDescription">

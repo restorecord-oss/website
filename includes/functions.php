@@ -618,7 +618,7 @@ function getIp()
 function premium_check($username)
 {
     global $link;
-    $result = mysqli_query($link, "SELECT expiry FROM `users` WHERE `username` = '$username' AND `role` = ('premium' OR 'business')");
+    $result = mysqli_query($link, "SELECT expiry FROM `users` WHERE `username` = '$username' AND `role` != 'free'");
     if (mysqli_num_rows($result) === 1) {
         $expiry = mysqli_fetch_array($result)["expiry"];
         if ($expiry < time()) {
@@ -654,9 +654,6 @@ function test($username, $pw)
     return true;
 }
 
-/**
- * @throws JsonException
- */
 function apiRequest($url, $post = FALSE, $headers = array())
 {
 
@@ -682,9 +679,6 @@ function apiRequest($url, $post = FALSE, $headers = array())
     return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
 }
 
-/**
- * @throws JsonException
- */
 function wh_log($webhook_url, $msg, $un)
 {
     if (empty($webhook_url)) {
@@ -694,7 +688,6 @@ function wh_log($webhook_url, $msg, $un)
     $json_data = json_encode([
         "content" => $msg,
         "username" => (string)$un,
-
     ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
     $ch = curl_init($webhook_url);

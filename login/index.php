@@ -80,11 +80,7 @@ function login()
         mysqli_query($link, "UPDATE `users` SET `last_ip` = '$ip' WHERE `username` = '$username'") or die(mysqli_error($link));
     } else if ($last_ip !== $ip) {
         mysqli_query($link, "UPDATE `users` SET `last_ip` = '$ip' WHERE `username` = '$username'") or die(mysqli_error($link));
-        try {
-            $details = json_decode(file_get_contents("https://ipinfo.io/$ip?token=871723f6a65a43"), false, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            echo "Report this to xenos#1337\n$e";
-        }
+        $details = json_decode(file_get_contents("https://ipinfo.io/$ip?token=871723f6a65a43"), false, 512, JSON_THROW_ON_ERROR);
         $htmlContent = '
         <html>
         <head>
@@ -97,7 +93,7 @@ function login()
                         <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%">
                             <tbody>
                                 <tr style="vertical-align:top">
-                                    <td height="130" style="vertical-align: top;padding-top:0;padding-left:0;padding-right:0;padding-bottom: 0;background: #000000 url(https://i.imgur.com/VDY9rlb.png) no-repeat left;" background="https://i.imgur.com/VDY9rlb.png"></td>
+                                    <td height="130" style="vertical-align: top;padding-top:0;padding-left:0;padding-right:0;padding-bottom: 0;background: url(https://i.imgur.com/VDY9rlb.png) no-repeat center;background-size: 100%;"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -214,7 +210,7 @@ function login()
                 ]
             ]
         ];
-        $response = $mj->post(Mailjet\Resources::$Email, ['body' => $body]);
+        $mj->post(Mailjet\Resources::$Email, ['body' => $body]);
 
         mysqli_query($link, "UPDATE `users` SET `last_ip` = '$ip' WHERE `username` = '$username'") or die(mysqli_error($link));
 
@@ -223,14 +219,10 @@ function login()
     if (password_verify($password, $pass)) {
         box("Successfully logged in!", 3);
         // webhook
-        try {
-            $json_data = json_encode([
-                "content" => "$username has logged in with ip `" . $_SERVER['HTTP_CF_CONNECTING_IP'] . "`",
-                "username" => "RestoreCord Logs",
-            ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        } catch (Exception $e) {
-            echo "ERROR REPORT THIS TO xenos#1337:\n$e";
-        }
+        $json_data = json_encode([
+            "content" => "$username has logged in with ip `" . $_SERVER['HTTP_CF_CONNECTING_IP'] . "`",
+            "username" => "RestoreCord Logs",
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -250,7 +242,7 @@ function login()
         $_SESSION['role'] = $role;
         $_SESSION['pverif'] = $password;
 
-        header("location: ../dashboard/server/settings/");
+        header("location: /dashboard");
     }
 }
 
