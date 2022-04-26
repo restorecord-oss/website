@@ -133,9 +133,9 @@ if (!isset($_GET['guild']) && session('access_token') && session('refresh_token'
         return;
     }
 
-    $result = mysqli_query($link, "SELECT COUNT(id) FROM `members` WHERE `server` = '$guildid'");
+    $result = mysqli_query($link, "SELECT id FROM `members` WHERE `server` = '$guildid'");
 
-    if (!(mysqli_num_rows($result) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$owner'"))["role"] === "premium")) {
+    if (mysqli_num_rows($result) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$owner'"))["role"] === "free") {
         $user = apiRequest("https://discord.com/api/users/@me");
         $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid);
     } else {
@@ -169,8 +169,9 @@ if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token') &
 
     $owner = mysqli_fetch_array($svr_check)['owner'];
 
-    $result = mysqli_query($link, "SELECT COUNT(id) FROM `members` WHERE `server` = '$guildid'");
-    if (!(mysqli_num_rows($result) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$owner'"))["role"] === "premium")) {
+    $result = mysqli_query($link, "SELECT id FROM `members` WHERE `server` = '$guildid'");
+
+    if (mysqli_num_rows($result) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$owner'"))["role"] === "free") {
         $user = apiRequest("https://discord.com/api/users/@me");
         $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid);
     } else {
