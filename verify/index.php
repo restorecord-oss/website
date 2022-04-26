@@ -113,22 +113,17 @@ if (!isset($_GET['guild'])) {
     }
 }
 
-if (!isset($_GET['guild']) && session('access_token')) {
-    global $pieces;
+if (!isset($_GET['guild']) && session('access_token') && session('refresh_token')) {
     global $owner;
-    global $server;
     global $svr;
     global $link;
     global $vpncheck;
-    global $redirectTime;
-    global $auto_kick;
-    global $auto_kick_time;
-    global $bg_img;
     global $guildid;
-    global $verifyDescription;
     global $autoJoin;
     global $webhook;
     global $roleid;
+    global $server_image;
+    global $status;
 
     $svr_check = mysqli_query($link, "SELECT owner FROM `servers` WHERE `guildid` = '$guildid'");
     if (mysqli_num_rows($svr_check) < 1) {
@@ -148,7 +143,7 @@ if (!isset($_GET['guild']) && session('access_token')) {
     }
 }
 
-if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token')) {
+if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token') && session('refresh_token')) {
     global $pieces;
     global $owner;
     global $server;

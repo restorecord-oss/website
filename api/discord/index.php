@@ -45,14 +45,14 @@ if (get('code') && get('state')) {
 if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) && !isset($_GET['code'])) {
     if ($_SESSION['state'] === "link") {
         $user = apiRequest("https://discord.com/api/users/@me");
-        $result = mysqli_query($link, "UPDATE `users` SET `userId` = '" . $user->id . "' WHERE `username` = '" . $_SESSION['username'] . "';");
+        mysqli_query($link, "UPDATE `users` SET `userId` = '" . $user->id . "' WHERE `username` = '" . $_SESSION['username'] . "';");
         $json_data = json_encode([
             "content" => "" . $_SESSION['username'] . " linked account `" . $user->id . "`",
             "username" => "RestoreCord Logs",
         ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         $username = $_SESSION['username'];
-        ($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
+        ($result = mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
         $row = mysqli_fetch_array($result);
 
         $headers = array(
@@ -118,7 +118,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
 } else if (isset($_SESSION['access_token'], $_SESSION['state']) && !isset($_GET['code'])) {
     if ($_SESSION['state'] === 'login') {
         $user = apiRequest("https://discord.com/api/users/@me");
-        $result = mysqli_query($link, "SELECT * FROM `users` WHERE `userId` = '" . $user->id . "'");
+        $result = mysqli_query($link, "SELECT username,email,role FROM `users` WHERE `userId` = '" . $user->id . "'");
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_array($result);
             $username = $row['username'];

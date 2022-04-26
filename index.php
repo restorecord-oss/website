@@ -291,6 +291,10 @@
                     1 Server
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
+                    <i class="fas fa-check text-indigo-600"></i>
+                    Trustworthy Bot & In-App Popup
+                </li>
+                <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
                     Server Backups
                 </li>
@@ -354,6 +358,10 @@
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
+                    Trustworthy Bot & In-App Popup
+                </li>
+                <li class="my-2 font-bold text-lg text-gray-200">
+                    <i class="fas fa-check text-indigo-600"></i>
                     Server Backups
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
@@ -413,6 +421,10 @@
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
                     Unlimited Servers
+                </li>
+                <li class="my-2 font-bold text-lg text-gray-200">
+                    <i class="fas fa-check text-indigo-600"></i>
+                    Trustworthy Bot & In-App Popup
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>

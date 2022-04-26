@@ -23,7 +23,7 @@ $username = $_SESSION['username'];
 premium_check($username);
 test($_SESSION['username'], $_SESSION['pverif']);
 
-($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
+($result = mysqli_query($link, "SELECT banned,role,darkmode,admin FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
 $row = mysqli_fetch_array($result);
 
 $banned = $row['banned'];

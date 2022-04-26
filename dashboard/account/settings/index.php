@@ -8,15 +8,17 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include '../../../includes/connection.php';
 include '../../../includes/functions.php';
+
 if (!isset($_SESSION['username'])) {
     header("Location: ../../../login/");
     exit();
+
 }
 $username = $_SESSION['username'];
 premium_check($username);
 test($_SESSION['username'], $_SESSION['pverif']);
 
-($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
+($result = mysqli_query($link, "SELECT banned,role,darkmode,admin,userId FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
 
 $row = mysqli_fetch_array($result);
 $banned = $row['banned'];
@@ -26,11 +28,11 @@ if (!is_null($banned)) {
     session_destroy();
     exit();
 }
-$role = $row['role'];
-$_SESSION['role'] = $role;
+
+$_SESSION['role'] = $row['role'];
 $darkmode = $row['darkmode'];
 $isadmin = $row['admin'];
-$discord = $row['userId'];
+$discord = $row['userId'] ?: "Not Linked.";
 
 require_once '../../../auth/GoogleAuthenticator.php';
 $gauth = new GoogleAuthenticator();
@@ -39,21 +41,49 @@ $gauth = new GoogleAuthenticator();
 function enableTowFA($gauth)
 {
     global $link;
-    $two_fac = true;
     $code_2factor = $gauth->createSecret();
-    $integrate_code = mysqli_query($link, "UPDATE `users` SET `googleAuthCode` = '$code_2factor' WHERE `username` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link));
+    mysqli_query($link, "UPDATE `users` SET `googleAuthCode` = '$code_2factor' WHERE `username` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link));
     $google_QR_Code = $gauth->getQRCodeGoogleUrl($_SESSION['username'], $code_2factor, 'RestoreCord');
     echo '
     </br>
     </br>
+    <style>
+    .code_2factor {
+        font-size: 105%;
+        color: #fff;
+        filter: blur(0.20rem);
+        -webkit-filter: blur(0.20rem);
+        -moz-filter: blur(0.20rem);
+        -ms-filter: blur(0.20rem);
+        -o-filter: blur(0.20rem);
+        -webkit-transition: all 0.25s ease-in-out;
+        -moz-transition: all 0.25s ease-in-out;
+        -ms-transition: all 0.25s ease-in-out;
+        -o-transition: all 0.25s ease-in-out;
+        transition: all 0.25s ease-in-out;
+    }
+    .code_2factor:hover {
+        filter:blur(0rem);
+        -webkit-filter:blur(0rem);
+        -moz-filter:blur(0rem);
+        -ms-filter:blur(0rem);
+        -o-filter:blur(0rem);
+        -webkit-transition: all 0.25s ease-in-out;
+        -moz-transition: all 0.25s ease-in-out;
+        -ms-transition: all 0.25s ease-in-out;
+        -o-transition: all 0.25s ease-in-out;
+        transition: all 0.25s ease-in-out;
+    }
+    </style>
     <form method="POST" action="">
         <div class="row">
             <div class="form-group">
-                <label>Scan this QR code into your 2FA App.</label>
+                <label>Scan this QR code via your Authenticator App.</label>
+                </br>
                 <img src="' . $google_QR_Code . '" alt="qrcode"/>
                 </br>
                 </br>
-                <label>Alternatively, you can set it manually, code: ' . $code_2factor . '</label>
+                <label>Alternatively, you can set it manually, code: <code class="code_2factor">' . $code_2factor . '</code></label>
                 <input type="text" name="scan_code" id="scan_code" maxlength="6" placeholder="6 Digit Code from 2FA app" class="form-control mb-4" required>
                 <button type="submit" class="btn btn-primary" name="submit_code" id="submit_code">Submit</button>
             </div>
@@ -63,7 +93,6 @@ function enableTowFA($gauth)
 
 function disableTwoFA()
 {
-    $two_fac = true;
     echo '
     </br>
     </br>
@@ -95,6 +124,8 @@ function activateTwoFA($gauth)
         $enable_2factor = mysqli_query($link, "UPDATE `users` SET `twofactor` = '1' WHERE `username` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link));
         if ($enable_2factor) {
             box("Successfully enabled 2-Factor Authentication!", 2);
+            $ip = getIp();
+            wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has enabled 2-Factor Authentication. `$ip`", "RestoreCord Logs");
         } else {
             box("Failed to enable 2-Factor Authentication!", 3);
         }
@@ -119,6 +150,8 @@ function deactivateTwoFA($gauth)
     if ($checkResult) {
         $enable_2factor = mysqli_query($link, "UPDATE `users` SET `twofactor` = '0' WHERE `username` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link));
         if ($enable_2factor) {
+            $ip = getIp();
+            wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has DISABLED 2-Factor Authentication `$ip`", "RestoreCord Logs");
             box("Successfully disabled 2-Factor Authentication!", 2);
         } else {
             box("Failed to disable 2-Factor Authentication!", 3);
@@ -146,22 +179,7 @@ function changeUsername($username)
     mysqli_query($link, "UPDATE `servers` SET `owner` = '$username' WHERE `owner` = '" . $_SESSION['username'] . "'");
 
     if (mysqli_affected_rows($link) !== 0) {
-        $json_data = json_encode([
-            "content" => "`" . $_SESSION['username'] . "` has changed username to `$username`",
-            "username" => "RestoreCord Logs",
-        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-        $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        curl_exec($ch);
-        curl_close($ch);
-        // webhook end
-
+        wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has changed their username to `$username`", "RestoreCord Logs");
         $_SESSION['username'] = $username;
     }
 }
@@ -179,34 +197,11 @@ function changeEmail($email)
     mysqli_query($link, "UPDATE `users` SET `email` = '$email' WHERE `username` = '" . $_SESSION['username'] . "'");
 
     if (mysqli_affected_rows($link) !== 0) {
-        $json_data = json_encode([
-            "content" => "" . $_SESSION['username'] . " with email `" . $_SESSION['email'] . "` has changed email to `$email`",
-            "username" => "RestoreCord Logs",
-        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-        $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        curl_exec($ch);
-        curl_close($ch);
-        // webhook end
-
+        wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has changed their email from `{$_SESSION['email']}` to `$email`", "RestoreCord Logs");
         $_SESSION['email'] = $email;
     }
 }
 
-
-if (isset($_POST['method_2factor'])) {
-    enableTowFA($gauth);
-}
-
-if (isset($_POST['method_2factor_disable'])) {
-    disableTwoFA();
-}
 
 if (isset($_POST['updatesettings']) && isset($_POST['pw']) && isset($_POST['email']) && isset($_POST['username'])) {
 
@@ -229,18 +224,13 @@ if (isset($_POST['updatesettings']) && isset($_POST['pw']) && isset($_POST['emai
     if (isset($pw) && trim($pw) !== '') {
         $pass_encrypted = password_hash($pw, PASSWORD_BCRYPT);
         mysqli_query($link, "UPDATE `users` SET `password` = '$pass_encrypted' WHERE `username` = '" . $_SESSION['username'] . "'");
+        $ip = getIp();
+        wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has changed their password. `$ip`", "RestoreCord Logs");
     }
 
     box("Successfully updated your Account Settings!", 2);
 }
 
-if (isset($_POST['submit_code'])) {
-    activateTwoFA($gauth);
-}
-
-if (isset($_POST['submit_code_disable'])) {
-    deactivateTwoFA($gauth);
-}
 
 ?>
 
@@ -548,6 +538,24 @@ if (isset($_POST['submit_code_disable'])) {
                                     echo '<button name="method_2factor_disable" class="btn waves-effect waves-light btn-dark"> <i class="fa fa-lock"></i> Disable 2FA</button>';
                                 } ?>
                             </form>
+                            <?php
+
+                            if (isset($_POST['method_2factor'])) {
+                                enableTowFA($gauth);
+                            }
+
+                            if (isset($_POST['method_2factor_disable'])) {
+                                disableTwoFA();
+                            }
+
+                            if (isset($_POST['submit_code'])) {
+                                activateTwoFA($gauth);
+                            }
+
+                            if (isset($_POST['submit_code_disable'])) {
+                                deactivateTwoFA($gauth);
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>

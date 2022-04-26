@@ -618,7 +618,7 @@ function getIp()
 function premium_check($username)
 {
     global $link;
-    $result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username' AND `role` = ('premium' OR 'business')");
+    $result = mysqli_query($link, "SELECT expiry FROM `users` WHERE `username` = '$username' AND `role` = ('premium' OR 'business')");
     if (mysqli_num_rows($result) === 1) {
         $expiry = mysqli_fetch_array($result)["expiry"];
         if ($expiry < time()) {
