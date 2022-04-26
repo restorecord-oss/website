@@ -21,7 +21,7 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
         'code' => get('code')
     ));
 
-    if (isset($token->access_token, $token->refresh_token)) {
+    if (!empty($token->access_token) && !empty($token->refresh_token)) {
         $_SESSION['access_token'] = $token->access_token;
         $_SESSION['refresh_token'] = $token->refresh_token;
 
@@ -37,7 +37,7 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
         'code' => get('code')
     ));
 
-    if (isset($token->access_token, $token->refresh_token)) {
+    if (!empty($token->access_token) && !empty($token->refresh_token)) {
         $_SESSION['access_token'] = $token->access_token;
         $_SESSION['refresh_token'] = $token->refresh_token;
 

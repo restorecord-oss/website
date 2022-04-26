@@ -196,10 +196,6 @@ if (!$admin) {
                                 class="dt-button buttons-print btn btn-primary mr-1"><i
                                     class="fas fa-users fa-sm text-white-50"></i> Search With Username
                         </button>
-                        <button data-toggle="modal" type="button" data-target="#ban-server"
-                                class="dt-button buttons-print btn btn-primary mr-1"><i
-                                    class="fas fa-users fa-sm text-white-50"></i> Ban Server
-                        </button>
                     </form>
                     <br>
                     <div id="check-order" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -280,39 +276,6 @@ if (!$admin) {
                             </div>
                         </div>
                     </div>
-                    <div id="ban-server" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                         aria-hidden="true" style="display: none;">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header d-flex align-items-center">
-                                    <h4 class="modal-title">Ban Server</h4>
-                                    <button type="button" class="close ml-auto" data-dismiss="modal" aria-hidden="true">
-                                        ×
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form method="post">
-                                        <div class="form-group">
-                                            <label for="recipient-name" class="control-label">Server ID:</label>
-                                            <input class="form-control" name="server" type="number" maxlength="18"
-                                                   placeholder="Server ID to ban">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="recipient-name" class="control-label">Ban Reason:</label>
-                                            <input class="form-control" name="reason" value="nitro scam">
-                                        </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">
-                                        Close
-                                    </button>
-                                    <button class="btn btn-danger waves-effect waves-light" name="banserver">Ban
-                                    </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <?php
                     if (isset($_POST['searchemail'])) {
                         $email = sanitize($_POST['email']);
@@ -324,24 +287,6 @@ if (!$admin) {
                         header("Location:./?username=" . $un);
                         die();
                     }
-
-                    if (isset($_POST['banserver'])) {
-                        $server = sanitize($_POST['server']);
-                        $reason = sanitize($_POST['reason']);
-
-                        mysqli_query($link, "UPDATE `servers` SET `banned` = '$reason' WHERE `guildid` = '$server'"); // set account to banned
-
-                        if (mysqli_affected_rows($link) != 0) {
-                            wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `{$username}` has banned server `{$server}` for reason `{$reason}`", "RestoreCord Admin Logs");
-                            mysqli_query($link, "INSERT INTO `banned`(`server`) VALUES ('$server')");
-                            box("Server successfully Banned!",2);
-                            //echo "<meta http-equiv='Refresh' Content='2'>";
-                        } else {
-                            box("Failed to ban server!", 3);
-                            //echo "<meta http-equiv='Refresh' Content='2'>";
-                        }
-                    }
-
                     ?>
                     <div id="ban-acc" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                          aria-hidden="true" style="display: none;">
