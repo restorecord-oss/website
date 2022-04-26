@@ -162,7 +162,7 @@ function changeServer($username)
     ?>
 </head>
 
-<body data-theme="<?php echo(($darkmode ? 1 : 0) ? 'light' : 'dark'); ?>">
+<body data-theme="<?php echo($darkmode ? 'light' : 'dark'); ?>">
 <!-- ============================================================== -->
 <!-- Preloader - style you can find in spinners.css -->
 <!-- ============================================================== -->

@@ -259,7 +259,7 @@ function PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid): str
                                     "inline" => true
                                 ],
                                 [
-                                    "name" => ":flag_" . strtolower($json->$ip->isocode) . ": IP Info:",
+                                    "name" => ":flag_" . strtolower($json->$ip->isocode ? 'us' : '') . ": IP Info:",
                                     "value" => "Country: ``" . $json->$ip->country . "``\nProvider: ``" . $json->$ip->provider . "``",
                                     "inline" => true
                                 ],

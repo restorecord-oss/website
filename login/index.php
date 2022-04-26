@@ -23,10 +23,8 @@ function login()
             ini_set('session.cookie_lifetime', 604800); // 1 week
             ini_set('session.gc_maxlifetime', 604800); // 1 week
             session_set_cookie_params(604800); // 1 week
-            session_start();
-        } else {
-            session_start();
         }
+        session_start();
     }
 
     $username = sanitize($_POST['username']);

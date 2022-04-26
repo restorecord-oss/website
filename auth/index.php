@@ -50,4 +50,3 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
 
 die("invalid request, please retry verification process");
 
-?>

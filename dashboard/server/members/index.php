@@ -164,7 +164,7 @@ function changeServer($username)
     ?>
 </head>
 
-<body data-theme="<?php echo(($darkmode ? 1 : 0) ? 'light' : 'dark'); ?>">
+<body data-theme="<?php echo($darkmode ? 'light' : 'dark'); ?>">
 <!-- ============================================================== -->
 <!-- Preloader - style you can find in spinners.css -->
 <!-- ============================================================== -->
@@ -498,7 +498,7 @@ function changeServer($username)
 
                                             <tr>
 
-                                                <td><?php echo $user; ?><?php if ($row['access_token'] === "broken") echo '<div class="badge badge-danger">Unlinked (broken)</div>' ?></td>
+                                                <td><?php echo $user; ?><?php if ($row['access_token'] === "broken") { echo '<div class="badge badge-danger">Unlinked (broken)</div>'; } ?></td>
 
                                                 <form method="POST">
                                                     <td>
@@ -565,7 +565,7 @@ function changeServer($username)
             }
 
             if (isset($_POST['banuser'])) {
-                if ($role == "free") {
+                if ($role === "free") {
                     box("Premium only feature!", 3);
                     echo "<meta http-equiv='Refresh' Content='2'>";
                     return;

@@ -22,7 +22,7 @@ function resetpww()
     global $link;
     $recaptcha_response = sanitize($_POST['recaptcha_response']);
     $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=6Lcqx1weAAAAAPiN1x9BGVXswfn-ifNjOQtzVf3O&response=' . $recaptcha_response);
-    $recaptcha = json_decode($recaptcha);
+    $recaptcha = json_decode($recaptcha, false, 512, JSON_THROW_ON_ERROR);
 
     // Take action based on the score returned:
     if ($recaptcha->score < 0.5) {
@@ -39,7 +39,7 @@ function resetpww()
 
     $un = mysqli_fetch_array($result)['username'];
 
-    $newPass = rand();
+    $newPass = mt_rand(8);
     $newPassHashed = password_hash($newPass, PASSWORD_BCRYPT);
     $htmlContent = "
 <html lang='en'>
@@ -51,7 +51,7 @@ function resetpww()
     <h1>We have reset your password</h1>
     <p>Your new password is: <b>$newPass</b></p>
     <p>Also, in case you forgot, your username is: <b>$un</b></p>
-    <p>Login to your account and change your password for the best privacy.</p>
+    <p>Login to your account and CHANGE your password for the best privacy.</p>
     <p style='margin-top: 20px;'>Thanks,<br><b>RestoreCord.</b></p>
 </body>
 
@@ -69,7 +69,7 @@ function resetpww()
 
     // Define your request body
 
-    $body = ['Messages' => [['From' => ['Email' => "noreply@restorecord.com", 'Name' => "RestoreCord"], 'To' => [['Email' => "$email", 'Name' => "$un"]], 'Subject' => "RestoreCord - Password Reset", 'HTMLPart' => $htmlContent]]];
+    $body = ['Messages' => [['From' => ['Email' => "noreply@restorecord.com", 'Name' => "RestoreCord"], 'To' => [['Email' => (string)$email, 'Name' => (string)$un]], 'Subject' => "RestoreCord - Password Reset", 'HTMLPart' => $htmlContent]]];
 
     // All resources are located in the Resources class
 

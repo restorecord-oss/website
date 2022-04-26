@@ -203,7 +203,7 @@ function changeEmail($email)
 }
 
 
-if (isset($_POST['updatesettings']) && isset($_POST['pw']) && isset($_POST['email']) && isset($_POST['username'])) {
+if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['username'])) {
 
     $pw = sanitize($_POST['pw']);
     $email = sanitize($_POST['email']);
@@ -443,7 +443,7 @@ if (isset($_POST['updatesettings']) && isset($_POST['pw']) && isset($_POST['emai
             ($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '" . $_SESSION['username'] . "'")) or die(mysqli_error($link));
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_array($result)) {
-                    $darkmode = (($row['darkmode'] ? 1 : 0) ? 'Disabled' : 'Enabled');
+                    $darkmode = $row['darkmode'] ? 'Disable' : 'Enabled';
 
                     $expiry = $row["expiry"];
                     if (is_null($expiry)) {

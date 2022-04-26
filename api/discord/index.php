@@ -15,8 +15,8 @@ include '../../includes/functions.php';
 
 // error_reporting(E_ALL);
 
-define('OAUTH2_CLIENT_ID', '791106018175614988');
-define('OAUTH2_CLIENT_SECRET', 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig');
+const OAUTH2_CLIENT_ID = '791106018175614988';
+const OAUTH2_CLIENT_SECRET = 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig';
 
 $authorizeURL = 'https://discord.com/api/oauth2/authorize';
 $tokenURL = 'https://discord.com/api/oauth2/token';
@@ -60,7 +60,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
             'Authorization: Bot ' . $token
         );
         $data = array("access_token" => session('access_token'));
-        $data_string = json_encode($data);
+        $data_string = json_encode($data, JSON_THROW_ON_ERROR);
 
         $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
@@ -177,7 +177,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
         }
     }
 } else {
-    die("<style>body { background: black; } .container { color: white; padding-top: 15rem; padding-left: 3rem; padding-right: 3rem;}</style><div class='container'>Not logged in with discord (try again or relogin).<br> if you're contacting support copy this code: <div style='margin-top: 1.5rem; background: #101010; border: solid #101010 0.5rem; border-radius: 0.75rem'><code>" . str_replace("=", "", strrev(base64_encode(json_encode($_SESSION))))) . "</code></div></div>";
+    die("<style>body { background: black; } .container { color: white; padding-top: 15rem; padding-left: 3rem; padding-right: 3rem;}</style><div class='container'>Not logged in with discord (try again or relogin).<br> if you're contacting support copy this code: <div style='margin-top: 1.5rem; background: #101010; border: solid #101010 0.5rem; border-radius: 0.75rem'><code>" . str_replace("=", "", strrev(base64_encode(json_encode($_SESSION, JSON_THROW_ON_ERROR))))) . "</code></div></div>";
 }
 
 ?>
