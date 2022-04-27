@@ -62,6 +62,10 @@
     </style>
 </head>
 <body class="antialiased bg-slate-900" id="home">
+<div style="background-color: #f52c2c5c;padding: 0.25rem;">
+    <p style="margin-left: 1.5rem;margin-right: 1.5rem;margin-bottom: 1.5rem;margin-top: 0.5rem;color: #fff;font-size: 20px;">Hello everyone, we are experiencing core level issues with the bot and Discord, we are actively talking with Discord's Support Team about what has happened to RestoreCord, no worries we are trying our best to resolve this issue ASAP!
+    </p>
+</div>
 <header class="header sticky top-0 z-10 flex w-full items-center justify-between py-5 border-b border-slate-800 backdrop-filter backdrop-blur-lg bg-opacity-30 transition-all">
     <div class="logo mx-12 xl:mx-32 hidden md:block">
         <h2 class="text-gray-200 font-bold text-xl">Restore<span class="text-indigo-600">Cord</span></h2>
@@ -295,11 +299,7 @@
                     Trustworthy Bot & In-App Popup
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
-                    <i class="fas fa-x text-indigo-600"></i>
-                    Server Backups
-                </li>
-                <li class="my-2 font-bold text-lg text-gray-200">
-                    <i class="fas fa-x text-indigo-600"></i>
+                    <i class="fas fa-check text-indigo-600"></i>
                     IP Bans
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
@@ -316,11 +316,11 @@
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
-                    Vanity Url
+                    Backups (settings, channels, roles)
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
-                    User Role Backup
+                    Vanity Url
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
@@ -362,10 +362,6 @@
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
-                    Server Backups
-                </li>
-                <li class="my-2 font-bold text-lg text-gray-200">
-                    <i class="fas fa-check text-indigo-600"></i>
                     IP Bans
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
@@ -382,11 +378,11 @@
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
-                    Vanity Url
+                    Backups (settings, channels, roles)
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
-                    User Role Backup
+                    Vanity Url
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-x text-indigo-600"></i>
@@ -428,10 +424,6 @@
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
-                    Server Backups
-                </li>
-                <li class="my-2 font-bold text-lg text-gray-200">
-                    <i class="fas fa-check text-indigo-600"></i>
                     IP Bans
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
@@ -448,11 +440,11 @@
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
-                    Vanity Url
+                    Backups (settings, channels, roles & user role)
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
-                    User Role Backup
+                    Vanity Url
                 </li>
                 <li class="my-2 font-bold text-lg text-gray-200">
                     <i class="fas fa-check text-indigo-600"></i>
