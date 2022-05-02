@@ -63,7 +63,7 @@
 </head>
 <body class="antialiased bg-slate-900" id="home">
 <div style="background-color: #f52c2c5c;padding: 0.25rem;">
-    <p style="margin-left: 1.5rem;margin-right: 1.5rem;margin-bottom: 1.5rem;margin-top: 0.5rem;color: #fff;font-size: 20px;">Hello everyone, we are experiencing core level issues with the bot and Discord, we are actively talking with Discord's Support Team about what has happened to RestoreCord, no worries we are trying our best to resolve this issue ASAP!
+    <p style="margin-left: 1.5rem;margin-right: 1.5rem;margin-bottom: 1.5rem;margin-top: 0.5rem;color: #fff;font-size: 20px;">Hello everyone, we are experiencing core level issues with the bot and Discord, we are actively talking with Discord's Support Team about what has happened to RestoreCord, no worries we are trying our best to resolve this issue ASAP! <br> Join Telegram group for updates <a href="https://t.me/RestoreCord" target="_blank">https://t.me/RestoreCord</a> 
     </p>
 </div>
 <header class="header sticky top-0 z-10 flex w-full items-center justify-between py-5 border-b border-slate-800 backdrop-filter backdrop-blur-lg bg-opacity-30 transition-all">
