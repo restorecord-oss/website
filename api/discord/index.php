@@ -32,7 +32,7 @@ if (get('code') && get('state')) {
         "grant_type" => "authorization_code",
         "client_id" => OAUTH2_CLIENT_ID,
         "client_secret" => OAUTH2_CLIENT_SECRET,
-        "redirect_uri" => 'http://localhost/api/discord',
+        "redirect_uri" => 'https://restorecord.com/api/discord',
         'code' => get('code')
     ));
 
