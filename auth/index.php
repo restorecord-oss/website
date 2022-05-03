@@ -15,9 +15,9 @@ if (session_status() === PHP_SESSION_NONE) {
 if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code') && strlen(get('code')) === 30) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
         'grant_type' => 'authorization_code',
-        'client_id' => '791106018175614988',
-        'client_secret' => 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig',
         'redirect_uri' => 'https://restorecord.com/auth/',
+        'client_id' => $client_id,
+        'client_secret' => $secret,
         'code' => get('code')
     ));
 
@@ -31,9 +31,9 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
 } else if (get('state') && get('code') && strlen(get('code')) === 30) {
     $token = apiRequest("https://discord.com/api/oauth2/token", array(
         'grant_type' => 'authorization_code',
-        'client_id' => '791106018175614988',
-        'client_secret' => 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig',
         'redirect_uri' => 'https://restorecord.com/auth/',
+        'client_id' => $client_id,
+        'client_secret' => $secret,
         'code' => get('code')
     ));
 

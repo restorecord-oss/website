@@ -23,7 +23,6 @@ function register()
         session_start();
     }
 
-    if (!isset($_SERVER['REMOTE_ADDR']) && ($_SERVER['REMOTE_ADDR'] === '::1')) {
         $recaptcha_response = sanitize($_POST['recaptcha_response']);
         $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=6Lcqx1weAAAAAPiN1x9BGVXswfn-ifNjOQtzVf3O&response=' . $recaptcha_response);
         $recaptcha = json_decode($recaptcha, false, 512, JSON_THROW_ON_ERROR);
@@ -37,7 +36,6 @@ function register()
             box('Human Verification Failed.', 3);
             return;
         }
-    }
 
 
     $username = sanitize($_POST['username']);

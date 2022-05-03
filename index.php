@@ -155,7 +155,7 @@
             Purchase Now
         </a>
         <p class="absolute -top-3 -right-2 bg-green-500 py-1 px-2 rounded-full text-white text-xs">only $9.99/year</p>
-        <a href="https://discord.gg/s6gk5Y5fTC" class="block w-44 text-indigo-600 text-center mt-4">Support Server</a>
+        <a href="https://discord.gg/restorecordbot" class="block w-44 text-indigo-600 text-center mt-4">Support Server</a>
     </div>
 </section>
 
@@ -492,7 +492,7 @@
     <ul class="flex items-center justify-center">
         <li class="mx-2 sm:mx-0">
             <a class="md:pr-4 md:pl-4 pr-1 text-gray-200"
-               href="https://discord.gg/restore">Support
+               href="https://discord.gg/restorecordbot">Support
             </a>
         </li>
         <li class="mx-2 sm:mx-0">
@@ -515,7 +515,7 @@
 
     <ul class="flex items-center justify-center my-5">
         <li class="mx-1">
-            <a href="https://discord.gg/restore">
+            <a href="https://discord.gg/restorecordbot">
                 <i class="text-xl hover:text-gray-400 text-gray-200 transition-all cursor-pointer fab fa-discord"></i>
             </a>
         </li>

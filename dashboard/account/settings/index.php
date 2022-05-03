@@ -125,7 +125,7 @@ function activateTwoFA($gauth)
         if ($enable_2factor) {
             box("Successfully enabled 2-Factor Authentication!", 2);
             $ip = getIp();
-            wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has enabled 2-Factor Authentication. `$ip`", "RestoreCord Logs");
+            wh_log("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho", "`{$_SESSION['username']}` has enabled 2-Factor Authentication. `$ip`", "RestoreCord Logs");
         } else {
             box("Failed to enable 2-Factor Authentication!", 3);
         }
@@ -151,7 +151,7 @@ function deactivateTwoFA($gauth)
         $enable_2factor = mysqli_query($link, "UPDATE `users` SET `twofactor` = '0' WHERE `username` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link));
         if ($enable_2factor) {
             $ip = getIp();
-            wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has DISABLED 2-Factor Authentication `$ip`", "RestoreCord Logs");
+            wh_log("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho", "`{$_SESSION['username']}` has DISABLED 2-Factor Authentication `$ip`", "RestoreCord Logs");
             box("Successfully disabled 2-Factor Authentication!", 2);
         } else {
             box("Failed to disable 2-Factor Authentication!", 3);
@@ -179,7 +179,7 @@ function changeUsername($username)
     mysqli_query($link, "UPDATE `servers` SET `owner` = '$username' WHERE `owner` = '" . $_SESSION['username'] . "'");
 
     if (mysqli_affected_rows($link) !== 0) {
-        wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has changed their username to `$username`", "RestoreCord Logs");
+        wh_log("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho", "`{$_SESSION['username']}` has changed their username to `$username`", "RestoreCord Logs");
         $_SESSION['username'] = $username;
     }
 }
@@ -197,7 +197,7 @@ function changeEmail($email)
     mysqli_query($link, "UPDATE `users` SET `email` = '$email' WHERE `username` = '" . $_SESSION['username'] . "'");
 
     if (mysqli_affected_rows($link) !== 0) {
-        wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has changed their email from `{$_SESSION['email']}` to `$email`", "RestoreCord Logs");
+        wh_log("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho", "`{$_SESSION['username']}` has changed their email from `{$_SESSION['email']}` to `$email`", "RestoreCord Logs");
         $_SESSION['email'] = $email;
     }
 }
@@ -225,7 +225,7 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
         $pass_encrypted = password_hash($pw, PASSWORD_BCRYPT);
         mysqli_query($link, "UPDATE `users` SET `password` = '$pass_encrypted' WHERE `username` = '" . $_SESSION['username'] . "'");
         $ip = getIp();
-        wh_log("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya", "`{$_SESSION['username']}` has changed their password. `$ip`", "RestoreCord Logs");
+        wh_log("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho", "`{$_SESSION['username']}` has changed their password. `$ip`", "RestoreCord Logs");
     }
 
     box("Successfully updated your Account Settings!", 2);

@@ -224,7 +224,7 @@ function login()
             "username" => "RestoreCord Logs",
         ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-        $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
+        $ch = curl_init("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-type: application/json'
         ));

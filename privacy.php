@@ -290,7 +290,7 @@
     <ul class="flex items-center justify-center">
         <li class="mx-2 sm:mx-0">
             <a class="md:pr-4 md:pl-4 pr-1 text-gray-200"
-               href="https://discord.gg/restore">Support
+               href="https://discord.gg/restorecordbot">Support
             </a>
         </li>
         <li class="mx-2 sm:mx-0">
@@ -313,7 +313,7 @@
 
     <ul class="flex items-center justify-center my-5">
         <li class="mx-1">
-            <a href="https://discord.gg/restore">
+            <a href="https://discord.gg/restorecordbot">
                 <i class="text-xl hover:text-gray-400 text-gray-200 transition-all cursor-pointer fab fa-discord"></i>
             </a>
         </li>

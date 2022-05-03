@@ -15,8 +15,8 @@ include '../../includes/functions.php';
 
 // error_reporting(E_ALL);
 
-const OAUTH2_CLIENT_ID = '791106018175614988';
-const OAUTH2_CLIENT_SECRET = 'zQV10oh4g_eFsQ9AfVrxE9BuWmLdCUig';
+define("OAUTH2_CLIENT_ID", $client_id);
+define("OAUTH2_CLIENT_SECRET", $secret);
 
 $authorizeURL = 'https://discord.com/api/oauth2/authorize';
 $tokenURL = 'https://discord.com/api/oauth2/token';
@@ -32,7 +32,7 @@ if (get('code') && get('state')) {
         "grant_type" => "authorization_code",
         "client_id" => OAUTH2_CLIENT_ID,
         "client_secret" => OAUTH2_CLIENT_SECRET,
-        "redirect_uri" => 'https://restorecord.com/api/discord',
+        "redirect_uri" => 'http://localhost/api/discord',
         'code' => get('code')
     ));
 
@@ -62,7 +62,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
         $data = array("access_token" => session('access_token'));
         $data_string = json_encode($data, JSON_THROW_ON_ERROR);
 
-        $ch = curl_init("https://discord.com/api/webhooks/901571010845872189/5kkbnUx0oFEocn2pHe8otDfmDGxD09DCZshICTF56DJRf622Dg8E-HHF45asci17WcV5");
+        $ch = curl_init("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -72,7 +72,8 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
         curl_close($ch);
 
         if ($row['role'] === "premium") {
-            $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/939535559146209300";
+            //$url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/971158018777559050";
+            $url = "https://discord.com/api/guilds/969970928782045215/members/" . $user->id . "/roles/971158018777559050";
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -81,7 +82,8 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
             curl_exec($ch);
             curl_close($ch);
         } else if ($row['role'] === "business") {
-            $url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/956242821222920212";
+            //$url = "https://discord.com/api/guilds/785862036059979818/members/" . $user->id . "/roles/971158018123268167";
+            $url = "https://discord.com/api/guilds/969970928782045215/members/" . $user->id . "/roles/971158018123268167";
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -130,7 +132,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
                 "username" => "RestoreCord Logs",
             ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-            $ch = curl_init("https://discord.com/api/webhooks/955952915296694312/plldkjchPN8MEq6Xu-CV4u2T7lYm8Mcg46Cn0hLQhqvHu9qWKeJsOf6VvDDK1tw8Rgya");
+            $ch = curl_init("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-type: application/json'
             ));
@@ -173,7 +175,7 @@ if (isset($_SESSION['access_token'], $_SESSION['username'], $_SESSION['state']) 
         }
     }
 } else {
-    die("<style>body { background: black; } .container { color: white; padding-top: 15rem; padding-left: 3rem; padding-right: 3rem;}</style><div class='container'>Not logged in with discord (try again or relogin).<br> if you're contacting support copy this code: <div style='margin-top: 1.5rem; background: #101010; border: solid #101010 0.5rem; border-radius: 0.75rem'><code>" . str_replace("=", "", strrev(base64_encode(json_encode($_SESSION, JSON_THROW_ON_ERROR))))) . "</code></div></div>";
+    die("<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" integrity=\"sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3\" crossorigin=\"anonymous\"><script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js\" integrity=\"sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13\" crossorigin=\"anonymous\"></script><style>body { background: black; } .container { color: white; padding-top: 15rem; padding-left: 3rem; padding-right: 3rem;}</style><div class='container'>Not logged in with discord (try again or relogin).<br> if you're contacting support copy this code: <div style='margin-top: 1.5rem; background: #101010; border: solid #101010 0.5rem; border-radius: 0.75rem'><code>" . str_replace("=", "", strrev(base64_encode(json_encode($_SESSION, JSON_THROW_ON_ERROR))))) . "</code></div></div>";
 }
 
 ?>

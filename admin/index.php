@@ -405,7 +405,7 @@ if (!$admin) {
 
                 mysqli_query($link, "UPDATE `users` SET `banned` = '$reason' WHERE `username` = '$un'"); // set account to banned
 
-                wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `$username` has banned user `$un` for reason `$reason`", "RestoreCord Admin Logs");
+                wh_log("https://discord.com/api/webhooks/971154954867867668/o-1z_GVDNMbj-t45LFfo75oPpO2RXSuAxWWI8IqEJaNiXklhXDz6WySQntx1HwM9K8JM", "Admin `$username` has banned user `$un` for reason `$reason`", "RestoreCord Admin Logs");
 
                 box("Account Banned!", 2);
             }
@@ -415,7 +415,7 @@ if (!$admin) {
 
                 mysqli_query($link, "UPDATE `users` SET `banned` = NULL WHERE `username` = '$un'"); // set account to not banned
 
-                wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `$username` has unbanned user `$un`", "RestoreCord Admin Logs");
+                wh_log("https://discord.com/api/webhooks/971154954867867668/o-1z_GVDNMbj-t45LFfo75oPpO2RXSuAxWWI8IqEJaNiXklhXDz6WySQntx1HwM9K8JM", "Admin `$username` has unbanned user `$un`", "RestoreCord Admin Logs");
 
                 box("Account Unbanned!", 2);
             }
@@ -509,7 +509,7 @@ if (!$admin) {
 
                 mysqli_query($link, "UPDATE `users` SET `email` = '$email',`role` = '$role', `expiry` = NULLIF('$expires', ''), `twofactor` = '$totp' WHERE `username` = '$un'");
 
-                wh_log("https://discord.com/api/webhooks/903135996131033148/1JBP3COL4-TRw-Bou53Xq3Pd2WkguvsqLn5ldYkcNXNCmUTQSxE_PB9o4J_BlKfYkKvy", "Admin `$username` has updated user `$un` email to `$email`, role to `$role`, and 2FA status to `$totp`", "RestoreCord Admin Logs");
+                wh_log("https://discord.com/api/webhooks/971154954867867668/o-1z_GVDNMbj-t45LFfo75oPpO2RXSuAxWWI8IqEJaNiXklhXDz6WySQntx1HwM9K8JM", "Admin `$username` has updated user `$un` email to `$email`, role to `$role`, and 2FA status to `$totp`", "RestoreCord Admin Logs");
 
                 box("Updated Account!", 2);
             }
