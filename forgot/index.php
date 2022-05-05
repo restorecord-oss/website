@@ -24,6 +24,11 @@ function resetpww()
     $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=6Lcqx1weAAAAAPiN1x9BGVXswfn-ifNjOQtzVf3O&response=' . $recaptcha_response);
     $recaptcha = json_decode($recaptcha, false, 512, JSON_THROW_ON_ERROR);
 
+    // if score is not there throw error
+    if (!isset($recaptcha->score)) {
+        box("Please disable your VPN or try using 1.1.1.1 DNS!", 3);
+        return;
+    }
     // Take action based on the score returned:
     if ($recaptcha->score < 0.5) {
         box("Human Check Failed!", 3);
@@ -39,7 +44,7 @@ function resetpww()
 
     $un = mysqli_fetch_array($result)['username'];
 
-    $newPass = mt_rand(8);
+    $newPass = random_int(8, 12);
     $newPassHashed = password_hash($newPass, PASSWORD_BCRYPT);
     $htmlContent = "
 <html lang='en'>
