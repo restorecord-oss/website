@@ -1,8 +1,10 @@
 <?php
+$link = NULL;
+
 if(isset($_SERVER['REMOTE_ADDR']) && ($_SERVER['REMOTE_ADDR'] === '::1' ||  $_SERVER['REMOTE_ADDR'] === 'localhost' ||  $_SERVER['REMOTE_ADDR'] === '127.0.0.1')) {
-    $link = mysqli_connect('localhost', 'root', '', 'rest_main');
+    $link = mysqli_connect('localhost:3306', 'root', '', 'rest_main') or die ("could not connect to mysql");
 } else {
-    $link = mysqli_connect("localhost", "restorecord_db", "oNeFHuxBMt6h6z", "restorecord_main");
+    $link = mysqli_connect("localhost", "restorecord_db", "oNeFHuxBMt6h6z", "restorecord_main") or die ("could not connect to mysql");
 }
 
 //$token = "OTcxMDg2MTYzMDYwMzM0NjM0.YnFYdw.bdhFx3gL0vJEovO3T_8Lt1RhQ1M";

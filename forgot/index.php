@@ -13,7 +13,7 @@ if (isset($_SESSION['username'])) {
     exit();
 }
 
-if (isset($_POST['reset'])) {
+if (isset($_POST['email'])) {
     resetpww();
 }
 
@@ -44,7 +44,7 @@ function resetpww()
 
     $un = mysqli_fetch_array($result)['username'];
 
-    $newPass = random_int(8, 12);
+    $newPass = randomString(12);
     $newPassHashed = password_hash($newPass, PASSWORD_BCRYPT);
     $htmlContent = "
 <html lang='en'>
@@ -86,509 +86,47 @@ function resetpww()
 }
 
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html class="loading dark-layout" lang="en" data-layout="dark-layout" data-textdirection="ltr">
 
 <head>
-    <title>RestoreCord - Forgot</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="https://cdn.restorecord.com/assets/img/favicon.png" type="image/x-icon">
-    <style>
-        body {
-            background-color: #232323;
-            color: #a6a6a6;
-        }
-
-        .p-t-3 {
-            padding-top: 3px;
-        }
-
-        .p-t-50 {
-            padding-top: 50px;
-        }
-
-        .p-b-24 {
-            padding-bottom: 24px;
-        }
-
-        .p-b-51 {
-            padding-bottom: 51px;
-        }
-
-        .p-b-90 {
-            padding-bottom: 90px;
-        }
-
-        .m-t-17 {
-            margin-top: 17px;
-        }
-
-        .m-b-16 {
-            margin-bottom: 16px;
-        }
-
-        .w-full {
-            width: 100%;
-        }
-
-        .wrap-pic-w img {
-            width: 100%;
-        }
-
-        .wrap-pic-max-w img {
-            max-width: 100%;
-        }
-
-        .wrap-pic-h img {
-            height: 100%;
-        }
-
-        .wrap-pic-max-h img {
-            max-height: 100%;
-        }
-
-        .wrap-pic-cir img {
-            width: 100%;
-        }
-
-        .hov-img-zoom img {
-            width: 100%;
-            -webkit-transition: all 0.6s;
-            -o-transition: all 0.6s;
-            -moz-transition: all 0.6s;
-            transition: all 0.6s;
-        }
-
-        .hov-img-zoom:hover img {
-            -webkit-transform: scale(1.1);
-            -moz-transform: scale(1.1);
-            -ms-transform: scale(1.1);
-            -o-transform: scale(1.1);
-            transform: scale(1.1);
-        }
-
-        .flex-w {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-flex-wrap: wrap;
-            -moz-flex-wrap: wrap;
-            -ms-flex-wrap: wrap;
-            -o-flex-wrap: wrap;
-            flex-wrap: wrap;
-        }
-
-        .flex-sb {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .flex-sb-m {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            justify-content: space-between;
-            -ms-align-items: center;
-            align-items: center;
-        }
-
-
-        /*//////////////////////////////////////////////////////////////////
-        [ FONT ]*/
-
-        @font-face {
-            font-family: Ubuntu-Regular;
-            src: url('https://cdn.restorecord.com/auth/fonts/ubuntu/Ubuntu-Regular.ttf');
-        }
-
-        @font-face {
-            font-family: Ubuntu-Bold;
-            src: url('https://cdn.restorecord.com/auth/fonts/ubuntu/Ubuntu-Bold.ttf');
-        }
-
-        /*//////////////////////////////////////////////////////////////////
-        [ RESTYLE TAG ]*/
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body, html {
-            height: 100%;
-            font-family: Ubuntu-Regular, sans-serif;
-        }
-
-        /*---------------------------------------------*/
-        a {
-            font-family: Ubuntu-Regular;
-            font-size: 14px;
-            line-height: 1.7;
-            color: #666666;
-            margin: 0;
-            transition: all 0.4s;
-            -webkit-transition: all 0.4s;
-            -o-transition: all 0.4s;
-            -moz-transition: all 0.4s;
-        }
-
-        a:focus {
-            outline: none !important;
-        }
-
-        a:hover {
-            text-decoration: none;
-            color: #7761d3;
-        }
-
-        /*---------------------------------------------*/
-        h1, h2, h3, h4, h5, h6 {
-            margin: 0;
-        }
-
-        p {
-            font-family: Ubuntu-Regular;
-            font-size: 14px;
-            line-height: 1.7;
-            color: #a8a8a8;
-            margin: 0;
-        }
-
-        ul, li {
-            margin: 0;
-            list-style-type: none;
-        }
-
-
-        /*---------------------------------------------*/
-        input {
-            outline: none;
-            border: none;
-        }
-
-        textarea {
-            outline: none;
-            border: none;
-        }
-
-        textarea:focus, input:focus {
-            border-color: transparent !important;
-            border-radius: 0.5rem;
-        }
-
-        input::-webkit-input-placeholder {
-            color: #a8a8a8;
-        }
-
-        input:-moz-placeholder {
-            color: #a8a8a8;
-        }
-
-        input::-moz-placeholder {
-            color: #a8a8a8;
-        }
-
-        input:-ms-input-placeholder {
-            color: #a8a8a8;
-        }
-
-        textarea::-webkit-input-placeholder {
-            color: #a8a8a8;
-        }
-
-        textarea:-moz-placeholder {
-            color: #a8a8a8;
-        }
-
-        textarea::-moz-placeholder {
-            color: #a8a8a8;
-        }
-
-        textarea:-ms-input-placeholder {
-            color: #a8a8a8;
-        }
-
-        label {
-            display: block;
-            margin: 0;
-        }
-
-        /*---------------------------------------------*/
-        button {
-            outline: none !important;
-            border: none;
-            background: transparent;
-        }
-
-        button:hover {
-            cursor: pointer;
-        }
-
-        iframe {
-            border: none !important;
-        }
-
-
-        /*//////////////////////////////////////////////////////////////////
-        [ Utility ]*/
-        .txt1 {
-            font-family: Ubuntu-Regular;
-            font-size: 16px;
-            color: #7761d3;
-            line-height: 1.4;
-        }
-
-
-        /*//////////////////////////////////////////////////////////////////
-        [ login ]*/
-
-        .limiter {
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .container-login100 {
-            width: 100%;
-            min-height: 100vh;
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;;
-        }
-
-
-        .wrap-login100 {
-            width: 390px;
-            background: #232323;
-            border-radius: 0.25rem;
-            position: relative;
-        }
-
-
-        /*==================================================================
-        [ Form ]*/
-
-        .login100-form {
-            width: 100%;
-        }
-
-        .login100-form-title {
-            font-family: Ubuntu-Bold;
-            font-size: 30px;
-            color: #7761d3;
-            line-height: 1.2;
-            text-transform: uppercase;
-            text-align: center;
-
-            width: 100%;
-            display: block;
-        }
-
-
-        /*------------------------------------------------------------------
-        [ Input ]*/
-
-        .wrap-input100 {
-            width: 100%;
-            position: relative;
-            background-color: #1e1e1e;
-            border: 1px solid transparent;
-            border-radius: 0.5rem;
-        }
-
-
-        /*---------------------------------------------*/
-        .input100 {
-            font-family: Ubuntu-Bold;
-            color: #7761d3;
-            line-height: 1.2;
-            font-size: 18px;
-
-            display: block;
-            width: 100%;
-            background: transparent;
-            height: 62px;
-            padding: 0 20px 0 38px;
-        }
-
-        /*------------------------------------------------------------------
-        [ Focus Input ]*/
-
-        .focus-input100 {
-            position: absolute;
-            display: block;
-            width: calc(100% + 2px);
-            height: calc(100% + 2px);
-            top: -1px;
-            left: -1px;
-            pointer-events: none;
-            border: 1px solid #7761d3;
-            border-radius: 3px;
-
-            visibility: hidden;
-            opacity: 0;
-
-            -webkit-transition: all 0.4s;
-            -o-transition: all 0.4s;
-            -moz-transition: all 0.4s;
-            transition: all 0.4s;
-
-            -webkit-transform: scaleX(1.1) scaleY(1.3);
-            -moz-transform: scaleX(1.1) scaleY(1.3);
-            -ms-transform: scaleX(1.1) scaleY(1.3);
-            -o-transform: scaleX(1.1) scaleY(1.3);
-            transform: scaleX(1.1) scaleY(1.3);
-        }
-
-        .input100:focus + .focus-input100 {
-            visibility: visible;
-            opacity: 1;
-
-            -webkit-transform: scale(1);
-            -moz-transform: scale(1);
-            -ms-transform: scale(1);
-            -o-transform: scale(1);
-            transform: scale(1);
-        }
-
-        .eff-focus-selection {
-            visibility: visible;
-            opacity: 1;
-
-            -webkit-transform: scale(1);
-            -moz-transform: scale(1);
-            -ms-transform: scale(1);
-            -o-transform: scale(1);
-            transform: scale(1);
-        }
-
-
-        /*==================================================================
-        [ Restyle Checkbox ]*/
-
-        .input-checkbox100 {
-            display: none;
-        }
-
-        .label-checkbox100 {
-            font-family: Ubuntu-Regular;
-            font-size: 16px;
-            color: #999999;
-            line-height: 1.2;
-
-            display: block;
-            position: relative;
-            padding-left: 26px;
-            cursor: pointer;
-        }
-
-        .label-checkbox100::before {
-            content: "\f00c";
-            font-family: FontAwesome;
-            font-size: 13px;
-            color: transparent;
-
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            border-radius: 3px;
-            background: #232323;
-            border: 2px solid #7761d3;
-            left: 0;
-            top: 50%;
-            -webkit-transform: translateY(-50%);
-            -moz-transform: translateY(-50%);
-            -ms-transform: translateY(-50%);
-            -o-transform: translateY(-50%);
-            transform: translateY(-50%);
-        }
-
-        .input-checkbox100:checked + .label-checkbox100::before {
-            color: #7761d3;
-        }
-
-
-        /*------------------------------------------------------------------
-        [ Button ]*/
-        .container-login100-form-btn {
-            width: 100%;
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .login100-form-btn {
-            font-family: Ubuntu-Bold;
-            font-size: 16px;
-            color: #fff;
-            line-height: 1.2;
-            text-transform: uppercase;
-
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 20px;
-            width: 100%;
-            height: 62px;
-            background-color: #827ffe;
-            border-radius: 3px;
-
-            -webkit-transition: all 0.4s;
-            -o-transition: all 0.4s;
-            -moz-transition: all 0.4s;
-            transition: all 0.4s;
-        }
-
-        .login100-form-btn:hover {
-            background-color: #6260d5;
-            border-radius: 0.5rem;
-        }
-
-
-        /*------------------------------------------------------------------
-        [ Alert validate ]*/
-
-        .validate-input {
-            position: relative;
-        }
-
-
-        /*//////////////////////////////////////////////////////////////////
-        [ Responsive ]*/
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RestoreCord - Forgot Password</title>
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-192x192.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-256x256.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-384x384.png"/>
+    <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-512x512.png"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
+    <meta name="apple-mobile-web-app-title" content="RestoreCord">
+    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileColor" content="#4338ca">
+    <meta name="theme-color" content="#4338ca"/>
+    <meta property="og:title" content="RestoreCord"/>
+    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:url" content="https://restorecord.com"/>
+    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/vendors/css/vendors.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/colors.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/components.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/themes/bordered-layout.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/themes/semi-dark-layout.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/pages/authentication.css">
     <script src="https://www.google.com/recaptcha/api.js?render=6Lcqx1weAAAAAItfxuTTU-iodSGuQ0l6HUVErTkv"></script>
     <script>
         grecaptcha.ready(function () {
@@ -600,34 +138,73 @@ function resetpww()
             });
         });
     </script>
+
 </head>
 
-<body>
-<div class="limiter">
-    <div class="container-login100">
-        <div class="wrap-login100 p-t-50 p-b-90">
-            <form class="login100-form validate-form flex-sb flex-w" method="post">
-					<span class="login100-form-title p-b-51">
-						Forgot
-					</span>
 
-                <div class="wrap-input100 validate-input m-b-16">
-                    <input class="input100" type="email" name="email" placeholder="Email">
-                    <span class="focus-input100"></span>
+<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">
+<div class="app-content content ">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+        </div>
+        <div class="content-body">
+            <div class="auth-wrapper auth-basic px-2">
+                <div class="auth-inner my-2">
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <a href="/" class="brand-logo">
+                                <h2 class="brand-text text-primary ms-1">RestoreCord</h2>
+                            </a>
+
+                            <h4 class="card-title mb-1">Forgot Password? 🔒</h4>
+                            <p class="card-text mb-2">Enter your email and we'll send you instructions to reset your password</p>
+
+                            <form class="auth-forgot-password-form mt-2" method="POST">
+                                <div class="mb-1">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="text" class="form-control" id="email" name="email" placeholder="john@example.com" aria-describedby="email" tabindex="1" autofocus />
+                                </div>
+
+                                <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+
+                                <button class="btn btn-primary w-100" tabindex="2">Reset Password</button>
+                            </form>
+
+                            <p class="text-center mt-2">
+                                <a href="/login"> <i data-feather="chevron-left"></i> Back to login </a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
-
-                <div class="container-login100-form-btn m-t-17">
-                    <button name="reset" class="login100-form-btn">
-                        Reset Password
-                    </button>
-                </div>
-
-            </form>
         </div>
     </div>
 </div>
+
+
+<script src="https://cdn.restorecord.com/app-assets/vendors/js/vendors.min.js"></script>
+
+<script src="https://cdn.restorecord.com/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+
+<script src="https://cdn.restorecord.com/app-assets/js/core/app-menu.js"></script>
+<script src="https://cdn.restorecord.com/app-assets/js/core/app.js"></script>
+
+<script src="https://cdn.restorecord.com/app-assets/js/scripts/pages/auth-forgot-password.js"></script>
+
+<script>
+    $(window).on('load', function () {
+        if (feather) {
+            feather.replace({
+                width: 14,
+                height: 14
+            });
+        }
+    })
+
+</script>
 </body>
 
 </html>
