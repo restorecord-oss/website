@@ -53,7 +53,6 @@ $autoJoin = NULL;
 $redirectTime = NULL;
 $verifyDescription = NULL;
 $wh = NULL;
-$custombot = NULL;
 
 
 function update()
@@ -76,7 +75,6 @@ function update()
     $autoJoin = sanitize($_POST['autoJoin']);
     $redirectTime = sanitize($_POST['redirectTime']);
     $verifyDescription = sanitize($_POST['verifyDescription']);
-    $custombot = sanitize($_POST['custombot']);
 
     $redirectTime = isNull($redirectTime) ? 0 : $redirectTime;
     $autokick_time = isNull($autokick_time) ? 0 : $autokick_time;
@@ -102,8 +100,7 @@ function update()
                      `bg_image` = NULLIF('$bg_img', NULL),
                      `autoJoin` = '$autoJoin',
                      `redirectTime` = '$redirectTime',
-                     `verifyDescription` = NULLIF('$verifyDescription', NULL),
-                     `custombot` = NULLIF('$custombot', NULL)
+                     `verifyDescription` = NULLIF('$verifyDescription', NULL)
                       WHERE `name` = '$servname' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
     mysqli_query($link, "UPDATE `members` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
     mysqli_query($link, "UPDATE `blacklist` SET `server` = '$guildid' WHERE `server` = '" . $_SESSION['serverid'] . "'");
@@ -189,7 +186,6 @@ function LoadServerSettings()
     global $verifyDescription;
     global $wh;
     global $username;
-    global $custombot;
 
     $servname = sanitize($_SESSION['server_to_manage']);
     ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$servname' AND `owner` = '$username'")) or die(mysqli_error($link));
@@ -207,7 +203,6 @@ function LoadServerSettings()
             $redirectTime = $row['redirectTime'];
             $verifyDescription = $row['verifyDescription'];
             $wh = $row['webhook'];
-            $custombot = $row['custombot'];
         }
     }
 }
@@ -232,15 +227,14 @@ function LoadServerSettings()
     <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
     <meta name="apple-mobile-web-app-title" content="RestoreCord">
-    <meta name="msapplication-TileImage" content="https://cdn.restorecord.com/logo.png">
+    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
     <meta name="msapplication-TileColor" content="#4338ca">
     <meta name="theme-color" content="#4338ca"/>
     <meta property="og:title" content="RestoreCord"/>
-    <meta property="og:description"
-          content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
-    <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
+    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
     <!-- Custom CSS -->
@@ -344,7 +338,7 @@ function LoadServerSettings()
                 <a class="navbar-brand">
                     <!-- Logo icon -->
                     <b class="logo-icon">
-                        <img src="https://cdn.restorecord.com/logo.png" width="48px" height="48px"
+                        <img src="https://i.imgur.com/Nfy4OoG.png" width="48px" height="48px"
                              class="mr-2 hidden md:inline pointer-events-none noselect">
                     </b>
                 </a>
@@ -405,7 +399,7 @@ function LoadServerSettings()
                         <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img
-                                    src="https://cdn.restorecord.com/logo.png" alt="user" class="rounded-circle"
+                                    src="https://i.imgur.com/w65Dpnw.png" alt="user" class="rounded-circle"
                                     width="31">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
@@ -414,7 +408,7 @@ function LoadServerSettings()
                             </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
                                 <div class="">
-                                    <img src="https://cdn.restorecord.com/logo.png" alt="user"
+                                    <img src="https://i.imgur.com/w65Dpnw.png" alt="user"
                                          class="img-circle" width="60">
                                 </div>
                                 <div class="ml-2">
@@ -637,7 +631,7 @@ function LoadServerSettings()
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="rol" class="col-2 col-form-label">Role ID</label>
+                                    <label for="example-tel-input" class="col-2 col-form-label">Role ID</label>
                                     <div class="col-10">
                                         <input class="form-control" maxlength="18" name="rol"
                                                value="<?php echo $rol; ?>" type="number"
@@ -645,7 +639,7 @@ function LoadServerSettings()
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="ico" class="col-2 col-form-label">Icon</label>
+                                    <label for="example-tel-input" class="col-2 col-form-label">Icon</label>
                                     <div class="col-10">
 
                                         <input class="form-control" name="ico" value="<?php echo $ico; ?>"
@@ -653,47 +647,8 @@ function LoadServerSettings()
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="custombot" class="col-2 col-form-label">Custom Bot</label>
-                                    <div class="col-10">
-                                        <select id="custombot" name="custombot" class="form-control">
-                                            <?php
-                                            $result = mysqli_query($link, "SELECT * FROM `custombots` WHERE `owner` = '$username'");
-
-                                            $rows = array();
-                                            while ($r = mysqli_fetch_assoc($result)) {
-                                                $rows[] = $r;
-                                            }
-
-                                            foreach ($rows as $row) {
-                                                $botId = $row['clientId'];
-
-
-                                                $curl = curl_init("https://discord.com/api/v9/users/@me");
-                                                $headers = array("Authorization: Bot " . $row['token']);
-                                                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                                                curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-                                                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                                                curl_setopt($curl, CURLOPT_HEADER, false);
-
-                                                $resp = curl_exec($curl);
-                                                curl_close($curl);
-                                                $json = json_decode($resp, true);
-                                                if (isset($json['username'])) {
-                                                    $displayName = "{$json['username']}#{$json['discriminator']}";
-                                                } else {
-                                                    $displayName = "Invalid Details ($botId)";
-                                                }
-                                                ?>
-                                                <option value="<?php echo sanitize($botId); ?>" <?= $custombot == $botId ? 'selected' : '' ?>><?php echo sanitize($displayName); ?></option>
-                                                <?php
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Redirect
-                                        Link
+                                                                                                Link
                                     </label>
                                     <div class="col-10">
                                         <input class="form-control" name="redirect" value="<?php echo $redirect; ?>"
@@ -704,7 +659,7 @@ function LoadServerSettings()
                                     if ($role !== "free") {
                                         ?>
                                         <label for="example-tel-input" class="col-2 col-form-label">Redirect Time
-                                            (sec)
+                                                                                                    (sec)
                                         </label>
                                         <div class="col-10">
                                             <input class="form-control" name="redirectTime"
@@ -740,7 +695,7 @@ function LoadServerSettings()
                                 </div>
                                 <div class="form-group row">
                                     <label for="example-tel-input" class="col-2 col-form-label">Auto Join Server (on
-                                        verify)
+                                                                                                verify)
                                     </label>
                                     <div class="col-10">
                                         <select name="autoJoin" class="form-control">
@@ -790,7 +745,7 @@ function LoadServerSettings()
                                     <?php
                                     } else {
                                     ?>
-                                    <select name="autokick" class="form-control disabled" >
+                                    <select name="autokick" class="form-control">
                                         <option value="1" <?= $auto_kick == 1 ? ' selected="selected"' : '' ?>>
                                             Enabled
                                         </option>
@@ -801,10 +756,10 @@ function LoadServerSettings()
                                 </div>
 
                                 <label for="example-tel-input" class="col-2 col-form-label">Auto kick Timer
-                                    (minutes)
+                                                                                            (minutes)
                                 </label>
                                 <div class="col-10">
-                                    <input name="autokick_time" class="form-control disabled"
+                                    <input name="autokick_time" class="form-control"
                                            placeholder="Kick after how many minutes" type="number"
                                            value="<?= $auto_kick_timer ?>">
                                 </div>

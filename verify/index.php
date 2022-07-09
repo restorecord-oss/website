@@ -36,11 +36,11 @@ if (!isset($_GET['guild'])) {
 
     premium_check($owner);
 
-    $result = mysqli_query($link, "SELECT custombot,guildid,roleid,pic,redirecturl,webhook,vpncheck,redirectTime,autoKickUnVerified,autoKickUnVerifiedTime,autoJoin,bg_image,verifyDescription,banned FROM `servers` WHERE `owner` = '$owner' AND `name` = '$server'");
+    $result = mysqli_query($link, "SELECT guildid,roleid,pic,redirecturl,webhook,vpncheck,redirectTime,autoKickUnVerified,autoKickUnVerifiedTime,autoJoin,bg_image,verifyDescription,banned FROM `servers` WHERE `owner` = '$owner' AND `name` = '$server'");
 
     if (mysqli_num_rows($result) === 0) {
         $svr = "Not Available";
-        $server_image = "https://cdn.restorecord.com/logo.png";
+        $server_image = "https://i.imgur.com/7kiO9No.png";
         $status = "noserver";
     } else {
         $status = NULL;
@@ -59,7 +59,46 @@ if (!isset($_GET['guild'])) {
             $bg_img = $row['bg_image'];
             $verifyDescription = $row['verifyDescription'];
             $banned = $row['banned'];
-            $token = mysqli_fetch_array(mysqli_query($link, "SELECT token FROM `custombots` WHERE `clientId` = '{$row['custombot']}'"))['token'];
+        }
+
+        if (!is_null($banned)) {
+            $_SESSION['access_token'] = NULL;
+            $status = "banned";
+        } else {
+            $_SESSION['server'] = $guildid;
+            $_SESSION['owner'] = $owner;
+            $_SESSION['name'] = $server;
+        }
+
+    }
+} else {
+    $result = mysqli_query($link, "SELECT owner,name,guildid,roleid,pic,redirecturl,webhook,vpncheck,redirectTime,autoKickUnVerified,autoKickUnVerifiedTime,autoJoin,bg_image,verifyDescription,banned FROM `servers` WHERE `guildid` = '" . $_GET['guild'] . "'");
+
+    if (mysqli_num_rows($result) === 0) {
+        $svr = "Not Available";
+        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $status = "noserver"; // server not found
+    } else {
+        $status = NULL;
+        while ($row = mysqli_fetch_array($result)) {
+            $owner = $row['owner'];
+            $server = $row['name'];
+            $svr = $row['name'];
+
+            $guildid = $row['guildid'];
+            $roleid = $row['roleid'];
+            $server_image = $row['pic'];
+
+            $redirecturl = $row['redirecturl'];
+            $webhook = $row['webhook'];
+            $vpncheck = $row['vpncheck'];
+            $redirectTime = $row['redirectTime'];
+            $auto_kick = $row['autoKickUnVerified'];
+            $auto_kick_time = $row['autoKickUnVerifiedTime'];
+            $autoJoin = $row['autoJoin'];
+            $bg_img = $row['bg_image'];
+            $verifyDescription = $row['verifyDescription'];
+            $banned = $row['banned'];
         }
 
         if (!is_null($banned)) {
@@ -73,48 +112,6 @@ if (!isset($_GET['guild'])) {
 
     }
 }
-//else {
-//    $result = mysqli_query($link, "SELECT custombot,owner,name,guildid,roleid,pic,redirecturl,webhook,vpncheck,redirectTime,autoKickUnVerified,autoKickUnVerifiedTime,autoJoin,bg_image,verifyDescription,banned FROM `servers` WHERE `guildid` = '" . $_GET['guild'] . "'");
-//
-//    if (mysqli_num_rows($result) === 0) {
-//        $svr = "Not Available";
-//        $server_image = "https://i.imgur.com/7kiO9No.png";
-//        $status = "noserver"; // server not found
-//    } else {
-//        $status = NULL;
-//        while ($row = mysqli_fetch_array($result)) {
-//            $owner = $row['owner'];
-//            $server = $row['name'];
-//            $svr = $row['name'];
-//
-//            $guildid = $row['guildid'];
-//            $roleid = $row['roleid'];
-//            $server_image = $row['pic'];
-//
-//            $redirecturl = $row['redirecturl'];
-//            $webhook = $row['webhook'];
-//            $vpncheck = $row['vpncheck'];
-//            $redirectTime = $row['redirectTime'];
-//            $auto_kick = $row['autoKickUnVerified'];
-//            $auto_kick_time = $row['autoKickUnVerifiedTime'];
-//            $autoJoin = $row['autoJoin'];
-//            $bg_img = $row['bg_image'];
-//            $verifyDescription = $row['verifyDescription'];
-//            $banned = $row['banned'];
-//            $token = mysqli_fetch_array(mysqli_query($link, "SELECT token FROM `custombots` WHERE `clientId` = '{$row['custombot']}'"))['token'];
-//        }
-//
-//        if (!is_null($banned)) {
-//            $_SESSION['access_token'] = NULL;
-//            $status = "banned";
-//        } else {
-//            $_SESSION['server'] = $guildid;
-//            $_SESSION['owner'] = $owner;
-//            $_SESSION['name'] = $server;
-//        }
-//
-//    }
-//}
 
 if (!isset($_GET['guild']) && session('access_token') && session('refresh_token')) {
     global $owner;
@@ -127,12 +124,11 @@ if (!isset($_GET['guild']) && session('access_token') && session('refresh_token'
     global $roleid;
     global $server_image;
     global $status;
-    global $token;
 
     $svr_check = mysqli_query($link, "SELECT owner FROM `servers` WHERE `guildid` = '$guildid'");
     if (mysqli_num_rows($svr_check) < 1) {
         $svr = "Not Available";
-        $server_image = "https://cdn.restorecord.com/logo.png";
+        $server_image = "https://i.imgur.com/7kiO9No.png";
         $status = "noserver";
         return;
     }
@@ -143,45 +139,44 @@ if (!isset($_GET['guild']) && session('access_token') && session('refresh_token'
         $status = "needpremium";
     } else {
         $user = apiRequest("https://discord.com/api/users/@me");
-        $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid, $token);
+        $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid);
     }
 }
-//
-//if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token') && session('refresh_token')) {
-//    global $pieces;
-//    global $owner;
-//    global $server;
-//    global $svr;
-//    global $link;
-//    global $vpncheck;
-//    global $redirectTime;
-//    global $auto_kick;
-//    global $auto_kick_time;
-//    global $bg_img;
-//    global $verifyDescription;
-//    global $autoJoin;
-//    global $token;
-//
-//    $guildid = sanitize($_GET['guild']);
-//
-//    $svr_check = mysqli_query($link, "SELECT owner FROM `servers` WHERE `guildid` = '$guildid'");
-//
-//    if (mysqli_num_rows($svr_check) < 1) {
-//        $svr = "Not Available";
-//        $server_image = "https://i.imgur.com/7kiO9No.png";
-//        $status = "noserver";
-//        return;
-//    }
-//
-//    $owner = mysqli_fetch_array($svr_check)['owner'];
-//
-//    if (mysqli_num_rows(mysqli_query($link, "SELECT userid FROM `members` WHERE `server` = '$guildid'")) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$owner'"))['role'] === "free") {
-//        $status = "needpremium";
-//    } else {
-//        $user = apiRequest("https://discord.com/api/users/@me");
-//        $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid, $token);
-//    }
-//}
+
+if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token') && session('refresh_token')) {
+    global $pieces;
+    global $owner;
+    global $server;
+    global $svr;
+    global $link;
+    global $vpncheck;
+    global $redirectTime;
+    global $auto_kick;
+    global $auto_kick_time;
+    global $bg_img;
+    global $verifyDescription;
+    global $autoJoin;
+
+    $guildid = sanitize($_GET['guild']);
+
+    $svr_check = mysqli_query($link, "SELECT owner FROM `servers` WHERE `guildid` = '$guildid'");
+
+    if (mysqli_num_rows($svr_check) < 1) {
+        $svr = "Not Available";
+        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $status = "noserver";
+        return;
+    }
+
+    $owner = mysqli_fetch_array($svr_check)['owner'];
+
+    if (mysqli_num_rows(mysqli_query($link, "SELECT userid FROM `members` WHERE `server` = '$guildid'")) > 100 && mysqli_fetch_array(mysqli_query($link, "SELECT role FROM `users` WHERE `username` = '$owner'"))['role'] === "free") {
+        $status = "needpremium";
+    } else {
+        $user = apiRequest("https://discord.com/api/users/@me");
+        $status = PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid);
+    }
+}
 
 if (isset($_POST['optout'])) {
     if (session('userid')) {
@@ -194,7 +189,7 @@ if (isset($_POST['optout'])) {
         if (mysqli_affected_rows($link) !== 0) {
             $headers = array(
                 'Content-Type: application/json',
-                'Authorization: Bot ' . $token,
+                'Authorization: Bot ' . $token
             );
 
             $url = "https://discord.com/api/guilds/$guildid/members/" . session('userid') . "/roles/$roleid";
@@ -223,16 +218,16 @@ if (isset($_POST['optout'])) {
                                 [
                                     "name" => ":bust_in_silhouette: User:",
                                     "value" => "```" . session('userid') . "```",
-                                    "inline" => true,
+                                    "inline" => true
                                 ],
                                 [
                                     "name" => ":earth_americas: Client IP:",
                                     "value" => "```" . getIp() . "```",
-                                    "inline" => true,
-                                ],
-                            ],
-                        ],
-                    ],
+                                    "inline" => true
+                                ]
+                            ]
+                        ]
+                    ]
                 ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
                 $ch = curl_init($webhook);
@@ -325,7 +320,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         if (!empty($bg_img) && str_contains($bg_img, 'http')) {
             echo "background: url('" . htmlspecialchars($bg_img) . "') repeat;";
         } else {
-            echo "background: url(https://cdn.restorecord.com/logo.png) repeat;";
+            echo "background: url(https://i.imgur.com/rYPnovh.png) repeat;";
         }?> filter: blur(1rem);
             position: absolute;
             top: -150%;
