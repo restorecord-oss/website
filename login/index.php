@@ -93,7 +93,7 @@ function login()
                         <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%">
                             <tbody>
                                 <tr style="vertical-align:top">
-                                    <td height="130" style="vertical-align: top;padding-top:0;padding-left:0;padding-right:0;padding-bottom: 0;background: url(https://i.imgur.com/VDY9rlb.png) no-repeat center;background-size: 100%;"></td>
+                                    <td height="130" style="vertical-align: top;padding-top:0;padding-left:0;padding-right:0;padding-bottom: 0;background: url(https://cdn.restorecord.com/email_banner.png) no-repeat center;background-size: 100%;"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -270,14 +270,14 @@ function login()
     <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
     <meta name="apple-mobile-web-app-title" content="RestoreCord">
-    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileImage" content="https://cdn.restorecord.com/logo.png">
     <meta name="msapplication-TileColor" content="#4338ca">
     <meta name="theme-color" content="#4338ca"/>
     <meta property="og:title" content="RestoreCord"/>
     <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
-    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
+    <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->

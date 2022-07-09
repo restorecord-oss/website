@@ -40,7 +40,7 @@ if (!isset($_GET['guild'])) {
 
     if (mysqli_num_rows($result) === 0) {
         $svr = "Not Available";
-        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $server_image = "https://cdn.restorecord.com/logo.png";
         $status = "noserver";
     } else {
         $status = NULL;
@@ -76,7 +76,7 @@ if (!isset($_GET['guild'])) {
 
     if (mysqli_num_rows($result) === 0) {
         $svr = "Not Available";
-        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $server_image = "https://cdn.restorecord.com/logo.png";
         $status = "noserver"; // server not found
     } else {
         $status = NULL;
@@ -128,7 +128,7 @@ if (!isset($_GET['guild']) && session('access_token') && session('refresh_token'
     $svr_check = mysqli_query($link, "SELECT owner FROM `servers` WHERE `guildid` = '$guildid'");
     if (mysqli_num_rows($svr_check) < 1) {
         $svr = "Not Available";
-        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $server_image = "https://cdn.restorecord.com/logo.png";
         $status = "noserver";
         return;
     }
@@ -163,7 +163,7 @@ if (isset($_GET['guild']) && !empty($_GET['guild']) && session('access_token') &
 
     if (mysqli_num_rows($svr_check) < 1) {
         $svr = "Not Available";
-        $server_image = "https://i.imgur.com/7kiO9No.png";
+        $server_image = "https://cdn.restorecord.com/logo.png";
         $status = "noserver";
         return;
     }
@@ -320,7 +320,7 @@ $dominant_color = simple_color_thief($server_image, '#1D1E23');
         if (!empty($bg_img) && str_contains($bg_img, 'http')) {
             echo "background: url('" . htmlspecialchars($bg_img) . "') repeat;";
         } else {
-            echo "background: url(https://i.imgur.com/rYPnovh.png) repeat;";
+            echo "background: url(https://cdn.restorecord.com/logo.png) repeat;";
         }?> filter: blur(1rem);
             position: absolute;
             top: -150%;

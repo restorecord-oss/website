@@ -17,14 +17,14 @@
     <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
     <meta name="apple-mobile-web-app-title" content="RestoreCord">
-    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileImage" content="https://cdn.restorecord.com/logo.png">
     <meta name="msapplication-TileColor" content="#4338ca">
     <meta name="theme-color" content="#4338ca"/>
     <meta property="og:title" content="RestoreCord"/>
     <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
-    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
+    <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
 
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" as="style">
