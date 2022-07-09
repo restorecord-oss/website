@@ -92,7 +92,7 @@ if (!$admin) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>RestoreCord - Admin</title>
-    <link rel="icon" type="image/png" sizes="300x250" href="https://i.imgur.com/Nfy4OoG.png">
+    <link rel="icon" type="image/png" sizes="300x250" href="https://cdn.restorecord.com/logo.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css"
           rel="stylesheet">
@@ -117,7 +117,7 @@ if (!$admin) {
                 <a class="navbar-brand">
                     <!-- Logo icon -->
                     <b class="logo-icon">
-                        <img src="https://i.imgur.com/Nfy4OoG.png" width="48px" height="48px"
+                        <img src="https://cdn.restorecord.com/logo.png" width="48px" height="48px"
                              class="mr-2 hidden md:inline pointer-events-none noselect">
                     </b>
                 </a>
@@ -154,7 +154,7 @@ if (!$admin) {
                         <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img
-                                    src="https://i.imgur.com/w65Dpnw.png" alt="user" class="rounded-circle" width="31">
+                                    src="https://cdn.restorecord.com/logo.png" alt="user" class="rounded-circle" width="31">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
                             <span class="with-arrow">
@@ -162,7 +162,7 @@ if (!$admin) {
                             </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
                                 <div class="">
-                                    <img src="https://i.imgur.com/w65Dpnw.png" alt="user" class="img-circle"
+                                    <img src="https://cdn.restorecord.com/logo.png" alt="user" class="img-circle"
                                          width="60">
                                 </div>
                                 <div class="ml-2">

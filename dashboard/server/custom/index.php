@@ -2,16 +2,12 @@
 <html dir="ltr" lang="en">
 
 <?php
-
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
-include '../../../includes/connection.php';
-include '../../../includes/functions.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+include '../../../includes/connection.php';
+include '../../../includes/functions.php';
 
 if (!isset($_SESSION['username'])) {
     header("Location: ../../../login/");
@@ -23,13 +19,15 @@ $username = $_SESSION['username'];
 premium_check($username);
 test($_SESSION['username'], $_SESSION['pverif']);
 
-($result = mysqli_query($link, "SELECT banned,role,darkmode,admin FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
+
+($result = mysqli_query($link, "SELECT * FROM `users` WHERE `username` = '$username'")) or die(mysqli_error($link));
 $row = mysqli_fetch_array($result);
 
 $banned = $row['banned'];
 if (!is_null($banned)) {
-    echo "<meta http-equiv='Refresh' Content='0; url=../../../login/'>";
     session_destroy();
+    session_unset();
+    echo "<meta http-equiv='Refresh' Content='0; url=/login'>";
     exit();
 }
 
@@ -39,6 +37,94 @@ $_SESSION['role'] = $role;
 $darkmode = $row['darkmode'];
 $isadmin = $row['admin'];
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$token = NULL;
+$clientId = NULL;
+$clientSecret = NULL;
+
+
+function update()
+{
+    global $link;
+    global $username;
+
+    global $token;
+    global $clientId;
+    global $clientSecret;
+
+    $old_clientId = sanitize($_SESSION['custombot_to_manage']);
+
+    $new_token = sanitize($_POST['token']);
+    $new_clientId = sanitize($_POST['clientId']);
+    $new_clientSecret = sanitize($_POST['clientSecret']);
+
+    $result = mysqli_query($link, "SELECT * FROM `custombots` WHERE `token` = '$new_token' AND `owner` = '$username'"); // select all apps where owner is current user
+    if (mysqli_num_rows($result) > 1) // if the user already owns an app, proceed to change app or load only app
+    {
+        box("Another Bot already has these same Details!", 3);
+        return;
+    }
+
+    $curl = curl_init("https://discord.com/api/v9/users/@me");
+    $headers = array("Authorization: Bot " . $new_token);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+    $resp = curl_exec($curl);
+    curl_close($curl);
+    $json = json_decode($resp, true);
+
+    if (isset($json['message'])) {
+        box("Invalid Token!", 3);
+        return;
+    }
+
+    if (isset($json['id'])) {
+        if ($new_clientId !== $json['id']) {
+            box("Details do not match with Discord (wrong Client Id)", 3);
+            return;
+        }
+    }
+
+
+    (mysqli_query($link, "UPDATE `custombots` SET `token` = '$new_token', `clientId` = '$new_clientId', `clientSecret` = '$new_clientSecret' WHERE `clientId` = '$old_clientId' AND `owner` = '" . $_SESSION['username'] . "'") or die(mysqli_error($link)));
+
+    $token = $new_token;
+    $clientId = $new_clientId;
+    $clientSecret = $new_clientSecret;
+
+    $json_data = json_encode([
+        "content" => "" . $_SESSION['username'] . " has changed Custom Bot `" . $_SESSION['custombot_to_manage'] . "` ID to `$new_clientId`",
+        "username" => "RestoreCord Logs",
+    ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+
+    $ch = curl_init("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+
+    curl_exec($ch);
+    curl_close($ch);
+    // webhook end
+
+
+    box("Updated Bot!", 2);
+}
+
+if (isset($_POST['updatesettings'])) {
+    try {
+        update();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+}
+
 if (isset($_POST['change'])) {
     changeServer($username);
 }
@@ -47,23 +133,43 @@ function changeServer($username)
 {
     global $link;
     $selectOption = sanitize($_POST['taskOption']);
-    ($result = mysqli_query($link, "SELECT * FROM `servers` WHERE `name` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
+    ($result = mysqli_query($link, "SELECT * FROM `custombots` WHERE `clientId` = '$selectOption' AND `owner` = '$username'")) or die(mysqli_error($link));
     if (mysqli_num_rows($result) === 0) {
-        box("You don't own this server!", 3);
+        box("You don\'t own this Custom Bot!", 1);
         return;
     }
     $row = mysqli_fetch_array($result);
-    $banned = $row["banned"];
-    if (!is_null($banned)) {
-        box("This server is banned! (" . sanitize($banned) . ")", 3);
-        return;
+
+    $_SESSION['custombot_to_manage'] = $row['clientId'];
+    $_SESSION['bot_token'] = $row['token'];
+
+    box("You have changed Server!", 2);
+}
+
+if (isset($_SESSION['custombot_to_manage'])) {
+    try {
+        LoadBotSettings(sanitize($_SESSION['custombot_to_manage']));
+    } catch (Exception $e) {
+        echo $e->getMessage();
     }
+}
 
-    $_SESSION['server_to_manage'] = $row['name'];
-    $_SESSION['serverid'] = $row["guildid"];
+function LoadBotSettings($botId)
+{
+    global $link;
+    global $token;
+    global $clientId;
+    global $clientSecret;
+    global $username;
 
-    box("You\'ve changed Server", 2);
-    echo "<meta http-equiv='Refresh' Content='2;'>";
+    ($result = mysqli_query($link, "SELECT * FROM `custombots` WHERE `clientId` = '$botId' AND `owner` = '$username'")) or die(mysqli_error($link));
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_array($result)) {
+            $token = $row['token'];
+            $clientId = $row['clientId'];
+            $clientSecret = $row['clientSecret'];
+        }
+    }
 }
 
 ?>
@@ -73,7 +179,7 @@ function changeServer($username)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>RestoreCord - Blacklist</title>
+    <title>RestoreCord - Custom Bot</title>
 
     <link rel="manifest" href="/manifest.json"/>
     <link rel="apple-touch-icon" href="https://cdn.restorecord.com/static/images/icon-192x192.png"/>
@@ -90,21 +196,17 @@ function changeServer($username)
     <meta name="msapplication-TileColor" content="#4338ca">
     <meta name="theme-color" content="#4338ca"/>
     <meta property="og:title" content="RestoreCord"/>
-    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:description"
+          content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
     <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
     <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
-    <link
-            href="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css"
-            rel="stylesheet">
-    <link href="https://cdn.restorecord.com/dashboard/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
-    <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
-
     <script src="https://cdn.restorecord.com/dashboard/unixtolocal.js"></script>
+    <link href="https://cdn.restorecord.com/dashboard/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -113,18 +215,31 @@ function changeServer($username)
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
     <?php
 
-    if (!isset($_SESSION['server_to_manage'])) {
+    if (!isset($_SESSION['custombot_to_manage'])) {
 
-        $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '$username' AND `banned` IS NULL"); // select all apps where owner is current user
+        $result = mysqli_query($link, "SELECT * FROM `custombots` WHERE `owner` = '$username'"); // select all apps where owner is current user
         if (mysqli_num_rows($result) > 0) // if the user already owns an app, proceed to change app or load only app
         {
             if (mysqli_num_rows($result) === 1) // if the user only owns one app, load that app (they can still change app after it's loaded)
             {
                 $row = mysqli_fetch_array($result);
-                $_SESSION['server_to_manage'] = $row["name"];
-                $_SESSION['serverid'] = $row["guildid"];
+                $_SESSION['custombot_to_manage'] = $row["clientId"];
+                LoadBotSettings(sanitize($_SESSION['custombot_to_manage']));
 
                 echo '<script>
                     $(document).ready(function () {
@@ -318,7 +433,7 @@ function changeServer($username)
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">Blacklist</h4>
+                    <h4 class="page-title">Custom Bot</h4>
                 </div>
             </div>
         </div>
@@ -328,32 +443,63 @@ function changeServer($username)
         <!-- ============================================================== -->
         <!-- Container fluid  -->
 
-        <div class="main-panel" id="createapp" style="padding-left:30px;display:none;">
+        <div class="main-panel" id="createapp" style="padding-left:30px;padding-right:30px;display:none;">
             <!-- Page Heading -->
             <br>
-            <h1 class="h3 mb-2 text-gray-800">Create A Server</h1>
+            <h1 class="h3 mb-2 text-gray-800">Create A Bot</h1>
             <br>
             <br>
-            <form method="POST" action="">
-                <input type="text" id="appname" name="appname" class="form-control"
-                       placeholder="Server Name..."></input>
-                <br>
-                <br>
-                <button type="submit" name="ccreateapp" class="btn btn-primary" style="color:white;">Submit</button>
-            </form>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="">
+                            <div class="form-group row">
+                                <label for="token" class="col-2 col-form-label">Bot Token</label>
+                                <div class="col-10">
+                                    <input type="password" id="token" name="token" class="form-control"
+                                           placeholder="Bot Token">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="example-tel-input" class="col-2 col-form-label">Client Secret</label>
+                                <div class="col-10">
+                                    <input type="text" id="clientSecret" name="clientSecret" class="form-control"
+                                           placeholder="Client Secret">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="example-tel-input" class="col-2 col-form-label">Client Id</label>
+                                <div class="col-10">
+                                    <input type="text" id="clientId" name="clientId" class="form-control"
+                                           placeholder="Client Id">
+                                </div>
+                            </div>
+                            <!--                            <div class="form-group row">-->
+                            <!--                                <label for="example-tel-input" class="col-2 col-form-label">Redirect Url</label>-->
+                            <!--                                <div class="col-10">-->
+                            <!--                                    <input type="text" id="urlRedirect" name="urlRedirect" class="form-control"-->
+                            <!--                                           placeholder="Redirect Url">-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <button type="submit" name="createbot" class="btn btn-primary" style="color:white;">Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
-        <div class="main-panel" id="changeapp" style="padding-left:30px;display:none;">
+        <div class="main-panel" id="changeapp" style="padding-left:30px;padding-right:30px;display:none;">
             <!-- Page Heading -->
             <br>
-            <h1 class="h3 mb-2 text-gray-800">Choose A Server</h1>
+            <h1 class="h3 mb-2 text-gray-800">Choose A Bot</h1>
             <br>
             <br>
             <form class="text-left" method="POST" action="">
                 <select class="form-control" name="taskOption">
                     <?php
-                    $result = mysqli_query($link, "SELECT * FROM `servers` WHERE `owner` = '$username'");
+                    $result = mysqli_query($link, "SELECT * FROM `custombots` WHERE `owner` = '$username'");
 
                     $rows = array();
                     while ($r = mysqli_fetch_assoc($result)) {
@@ -361,10 +507,26 @@ function changeServer($username)
                     }
 
                     foreach ($rows as $row) {
+                        $botId = $row['clientId'];
 
-                        $appname = $row['name'];
+
+                        $curl = curl_init("https://discord.com/api/v9/users/@me");
+                        $headers = array("Authorization: Bot " . $row['token'],);
+                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($curl, CURLOPT_HEADER, false);
+
+                        $resp = curl_exec($curl);
+                        curl_close($curl);
+                        $json = json_decode($resp, true );
+                        if (isset($json['username'])) {
+                            $displayName = "{$json['username']}#{$json['discriminator']}";
+                        } else {
+                            $displayName = "Invalid Details ($botId)";
+                        }
                         ?>
-                        <option><?php echo $appname; ?></option>
+                        <option value="<?php echo sanitize($botId); ?>"><?php echo sanitize($displayName); ?></option>
                         <?php
                     }
                     ?>
@@ -372,9 +534,7 @@ function changeServer($username)
                 <br>
                 <br>
                 <button type="submit" name="change" class="btn btn-primary" style="color:white;">Submit</button>
-                <a
-                        style="padding-left:5px;color:#4e73df;" id="createe">Create Server
-                </a>
+                <a style="padding-left:5px;color:#4e73df;" id="createe">Create Custom Bot</a>
             </form>
             <script type="text/javascript">
                 var myLink = document.getElementById('createe');
@@ -391,57 +551,22 @@ function changeServer($username)
             </script>
         </div>
 
-        <?php if (isset($_SESSION['server_to_manage'])) { ?>
-        <div class="main-panel" id="renameapp" style="padding-left:30px;display:none;">
-            <!-- Page Heading -->
-            <br>
-            <h1 class="h3 mb-2 text-gray-800">Rename</h1>
-            <br>
-            <br>
-            <div class="col-12">
-                <div class="card-body">
-                    <form class="form" method="POST" action="">
-                        <div class="form-group row">
-                            <label for="example-tel-input" class="col-2 col-form-label">Selected App</label>
-                            <div class="col-10">
-                                <input class="form-control"
-                                       value="<?php echo htmlspecialchars($_SESSION['server_to_manage']); ?>"
-                                       placeholder="Old Server Name" required disabled>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="example-tel-input" class="col-2 col-form-label">New Name</label>
-                            <div class="col-10">
-                                <input class="form-control" name="name" type="text" placeholder="New Name" required>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <button type="submit" name="renameserver" class="btn btn-primary" style="color:white;">Submit
-                        </button>
-                        <a style="padding-left:5px;color:#4e73df;" id="cancel">Cancel</a>
-                    </form>
-                </div>
-            </div>
-            <?php } ?>
-            <script type="text/javascript">
-                var myLink = document.getElementById('createe');
+        <script type="text/javascript">
+            var myLink = document.getElementById('createe');
 
-                myLink.onclick = function () {
+            myLink.onclick = function () {
 
 
-                    $(document).ready(function () {
-                        $("#changeapp").css("display", "none");
-                        $("#createapp").css("display", "block");
-                    });
+                $(document).ready(function () {
+                    $("#changeapp").css("display", "none");
+                    $("#createapp").css("display", "block");
+                });
 
-                }
-            </script>
-        </div>
-
+            }
+        </script>
 
         <!-- ============================================================== -->
-        <div class="container-fluid" id="content" style="display:none">
+        <div class="container-fluid" id="content" style="padding-left:30px;padding-right:30px;display:none">
             <!-- ============================================================== -->
             <!-- Start Page Content -->
             <!-- ============================================================== -->
@@ -459,77 +584,75 @@ function changeServer($username)
                     <br>
                     <script type="text/javascript">
                         var myLink = document.getElementById('mylink');
+
                         myLink.onclick = function () {
+
+
                             $(document).ready(function () {
                                 $("#content").css("display", "none");
                                 $("#changeapp").css("display", "block");
                             });
+
                         }
                     </script>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="file_export" class="table table-striped table-bordered display">
-                                    <thead>
-                                    <tr>
-                                        <th>User</th>
-                                        <th>IP Address</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
 
-                                    <?php
-                                    if (isset($_SESSION['server_to_manage'])) {
-                                        ($result = mysqli_query($link, "SELECT * FROM `blacklist` WHERE `server` = '" . $_SESSION['serverid'] . "'")) or die(mysqli_error($link));
+                    <?php
+                    if (isset($_SESSION['custombot_to_manage'], $_SESSION['bot_token'])) {
+                        $botId = $_SESSION['custombot_to_manage'];
 
-                                        $rows = array();
-                                        while ($r = mysqli_fetch_assoc($result)) {
-                                            $rows[] = $r;
-                                        }
 
-                                        foreach ($rows as $row) {
+                        $curl = curl_init("https://discord.com/api/v9/users/@me");
+                        $headers = array("Authorization: Bot " .  $_SESSION['bot_token']);
+                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($curl, CURLOPT_HEADER, false);
 
-                                            $user = $row['userid'];
-                                            ?>
+                        $resp = curl_exec($curl);
+                        curl_close($curl);
+                        $json = json_decode($resp, true);
+                        if (isset($json['username'])) {
+                            echo "<h5 class=\"mb-4\" style=\"font-weight: normal;font-size: 1rem;\">Selected Bot: <span style=\"color: #fff;\">{$json['username']}#{$json['discriminator']}</span></h5>";
+                        } else {
+                            echo "<h5 class=\"mb-4\" style=\"font-weight: normal;font-size: 1rem;\">Selected Bot: <span style=\"color: #fff;\">Invalid Details ($botId)</span></h5>";
+                        }
 
-                                            <tr>
+                        ?>
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="form" method="post">
+                                    <div class="form-group row">
+                                        <label for="example-tel-input" class="col-2 col-form-label">Token</label>
+                                        <div class="col-10">
+                                            <input class="form-control" name="token" type="password"
+                                                   value="<?php echo $token; ?>" placeholder="Token" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-tel-input" class="col-2 col-form-label">Client
+                                            Secret</label>
+                                        <div class="col-10">
+                                            <input class="form-control" name="clientSecret" type="text"
+                                                   value="<?php echo $clientSecret; ?>" placeholder="Client Secret"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-tel-input" class="col-2 col-form-label">Client Id</label>
+                                        <div class="col-10">
+                                            <input class="form-control" name="clientId" type="text"
+                                                   value="<?php echo $clientId; ?>" placeholder="Client Id">
+                                        </div>
+                                    </div>
 
-                                                <td><?php echo $user; ?></td>
-                                                <td><?php echo $row['ip']; ?></td>
-
-                                                <form method="POST">
-                                                    <td>
-                                                        <button type="button" class="btn btn-info dropdown-toggle"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                            Manage
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <button class="dropdown-item" name="deleteblack"
-                                                                    value="<?php echo $user; ?>">Delete
-                                                            </button>
-                                                    </td>
-                                            </tr>
-                                            </form>
-                                            <?php
-
-                                        }
-                                    }
-
-                                    ?>
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>User</th>
-                                        <th>IP Address</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+                                    <button name="updatesettings" class="btn btn-success">
+                                        <i class="fa fa-check"></i>
+                                        Save
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
             <!-- Show / hide columns dynamically -->
@@ -538,29 +661,11 @@ function changeServer($username)
 
             <!-- Row grouping -->
 
-            <!-- Multiple table control element -->
-
             <!-- DOM / jQuery events -->
 
             <!-- Complex headers with column visibility -->
 
             <!-- language file -->
-
-            <?php
-
-            if (isset($_POST['deleteblack'])) {
-                $user = sanitize($_POST['deleteblack']);
-                mysqli_query($link, "DELETE FROM `blacklist` WHERE `userid` = '$user' AND `server` = '" . $_SESSION['serverid'] . "'");
-                if (mysqli_affected_rows($link) !== 0) // check query impacted something, else show error
-                {
-                    box("Blacklist Successfully Deleted!", 2);
-                    //echo "<meta http-equiv='Refresh' Content='2'>";
-                } else {
-                    box("Failed To Delete Blacklist!", 3);
-                }
-            }
-
-            ?>
 
             <!-- Setting defaults -->
 
@@ -599,7 +704,6 @@ function changeServer($username)
 <!-- ============================================================== -->
 <!-- ============================================================== -->
 
-
 <!-- ============================================================== -->
 <!-- All Jquery -->
 <!-- ============================================================== -->
@@ -624,23 +728,9 @@ function changeServer($username)
 <script src="https://cdn.restorecord.com/dashboard/dist/js/feather.min.js"></script>
 <script src="https://cdn.restorecord.com/dashboard/dist/js/custom.min.js"></script>
 <!--This page JavaScript -->
-<!--chartis chart-->
-<script src="https://cdn.restorecord.com/dashboard/assets/libs/chartist/dist/chartist.min.js"></script>
-<script
-        src="https://cdn.restorecord.com/dashboard/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js">
-</script>
-<!--chartjs -->
 <script src="https://cdn.restorecord.com/dashboard/dist/js/pages/dashboards/dashboard1.js"></script>
-<script src="https://cdn.restorecord.com/dashboard/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js">
-</script>
 <!-- start - This is for export functionality only -->
-<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>-->
-<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>-->
-<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>-->
-<!--<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>-->
-
-<script src="https://cdn.restorecord.com/dashboard/dist/js/pages/datatable/datatable-advanced.init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 
 <script type="text/javascript">
     // Popup window code

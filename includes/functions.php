@@ -64,10 +64,9 @@ function sanitize($input): ?string
     //return strip_tags(trim($input));
 }
 
-function PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid): string
+function PullUser($user, $guildid, $vpncheck, $webhook, $autoJoin, $roleid, $token): string
 {
     global $link;
-    global $token;
     $status = NULL;
 
     $headers = array(
@@ -404,13 +403,57 @@ function heador()
             }
         }
 
-        mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`, `autoKickUnVerified`, `autoKickUnVerifiedTime`, `autoJoin`, `redirectTime`) VALUES ('$owner','$appname','https://i.imgur.com/w65Dpnw.png', '0', '0', '1', '0')");
+        mysqli_query($link, "INSERT INTO `servers`(`owner`, `name`, `pic`, `autoKickUnVerified`, `autoKickUnVerifiedTime`, `autoJoin`, `redirectTime`) VALUES ('$owner','$appname','https://cdn.restorecord.com/logo.png', '0', '0', '1', '0')");
         if (mysqli_affected_rows($link) !== 0) {
             $_SESSION['server_to_manage'] = $appname;
             $_SESSION['serverid'] = NULL;
             box("Successfully Created Server!", 2);
         } else {
             box("Failed to create application!", 3);
+        }
+    }
+
+    function createBot() {
+        global $link;
+        global $role;
+
+        $token = sanitize($_POST['token']);
+        $clientSecret = sanitize($_POST['clientSecret']);
+        $clientId = sanitize($_POST['clientId']);
+//        $urlRedirect = sanitize($_POST['urlRedirect']);
+
+        $result = mysqli_query($link, "SELECT * FROM custombots WHERE (token='$token' OR clientId='$clientId' OR clientSecret='$clientSecret') AND owner='" . $_SESSION['username'] . "'");
+        if (mysqli_num_rows($result) > 0) {
+            box("You already own a bot with the same details!", 3);
+            return;
+        }
+
+        $owner = $_SESSION['username'];
+
+        if ($role === "free") {
+            $result = mysqli_query($link, "SELECT * FROM custombots WHERE owner='$owner'");
+
+            if (mysqli_num_rows($result) > 0) {
+                box("Free plan only supports one Custom Bot!", 3);
+                return;
+            }
+
+        } else if ($role === "premium") {
+            $result = mysqli_query($link, "SELECT * FROM servers WHERE owner='$owner'");
+
+            if (mysqli_num_rows($result) >= 3) {
+                box("Premium only supports 3 Custom Bots!", 3);
+                return;
+            }
+        }
+
+        mysqli_query($link, "INSERT INTO `custombots`(`owner`, `token`, `clientId`, `clientSecret`) VALUES ('$owner','$token','$clientId', '$clientSecret')");
+        if (mysqli_affected_rows($link) !== 0) {
+            $_SESSION['custombot_to_manage'] = $clientId;
+            $_SESSION['serverid'] = NULL;
+            box("Successfully Created Custom Bot!", 2);
+        } else {
+            box("Failed to create Custom Bot!", 3);
         }
     }
 
@@ -426,7 +469,11 @@ function heador()
         createApp();
     }
 
-    if (isset($_SESSION['server_to_manage'])) {
+    if (isset($_POST['token'], $_POST['clientSecret'], $_POST['clientId'], $_POST['createbot'])) {
+        createBot();
+    }
+
+    if (isset($_SESSION['server_to_manage']) && strpos($_SERVER['REQUEST_URI'], 'custom') === false) {
         ?>
         <form class="text-left" method="POST">
             <p class="mb-4">Name:
@@ -463,6 +510,17 @@ function heador()
                 })
             }
         </script>
+        <?php
+    }
+    else {
+        ?>
+        <form class="text-left" method="POST">
+            <a style="color:#4e73df;cursor: pointer;" id="mylink">Change</a>
+            <button style="border: none;padding:0;background:0;color:#FF0000;padding-left:5px;" name="deleteserver"
+                    onclick="return confirm('Are you sure you want to delete server and all associated members?')">
+                Delete
+            </button>
+        </form>
         <?php
     }
 }
@@ -540,6 +598,13 @@ function sidebar($admin)
            aria-expanded="false">
             <i data-feather="settings"></i>
             <span class="hide-menu">Settings</span>
+        </a>
+    </li>
+    <li class="sidebar-item">
+        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard/server/custom/"
+           aria-expanded="false">
+            <i data-feather="file-text"></i>
+            <span class="hide-menu">Custom Bots</span>
         </a>
     </li>
     <li class="sidebar-item">

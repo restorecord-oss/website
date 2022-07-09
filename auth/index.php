@@ -42,8 +42,7 @@ if (isset($_SESSION['owner'], $_SESSION['name']) && !get('state') && get('code')
         $_SESSION['refresh_token'] = $token->refresh_token;
 
         header('Location: /verify/?guild=' . get('state'));
-    }
-    else {
+    } else {
         header('Location: /');
     }
 }

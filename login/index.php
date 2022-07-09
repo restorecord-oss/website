@@ -81,7 +81,7 @@ function login()
     } else if ($last_ip !== $ip) {
         mysqli_query($link, "UPDATE `users` SET `last_ip` = '$ip' WHERE `username` = '$username'") or die(mysqli_error($link));
         $details = json_decode(file_get_contents("https://ipinfo.io/$ip?token=871723f6a65a43"), false, 512, JSON_THROW_ON_ERROR);
-        $htmlContent = '
+        $htmlContent = base64_encode('
         <html>
         <head>
             <title>RestoreCord - Login from new Location</title>
@@ -93,7 +93,7 @@ function login()
                         <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%">
                             <tbody>
                                 <tr style="vertical-align:top">
-                                    <td height="130" style="vertical-align: top;padding-top:0;padding-left:0;padding-right:0;padding-bottom: 0;background: url(https://i.imgur.com/VDY9rlb.png) no-repeat center;background-size: 100%;"></td>
+                                    <td height="130" style="vertical-align: top;padding-top:0;padding-left:0;padding-right:0;padding-bottom: 0;background: url(https://cdn.restorecord.com/email_banner.png) no-repeat center;background-size: 100%;"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -187,28 +187,28 @@ function login()
             </div>
         </body>
         </html>
-        ';
+        ');
 
         require '../vendor/autoload.php';
 
-        $mj = new Client("2a035b8a2efdab6216da2129c8a637e3", "64134d8f0ba141259f3ca87812c60490", true, ['version' => 'v3.1']);
+        $mj = new \Mailjet\Client("2a035b8a2efdab6216da2129c8a637e3", "64134d8f0ba141259f3ca87812c60490");
+
+
         $body = [
-            'Messages' => [
+            'FromEmail' => 'noreply@restorecord.com',
+            'FromName' => 'RestoreCord',
+            'Subject' => "RestoreCord - Login from new Location",
+            'Html-Part' => $htmlContent,
+            'Recipients' => [
                 [
-                    'From' => [
-                        'Email' => "noreply@restorecord.com",
-                        'Name' => "RestoreCord"
-                    ],
-                    'To' => [
-                        [
-                            'Email' => (string)$email,
-                            'Name' => (string)$username
-                        ]
-                    ],
-                    'Subject' => "RestoreCord - Login from new Location",
-                    'HTMLPart' => $htmlContent
-                ]
-            ]
+                    'Email' => $email,
+                    'Name' => $username,
+                ],
+            ],
+            'Headers' => [
+                'Content-Type' => 'text/html; charset=iso-8859-1',
+                'Content-Transfer-Encoding' => 'base64',
+            ],
         ];
         $mj->post(Mailjet\Resources::$Email, ['body' => $body]);
 
@@ -226,7 +226,7 @@ function login()
 
         $ch = curl_init("https://discord.com/api/webhooks/971154653997842472/In7DnfIbL2lwPCD6Z7Jsq2YGvBGb9PsT5oq50e74j9xFq3JFHEwYBsRLCPYrOvibB2Ho");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-type: application/json'
+            'Content-type: application/json',
         ));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -270,15 +270,17 @@ function login()
     <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
     <meta name="apple-mobile-web-app-title" content="RestoreCord">
-    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileImage" content="https://cdn.restorecord.com/logo.png">
     <meta name="msapplication-TileColor" content="#4338ca">
     <meta name="theme-color" content="#4338ca"/>
     <meta property="og:title" content="RestoreCord"/>
-    <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
+    <meta property="og:description"
+          content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
-    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
+    <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
+          rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/vendors/css/vendors.min.css">
@@ -291,11 +293,14 @@ function login()
     <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/components.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/themes/dark-layout.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/themes/bordered-layout.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/themes/semi-dark-layout.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.restorecord.com/app-assets/css/themes/semi-dark-layout.css">
 
     <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/core/menu/menu-types/vertical-menu.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.restorecord.com/app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.restorecord.com/app-assets/css/plugins/forms/form-validation.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.restorecord.com/app-assets/css/pages/authentication.css">
     <!-- END: Page CSS-->
 
@@ -304,7 +309,8 @@ function login()
 
 <!-- BEGIN: Body-->
 
-<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">
+<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click"
+      data-menu="vertical-menu-modern" data-col="blank-page">
 <!-- BEGIN: Content-->
 <div class="app-content content ">
     <div class="content-overlay"></div>
@@ -324,7 +330,8 @@ function login()
                             <form class="auth-login-form mt-2" method="POST">
                                 <div class="mb-1">
                                     <label for="login-email" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" placeholder="johndoe" aria-describedby="username" tabindex="1" autofocus/>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                           placeholder="johndoe" aria-describedby="username" tabindex="1" autofocus/>
                                 </div>
 
                                 <div class="mb-1">
@@ -335,7 +342,10 @@ function login()
                                         </a>
                                     </div>
                                     <div class="input-group input-group-merge form-password-toggle">
-                                        <input type="password" class="form-control form-control-merge" id="password" name="password" tabindex="2" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password"/>
+                                        <input type="password" class="form-control form-control-merge" id="password"
+                                               name="password" tabindex="2"
+                                               placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                               aria-describedby="password"/>
                                         <span class="input-group-text cursor-pointer">
                                             <i data-feather="eye"></i>
                                         </span>
@@ -344,16 +354,19 @@ function login()
 
                                 <div class="mb-1">
                                     <label for="login-email" class="form-label">2FA Code (Optional)</label>
-                                    <input type="text" class="form-control" id="twofactor" name="twofactor" placeholder="123456" aria-describedby="twofactor" tabindex="3"/>
+                                    <input type="text" class="form-control" id="twofactor" name="twofactor"
+                                           placeholder="123456" aria-describedby="twofactor" tabindex="3"/>
                                 </div>
 
                                 <div class="mb-1">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me" tabindex="4"/>
+                                        <input class="form-check-input" type="checkbox" id="remember-me"
+                                               name="remember-me" tabindex="4"/>
                                         <label class="form-check-label" for="remember-me"> Remember Me</label>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary w-100" tabindex="5" type="submit" name="login">Sign in</button>
+                                <button class="btn btn-primary w-100" tabindex="5" type="submit" name="login">Sign in
+                                </button>
                             </form>
 
                             <p class="text-center mt-2">
@@ -368,8 +381,11 @@ function login()
                             </div>
 
                             <div class="auth-footer-btn d-flex justify-content-center">
-                                <a class="btn btn-facebook w-100" style="color: #fff; background-color: #5865F2;" href="javascript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/api/discord&response_type=code&scope=identify&prompt=none&state=login');">Login With Discord
-                                    <svg role="img" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+                                <a class="btn btn-facebook w-100" style="color: #fff; background-color: #5865F2;"
+                                   href="javascript:newPopup('https://discord.com/api/oauth2/authorize?client_id=791106018175614988&redirect_uri=https://restorecord.com/api/discord&response_type=code&scope=identify&prompt=none&state=login');">Login
+                                    With Discord
+                                    <svg role="img" width="14" height="14" viewBox="0 0 24 24"
+                                         xmlns="http://www.w3.org/2000/svg" fill="#fff">
                                         <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
                                     </svg>
                                 </a>

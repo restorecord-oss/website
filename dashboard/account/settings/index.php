@@ -252,14 +252,14 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
     <meta name="apple-mobile-web-app-status-bar" content="#4338ca"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="#4338ca">
     <meta name="apple-mobile-web-app-title" content="RestoreCord">
-    <meta name="msapplication-TileImage" content="https://i.imgur.com/Nfy4OoG.png">
+    <meta name="msapplication-TileImage" content="https://cdn.restorecord.com/logo.png">
     <meta name="msapplication-TileColor" content="#4338ca">
     <meta name="theme-color" content="#4338ca"/>
     <meta property="og:title" content="RestoreCord"/>
     <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
-    <meta property="og:image" content="https://i.imgur.com/Nfy4OoG.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://i.imgur.com/Nfy4OoG.png">
+    <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
+    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
@@ -304,7 +304,7 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
                 <a class="navbar-brand">
                     <!-- Logo icon -->
                     <b class="logo-icon">
-                        <img src="https://i.imgur.com/Nfy4OoG.png" width="48px" height="48px"
+                        <img src="https://cdn.restorecord.com/logo.png" width="48px" height="48px"
                              class="mr-2 hidden md:inline pointer-events-none noselect" alt="logo">
                     </b>
                 </a>
@@ -361,7 +361,7 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
                         <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img
-                                    src="https://i.imgur.com/w65Dpnw.png" alt="user" class="rounded-circle" width="31">
+                                    src="https://cdn.restorecord.com/logo.png" alt="user" class="rounded-circle" width="31">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
                             <span class="with-arrow">
@@ -369,7 +369,7 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
                             </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
                                 <div class="">
-                                    <img src="https://i.imgur.com/w65Dpnw.png" alt="user" class="img-circle"
+                                    <img src="https://cdn.restorecord.com/logo.png" alt="user" class="img-circle"
                                          width="60">
                                 </div>
                                 <div class="ml-2">
