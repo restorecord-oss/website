@@ -259,7 +259,7 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
     <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
     <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
+    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo512.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
     <link href="https://cdn.restorecord.com/dashboard/dist/css/style.min.css" rel="stylesheet">
@@ -369,7 +369,7 @@ if (isset($_POST['updatesettings'], $_POST['pw'], $_POST['email'], $_POST['usern
                             </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
                                 <div class="">
-                                    <img src="https://cdn.restorecord.com/logo.png" alt="user" class="img-circle"
+                                    <img src="https://cdn.restorecord.com/logo512.png" alt="user" class="img-circle"
                                          width="60">
                                 </div>
                                 <div class="ml-2">

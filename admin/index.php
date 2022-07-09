@@ -162,7 +162,7 @@ if (!$admin) {
                             </span>
                             <div class="d-flex no-block align-items-center p-15 bg-primary text-white mb-2">
                                 <div class="">
-                                    <img src="https://cdn.restorecord.com/logo.png" alt="user" class="img-circle"
+                                    <img src="https://cdn.restorecord.com/logo512.png" alt="user" class="img-circle"
                                          width="60">
                                 </div>
                                 <div class="ml-2">

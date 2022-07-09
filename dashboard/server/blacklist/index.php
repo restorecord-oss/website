@@ -93,7 +93,7 @@ function changeServer($username)
     <meta property="og:description" content="RestoreCord is a verified Discord bot designed to backup your Discord Server members, roles, channels, roles & emojis"/>
     <meta property="og:url" content="https://restorecord.com"/>
     <meta property="og:image" content="https://cdn.restorecord.com/logo.png"/>
-    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo.png">
+    <link rel="icon" type="image/png" sizes="676x676" href="https://cdn.restorecord.com/logo512.png">
     <script src="https://cdn.restorecord.com/dashboard/assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Custom CSS -->
     <link
