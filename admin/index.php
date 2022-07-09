@@ -117,7 +117,7 @@ if (!$admin) {
                 <a class="navbar-brand">
                     <!-- Logo icon -->
                     <b class="logo-icon">
-                        <img src="https://cdn.restorecord.com/logo.png" width="48px" height="48px"
+                        <img src="https://cdn.restorecord.com/logo512.png" width="48px" height="48px"
                              class="mr-2 hidden md:inline pointer-events-none noselect">
                     </b>
                 </a>
